@@ -16,10 +16,10 @@ namespace StarterAssets
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
-        public float MoveSpeed = 2.0f;
+        public float MoveSpeed = 10.0f;
 
         [Tooltip("Sprint speed of the character in m/s")]
-        public float SprintSpeed = 5.335f;
+        public float SprintSpeed = 15.0f;
 
         [Tooltip("How fast the character turns to face movement direction")]
         [Range(0.0f, 0.3f)]
@@ -59,6 +59,16 @@ namespace StarterAssets
         [Tooltip("What layers the character uses as ground")]
         public LayerMask GroundLayers;
 
+        [Header("Attack Settings")]
+        public float meleeRange = 2.0f;
+        public int meleeDamage = 10;
+        public Transform meleePoint;
+        public LayerMask enemyLayers;
+
+        public GameObject projectilePrefab;
+        public Transform projectileSpawnPoint;
+        public float projectileForce = 500f;
+
         [Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
         public GameObject CinemachineCameraTarget;
@@ -97,6 +107,14 @@ namespace StarterAssets
         private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
+
+        // Double Jump
+        private bool _canDoubleJump = true;
+        private bool _hasDoubleJumped = false;
+
+        // Attack
+        private bool _meleeAttack = false;
+        private bool _rangedAttack = false;
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
@@ -159,6 +177,7 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            //HandleAttackInput(); //Check Attack
         }
 
         private void LateUpdate()
@@ -234,8 +253,8 @@ namespace StarterAssets
             {
                 // creates curved result rather than a linear one giving a more organic speed change
                 // note T in Lerp is clamped, so we don't need to clamp our speed
-                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                    Time.deltaTime * SpeedChangeRate);
+                // _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+                _speed = targetSpeed * inputMagnitude;
 
                 // round speed to 3 decimal places
                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -304,12 +323,15 @@ namespace StarterAssets
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                    _hasDoubleJumped = false;
 
                     // update animator if using character
                     if (_hasAnimator)
                     {
                         _animator.SetBool(_animIDJump, true);
                     }
+
+                    _input.jump = false;
                 }
 
                 // jump timeout
@@ -317,6 +339,8 @@ namespace StarterAssets
                 {
                     _jumpTimeoutDelta -= Time.deltaTime;
                 }
+
+                _canDoubleJump = true;
             }
             else
             {
@@ -337,8 +361,23 @@ namespace StarterAssets
                     }
                 }
 
+                // Double Jump
+                if (_input.jump && _canDoubleJump && !_hasDoubleJumped)
+                {
+                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -4f * Gravity);
+                    _hasDoubleJumped = true;
+                    _input.jump = false; // Reset
+
+                    if (_hasAnimator)
+                    {
+                        _animator.SetBool(_animIDJump, true);
+                        // _animator.SetTrigger("DoubleJump"); for different animation
+                    }
+                    _input.jump = false;
+                }
+
                 // if we are not grounded, do not jump
-                _input.jump = false;
+                // _input.jump = false;
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
@@ -347,6 +386,56 @@ namespace StarterAssets
                 _verticalVelocity += Gravity * Time.deltaTime;
             }
         }
+
+        /* Check Attack
+        private void HandleAttackInput()
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                _meleeAttack = true;
+                if (_hasAnimator)
+                {
+                    _animator.SetTrigger("MeleeAttack");
+                }
+                PerformMeleeAttack();
+                Debug.Log("Melee Attack Triggered");
+            }
+
+            if (Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                _rangedAttack = true;
+                if (_hasAnimator)
+                {
+                    _animator.SetTrigger("RangedAttack");
+                }
+                PerformRangedAttack();
+                Debug.Log("Ranged Attack Triggered");
+            }
+        }
+
+        private void PerformMeleeAttack()
+        {
+            Collider[] hitEnemies = Physics.OverlapSphere(meleePoint.position, meleeRange, enemyLayers);
+            foreach (Collider enemy in hitEnemies)
+            {
+                Debug.Log("Hit enemy: " + enemy.name);
+                // Enemy Death Logic
+            }
+        }
+
+        private void PerformRangedAttack()
+        {
+            if (projectilePrefab != null && projectileSpawnPoint != null)
+            {
+                GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+                Rigidbody rb = projectile.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.AddForce(projectileSpawnPoint.forward * projectileForce);
+                }
+            }
+        } */
+
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
