@@ -1,0 +1,78 @@
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+[Uu]ser[Ss]ettings/
+[Aa]ssets/StreamingAssets/
+[Rr]ecordings/
+
+# Visual Studio / IDE
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln
+*.csproj
+*.vsconfig
+
+# Unity auto-generated files
+*.unityproj
+*.dll
+*.exe
+*.apk
+*.prefs
+*.pidb
+*.pidb.meta
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.idb
+*.booproj
+
+# Crash reports
+syslog.txt
+*.stacktrace
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary image/cache
+[Tt]humbnails/
+
+# Unity package outputs
+*.ipa
+*.app
+*.pak
+*.obb
+*.unitypackage
+
+# JSON 
+*.json
+*.json.meta
+!Packages/manifest.json
+!Packages/packages-lock.json
+!Assets/Resources/cutscenes_ko.json
+!Assets/Resources/cutscenes_ko.json.meta
+
+# Unity Collaborate
+.collab/
+.collabignore
+
+# TextMesh Pro
+Assets/TextMesh Pro/
+
+# 기본적으로 모든 SDF.asset은 무시
+*.SDF.asset
+*.SDF.asset.meta
+
+!Assets/Resources/Fonts/NanumSquareR SDF.asset
+!Assets/Resources/Fonts/NanumSquareR SDF.asset.meta
