@@ -69,6 +69,12 @@ namespace StarterAssets
         public Transform projectileSpawnPoint;
         public float projectileForce = 500f;
 
+        [Header("Dash Settings")]
+        public float dashDistance = 6.0f;
+        public float dashCooldown = 5.0f;
+        private bool canDash = true;
+
+
         [Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
         public GameObject CinemachineCameraTarget;
@@ -178,6 +184,11 @@ namespace StarterAssets
             GroundedCheck();
             Move();
             //HandleAttackInput(); //Check Attack
+
+            if (Keyboard.current.eKey.wasPressedThisFrame && canDash)
+            {
+                Dash();
+            }
         }
 
         private void LateUpdate()
@@ -436,6 +447,19 @@ namespace StarterAssets
             }
         } */
 
+        private void Dash()
+        {
+            Vector3 dashDirection = transform.forward;
+            _controller.Move(dashDirection.normalized * dashDistance);
+
+            canDash = false;
+            Invoke(nameof(ResetDash), dashCooldown); 
+        }
+
+        private void ResetDash()
+        {
+            canDash = true;
+        }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
