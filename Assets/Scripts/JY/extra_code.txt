@@ -28,7 +28,7 @@ targetSpeed *= _speedMultiplier;
 EnemyController의 TakeDamage() 호출
 
 **GameManager**
-
+1. 물에 닿으면 게임 종료
 public GameObject gameOverUI;
 private bool isGameOver = false;
 
@@ -43,3 +43,23 @@ public void GameOver()
         if (playerInput != null)
             playerInput.enabled = false;
     }
+
+2. 타이머 종료 시 게임 종료
+private void UpdateTimerUI()
+{
+    if (timeRemaining > 0)
+    {
+        timeRemaining -= Time.deltaTime;
+        int minutes = Mathf.FloorToInt(timeRemaining / 60);
+        int seconds = Mathf.FloorToInt(timeRemaining % 60);
+        timerText.text = string.Format("Timer: {0:00}:{1:00}", minutes, seconds);
+    }
+    else
+    {
+        if (!isGameOver)
+        {
+            timerText.text = "00:00";
+            GameOver();
+        }
+    }
+}
