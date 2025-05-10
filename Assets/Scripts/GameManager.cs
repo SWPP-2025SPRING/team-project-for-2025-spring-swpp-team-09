@@ -26,9 +26,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject player;
     [SerializeField] private ThirdPersonController thirdPersonController;
-    [SerializeField] private GameObject cameraTarget;
 
-    private Quaternion fixedCameraRotation;
     private StarterAssetsInputs playerInput;
 
     private void Start()
@@ -57,12 +55,6 @@ public class GameManager : MonoBehaviour
             else
                 PauseGame();
         }
-
-        if ((isGameClear || isGameOver) && cameraTarget != null)
-        {
-            cameraTarget.transform.rotation = fixedCameraRotation;
-        }
-
     }
 
     private void UpdateTimerUI()
@@ -115,11 +107,6 @@ public class GameManager : MonoBehaviour
         if (thirdPersonController != null)
         {
             thirdPersonController.LockCameraPosition = true;
-        }
-
-        if (cameraTarget != null)
-        {
-            fixedCameraRotation = cameraTarget.transform.rotation;
         }
     }
 
@@ -175,11 +162,6 @@ public class GameManager : MonoBehaviour
         if (thirdPersonController != null)
         {
             thirdPersonController.LockCameraPosition = true;
-        }
-
-        if (cameraTarget != null)
-        {
-            fixedCameraRotation = cameraTarget.transform.rotation;
         }
     }
 }
