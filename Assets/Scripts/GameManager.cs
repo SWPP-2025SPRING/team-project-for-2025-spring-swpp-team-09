@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using TMPro;
 using StarterAssets;
+using Cinemachine;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,26 +15,34 @@ public class GameManager : MonoBehaviour
     public TMP_Text skill1Description;
     public GameObject pauseMenuUI;
     public GameObject gameOverUI;
+    public GameObject gameClearUI;
 
     private bool isPaused = false;
     public bool isSkill1Available = true;
     private bool isGameOver = false;
+    private bool isGameClear = false;
 
     private float timeRemaining = 120.0f;
 
     [SerializeField] private GameObject player;
+    [SerializeField] private ThirdPersonController thirdPersonController;
+    [SerializeField] private GameObject cameraTarget;
+
+    private Quaternion fixedCameraRotation;
     private StarterAssetsInputs playerInput;
 
     private void Start()
     {
         playerInput = player.GetComponent<StarterAssetsInputs>();
         gameOverUI.SetActive(false); 
+        gameClearUI.SetActive(false);
     }
 
     void Update()
     {
         UpdateTimerUI();
         UpdateSkillUI();
+        CheckGameClear();
 
         /* if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -42,12 +51,17 @@ public class GameManager : MonoBehaviour
         } */
 
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
-    {
-        if (isPaused)
-            ResumeGame();
-        else
-            PauseGame();
-    }
+        {
+            if (isPaused)
+                ResumeGame();
+            else
+                PauseGame();
+        }
+
+        if ((isGameClear || isGameOver) && cameraTarget != null)
+        {
+            cameraTarget.transform.rotation = fixedCameraRotation;
+        }
 
     }
 
@@ -62,7 +76,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if (!isGameOver)
+            if (!isGameOver && !isGameClear)
             {
                 timerText.text = "00:00";
                 GameOver();
@@ -75,6 +89,38 @@ public class GameManager : MonoBehaviour
         skill1Icon.color = isSkill1Available ? Color.white : Color.gray;
 
         skill1Description.text = "[Skill] Press E, Allows to walk on water";
+    }
+
+    private void CheckGameClear()
+    {
+        if (isGameClear || isGameOver) return;
+
+        if (player.transform.position.z >= 280f)
+        {
+            UpdateGameClearUI();
+        }
+    }
+
+    public void UpdateGameClearUI()
+    {
+        isGameClear = true;
+        Time.timeScale = 0f;
+        gameClearUI.SetActive(true);
+
+        if (playerInput != null)
+        {
+            playerInput.enabled = false;  
+        }
+
+        if (thirdPersonController != null)
+        {
+            thirdPersonController.LockCameraPosition = true;
+        }
+
+        if (cameraTarget != null)
+        {
+            fixedCameraRotation = cameraTarget.transform.rotation;
+        }
     }
 
     public void PauseGame()
@@ -122,6 +168,18 @@ public class GameManager : MonoBehaviour
         gameOverUI.SetActive(true); 
 
         if (playerInput != null)
-            playerInput.enabled = false;
+        {
+            playerInput.enabled = false;  
+        }
+
+        if (thirdPersonController != null)
+        {
+            thirdPersonController.LockCameraPosition = true;
+        }
+
+        if (cameraTarget != null)
+        {
+            fixedCameraRotation = cameraTarget.transform.rotation;
+        }
     }
 }
