@@ -1,0 +1,65 @@
+**ThirdPersonController**
+1. 적 충돌 시 속도 느려짐
+private float _speedMultiplier = 1f;
+private Coroutine _slowCoroutine;
+
+
+public void ApplySpeedModifier(float multiplier, float duration)
+{
+    if (_slowCoroutine != null)
+    {
+        StopCoroutine(_slowCoroutine);
+    }
+    _slowCoroutine = StartCoroutine(SpeedModifierCoroutine(multiplier, duration));
+}
+
+private IEnumerator SpeedModifierCoroutine(float multiplier, float duration)
+{
+    _speedMultiplier = multiplier;
+    yield return new WaitForSeconds(duration);
+    _speedMultiplier = 1f;
+}
+
+*Move() 수정*
+float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+targetSpeed *= _speedMultiplier; 
+
+2. 공격 시 enemy 체력 깎음
+EnemyController의 TakeDamage() 호출
+
+**GameManager**
+1. 물에 닿으면 게임 종료
+public GameObject gameOverUI;
+private bool isGameOver = false;
+
+public void GameOver()
+    {
+        if (isGameOver) return;
+
+        isGameOver = true;
+        Time.timeScale = 0f;
+        gameOverUI.SetActive(true); 
+
+        if (playerInput != null)
+            playerInput.enabled = false;
+    }
+
+2. 타이머 종료 시 게임 종료
+private void UpdateTimerUI()
+{
+    if (timeRemaining > 0)
+    {
+        timeRemaining -= Time.deltaTime;
+        int minutes = Mathf.FloorToInt(timeRemaining / 60);
+        int seconds = Mathf.FloorToInt(timeRemaining % 60);
+        timerText.text = string.Format("Timer: {0:00}:{1:00}", minutes, seconds);
+    }
+    else
+    {
+        if (!isGameOver)
+        {
+            timerText.text = "00:00";
+            GameOver();
+        }
+    }
+}
