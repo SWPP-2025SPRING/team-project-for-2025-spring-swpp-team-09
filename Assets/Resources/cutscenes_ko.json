@@ -2,7 +2,7 @@
   "entries": [
     {
       "id": "Prologue",
-      "nextScene": "Stage1_GameScene",
+      "nextScene": "StageSelectScene",
       "lines": [
         {
           "speaker": "나레이션",
@@ -36,7 +36,7 @@
     },
     {
       "id": "Stage1_Enter",
-      "nextScene": "Stage1_GameScene",
+      "nextScene": "Stage1GameScene",
       "lines": [
         {
           "speaker": "나레이션",
@@ -66,7 +66,7 @@
     },
     {
       "id": "Stage1_Clear",
-      "nextScene": "Stage2_GameScene",
+      "nextScene": "StageSelectScene",
       "lines": [
         {
           "speaker": "나레이션",
