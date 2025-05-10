@@ -13,11 +13,13 @@ public class GameManager : MonoBehaviour
     public Image skill1Icon;
     public TMP_Text skill1Description;
     public GameObject pauseMenuUI;
+    public GameObject gameOverUI;
 
     private bool isPaused = false;
     public bool isSkill1Available = true;
+    private bool isGameOver = false;
 
-    private float timeRemaining = 120.0f;
+    private float timeRemaining = 2.0f;
 
     [SerializeField] private GameObject player;
     private StarterAssetsInputs playerInput;
@@ -25,6 +27,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         playerInput = player.GetComponent<StarterAssetsInputs>();
+        gameOverUI.SetActive(false); 
     }
 
     void Update()
@@ -59,7 +62,11 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            timerText.text = "00:00";
+            if (!isGameOver)
+            {
+                timerText.text = "00:00";
+                GameOver();
+            }
         }
     }
 
@@ -104,5 +111,17 @@ public class GameManager : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    public void GameOver()
+    {
+        if (isGameOver) return;
+
+        isGameOver = true;
+        Time.timeScale = 0f;
+        gameOverUI.SetActive(true); 
+
+        if (playerInput != null)
+            playerInput.enabled = false;
     }
 }
