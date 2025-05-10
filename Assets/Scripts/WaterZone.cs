@@ -6,6 +6,7 @@ public class WaterZone : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Debug.Log("물에 닿음");
             GameManager gm = FindObjectOfType<GameManager>();
             if (gm != null)
             {

@@ -87,3 +87,7 @@ Assets/TextMesh Pro/
 
 !Assets/Resources/Fonts/NanumSquareR SDF.asset
 !Assets/Resources/Fonts/NanumSquareR SDF.asset.meta
+
+# fbx
+*.fbx
+*.fbx.meta
