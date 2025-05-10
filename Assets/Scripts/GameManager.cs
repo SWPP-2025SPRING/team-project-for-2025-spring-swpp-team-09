@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     public bool isSkill1Available = true;
     private bool isGameOver = false;
 
-    private float timeRemaining = 2.0f;
+    private float timeRemaining = 120.0f;
 
     [SerializeField] private GameObject player;
     private StarterAssetsInputs playerInput;
