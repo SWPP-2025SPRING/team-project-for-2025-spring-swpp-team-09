@@ -10,6 +10,11 @@ public class CutscenePlayer : MonoBehaviour
     private string nextSceneName;
     private bool isTyping = false;
 
+    void Awake()
+    {
+        Time.timeScale = 1f;
+    }
+
     void Start()
     {
         CutsceneData data = CutsceneDatabase.Get(StorySceneLoader.cutsceneId);
@@ -55,5 +60,12 @@ public class CutscenePlayer : MonoBehaviour
         }
 
         isTyping = false;
+    }
+
+    public void SkipCutscene()
+    {
+        StopAllCoroutines();
+        cutsceneUI.Clear();
+        SceneManager.LoadScene(nextSceneName);
     }
 }
