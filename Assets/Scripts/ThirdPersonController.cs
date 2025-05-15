@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -69,6 +70,12 @@ namespace StarterAssets
         public Transform projectileSpawnPoint;
         public float projectileForce = 500f;
 
+        [Header("Dash Settings")]
+        public float dashDistance = 6.0f;
+        public float dashCooldown = 5.0f;
+        private bool canDash = true;
+
+
         [Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
         public GameObject CinemachineCameraTarget;
@@ -96,6 +103,8 @@ namespace StarterAssets
         private float _rotationVelocity;
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
+        private float _speedMultiplier = 1f;
+        private Coroutine _slowCoroutine;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -178,6 +187,11 @@ namespace StarterAssets
             GroundedCheck();
             Move();
             //HandleAttackInput(); //Check Attack
+
+            if (Keyboard.current.eKey.wasPressedThisFrame && canDash)
+            {
+                Dash();
+            }
         }
 
         private void LateUpdate()
@@ -234,6 +248,7 @@ namespace StarterAssets
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            targetSpeed *= _speedMultiplier; 
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -296,6 +311,22 @@ namespace StarterAssets
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
+        }
+
+        public void ApplySpeedModifier(float multiplier, float duration)
+        {
+            if (_slowCoroutine != null)
+            {
+                StopCoroutine(_slowCoroutine);
+            }
+            _slowCoroutine = StartCoroutine(SpeedModifierCoroutine(multiplier, duration));
+        }
+
+        private IEnumerator SpeedModifierCoroutine(float multiplier, float duration)
+        {
+            _speedMultiplier = multiplier;
+            yield return new WaitForSeconds(duration);
+            _speedMultiplier = 1f;
         }
 
         private void JumpAndGravity()
@@ -436,6 +467,19 @@ namespace StarterAssets
             }
         } */
 
+        private void Dash()
+        {
+            Vector3 dashDirection = transform.forward;
+            _controller.Move(dashDirection.normalized * dashDistance);
+
+            canDash = false;
+            Invoke(nameof(ResetDash), dashCooldown); 
+        }
+
+        private void ResetDash()
+        {
+            canDash = true;
+        }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {

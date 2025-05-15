@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - CinemachineTarget
+  - Enemy
+  - Water
   layers:
   - Default
   - TransparentFX
