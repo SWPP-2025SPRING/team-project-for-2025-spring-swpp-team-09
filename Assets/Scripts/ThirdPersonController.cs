@@ -352,18 +352,17 @@ namespace StarterAssets
                 // Jump
                 if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
-                    // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     _hasDoubleJumped = false;
 
-                    // update animator if using character
                     if (_hasAnimator)
                     {
-                        _animator.SetBool(_animIDJump, true);
+                        _animator.SetTrigger("Jump");
                     }
 
                     _input.jump = false;
                 }
+
 
                 // jump timeout
                 if (_jumpTimeoutDelta >= 0.0f)
@@ -397,18 +396,17 @@ namespace StarterAssets
                 {
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -4f * Gravity);
                     _hasDoubleJumped = true;
-                    _input.jump = false; // Reset
+                    _input.jump = false;
 
                     if (_hasAnimator)
                     {
-                        _animator.SetBool(_animIDJump, true);
-                        // _animator.SetTrigger("DoubleJump"); for different animation
+                        _animator.SetTrigger("Jump");
                     }
-                    _input.jump = false;
                 }
 
+
                 // if we are not grounded, do not jump
-                // _input.jump = false;
+                _input.jump = false;
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
