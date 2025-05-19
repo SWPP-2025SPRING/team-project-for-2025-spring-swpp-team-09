@@ -130,7 +130,7 @@ namespace StarterAssets
 #endif
         private Animator _animator;
         private CharacterController _controller;
-        private StarterAssetsInputs _input;
+        public StarterAssetsInputs _input;
         private GameObject _mainCamera;
 
         private const float _threshold = 0.01f;
@@ -165,7 +165,6 @@ namespace StarterAssets
             
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -177,6 +176,16 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+
+            // Code Added. 0519
+            if (_hasAnimator)
+            {
+                _animator.SetFloat(_animIDSpeed, 0f);
+                _animator.SetFloat(_animIDMotionSpeed, 0f);
+                _animator.SetBool(_animIDGrounded, true);
+                _animator.SetBool(_animIDJump, false);
+                _animator.SetBool(_animIDFreeFall, false);
+            }
         }
 
         private void Update()
@@ -352,18 +361,17 @@ namespace StarterAssets
                 // Jump
                 if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
-                    // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     _hasDoubleJumped = false;
 
-                    // update animator if using character
                     if (_hasAnimator)
                     {
-                        _animator.SetBool(_animIDJump, true);
+                        _animator.SetTrigger("Jump");
                     }
 
                     _input.jump = false;
                 }
+
 
                 // jump timeout
                 if (_jumpTimeoutDelta >= 0.0f)
@@ -397,18 +405,17 @@ namespace StarterAssets
                 {
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -4f * Gravity);
                     _hasDoubleJumped = true;
-                    _input.jump = false; // Reset
+                    _input.jump = false;
 
                     if (_hasAnimator)
                     {
-                        _animator.SetBool(_animIDJump, true);
-                        // _animator.SetTrigger("DoubleJump"); for different animation
+                        _animator.SetTrigger("Jump");
                     }
-                    _input.jump = false;
                 }
 
+
                 // if we are not grounded, do not jump
-                // _input.jump = false;
+                _input.jump = false;
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
