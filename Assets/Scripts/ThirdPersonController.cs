@@ -186,12 +186,6 @@ namespace StarterAssets
                 _animator.SetBool(_animIDJump, false);
                 _animator.SetBool(_animIDFreeFall, false);
             }
-
-            //0519
-            if (_input == null)
-            {
-                Debug.LogError("inputSource가 연결되지 않았습니다!");
-            }
         }
 
         private void Update()
@@ -376,7 +370,6 @@ namespace StarterAssets
                     }
 
                     _input.jump = false;
-                    Debug.LogWarning("_input is NULL in Update() at frame " + Time.frameCount); // 0519
                 }
 
 
