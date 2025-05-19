@@ -9,6 +9,8 @@ public class CutscenePlayer : MonoBehaviour
     private Queue<CutsceneLine> queue;
     private string nextSceneName;
     private bool isTyping = false;
+    private CutsceneLine currentLine;
+    private Coroutine typingCoroutine;
 
     void Awake()
     {
@@ -23,43 +25,63 @@ public class CutscenePlayer : MonoBehaviour
             Debug.LogError("Cutscene data not found for ID: " + StorySceneLoader.cutsceneId);
             return;
         }
+
         nextSceneName = data.nextSceneName;
         queue = new Queue<CutsceneLine>(data.lines);
-        StartCoroutine(PlayNext());
+        PlayNext();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !isTyping)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            StartCoroutine(PlayNext());
+            if (isTyping)
+            {
+                StopCoroutine(typingCoroutine);
+                cutsceneUI.dialogueText.text = currentLine.text;
+                isTyping = false;
+            }
+            else
+            {
+                PlayNext();
+            }
         }
     }
 
-    IEnumerator PlayNext()
+    void PlayNext()
     {
         if (queue.Count == 0)
         {
             cutsceneUI.Clear();
-            yield return new WaitForSeconds(1f);
-            SceneManager.LoadScene(nextSceneName);
-            yield break;
+            StartCoroutine(LoadSceneAfterDelay(1f));
+            return;
         }
 
-        CutsceneLine line = queue.Dequeue();
+        currentLine = queue.Dequeue();
         cutsceneUI.Clear();
-        isTyping = true;
+        cutsceneUI.speakerText.text = currentLine.speaker;
 
-        cutsceneUI.speakerText.text = line.speaker;
+        typingCoroutine = StartCoroutine(TypeText(currentLine.text));
+    }
+
+    IEnumerator TypeText(string text)
+    {
+        isTyping = true;
         cutsceneUI.dialogueText.text = "";
 
-        foreach (char c in line.text)
+        foreach (char c in text)
         {
             cutsceneUI.dialogueText.text += c;
             yield return new WaitForSeconds(0.03f);
         }
 
         isTyping = false;
+    }
+
+    IEnumerator LoadSceneAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene(nextSceneName);
     }
 
     public void SkipCutscene()
