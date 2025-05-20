@@ -89,8 +89,7 @@ public class GameManager : MonoBehaviour
 
         if (player.transform.position.z >= 280f)
         {
-            PlayerPrefs.SetInt("Stage1_Cleared", 1);
-            SceneController.Instance.LoadDialogueThenScene("Stage1_Clear", "StageSelectScene");
+            GameFlowManager.Instance.ClearStage("Stage1");
             UpdateGameClearUI();
         }
     }
