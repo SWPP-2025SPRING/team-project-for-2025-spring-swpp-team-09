@@ -6,11 +6,12 @@ public class StartMenuUI : MonoBehaviour
     public void OnNewGameClicked()
     {
         PlayerPrefs.DeleteAll();
-        StorySceneLoader.LoadCutscene("Prologue");
+        SceneController.Instance.LoadDialogueThenScene("Prologue", "StageSelectScene");
     }
 
     public void OnContinueClicked()
     {
-        SceneManager.LoadScene("StageSelectScene");
+        SceneController.Instance.LoadScene("StageSelectScene");
     }
 }
+

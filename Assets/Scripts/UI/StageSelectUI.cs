@@ -5,46 +5,25 @@ public class StageSelectUI : MonoBehaviour
 {
     public void OnStage1Clicked()
     {
-        bool isFirstPlay = !PlayerPrefs.HasKey("Stage1_Cleared");
-
-        if (isFirstPlay)
-        {
-            StorySceneLoader.cutsceneId = "Stage1_Enter";
-            StorySceneLoader.LoadCutscene("Stage1_Enter");
-        }
+        if (!PlayerPrefs.HasKey("Stage1_Cleared"))
+            SceneController.Instance.LoadDialogueThenScene("Stage1_Enter", "Stage1GameScene");
         else
-        {
-            SceneManager.LoadScene("Stage1GameScene");
-        }
+            SceneController.Instance.LoadScene("Stage1GameScene");
     }
 
     public void OnStage2Clicked()
     {
-        bool isFirstPlay = !PlayerPrefs.HasKey("Stage2_Cleared");
-
-        if (isFirstPlay)
-        {
-            StorySceneLoader.cutsceneId = "Stage2_Enter";
-            StorySceneLoader.LoadCutscene("Stage2_Enter");
-        }
+        if (!PlayerPrefs.HasKey("Stage2_Cleared"))
+            SceneController.Instance.LoadDialogueThenScene("Stage2_Enter", "Stage2GameScene");
         else
-        {
-            SceneManager.LoadScene("Stage2GameScene");
-        }
+            SceneController.Instance.LoadScene("Stage2GameScene");
     }
 
     public void OnStage3Clicked()
     {
-        bool isFirstPlay = !PlayerPrefs.HasKey("Stage3_Cleared");
-
-        if (isFirstPlay)
-        {
-            StorySceneLoader.cutsceneId = "Stage3_Enter";
-            StorySceneLoader.LoadCutscene("Stage3_Enter");
-        }
+        if (!PlayerPrefs.HasKey("Stage3_Cleared"))
+            SceneController.Instance.LoadDialogueThenScene("Stage3_Enter", "Stage3GameScene");
         else
-        {
-            SceneManager.LoadScene("Stage3GameScene");
-        }
+            SceneController.Instance.LoadScene("Stage3GameScene");
     }
 }
