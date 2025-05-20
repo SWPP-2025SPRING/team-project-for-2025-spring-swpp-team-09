@@ -10,6 +10,7 @@ public class DialoguePlayer : MonoBehaviour
     private DialogueLine currentLine;
     private Coroutine typingCoroutine;
     private bool isTyping = false;
+    string dialogueId = SceneController.Instance.GetPendingDialogueId();
 
     void Start()
     {
@@ -71,7 +72,10 @@ public class DialoguePlayer : MonoBehaviour
     IEnumerator LoadSceneAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(state.NextSceneName);
+
+        string nextScene = SceneController.Instance.GetPendingGameScene();
+        SceneController.Instance.ClearPendingSceneData();
+        SceneController.Instance.LoadScene(nextScene);
     }
 
     public void SkipDialogue()
