@@ -8,8 +8,9 @@ using TMPro;
 using StarterAssets;
 using Cinemachine;
 
-public class GameManager : MonoBehaviour
+public class StageGameManager : MonoBehaviour
 {
+    [Header("UI")]
     public TMP_Text timerText;
     public Image skill1Icon;
     public TMP_Text skill1Description;
@@ -17,22 +18,22 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverUI;
     public GameObject gameClearUI;
 
+    [Header("Core")]
+    [SerializeField] private string stageId = "Stage1";
+    [SerializeField] private GameObject player;
+    [SerializeField] private ThirdPersonController thirdPersonController;
+    [SerializeField] private StageClearCondition clearCondition;
+
+    private StarterAssetsInputs playerInput;
     private bool isPaused = false;
-    public bool isSkill1Available = true;
+    private bool isSkill1Available = true;
     private bool isGameOver = false;
     private bool isGameClear = false;
 
-    private float timeRemaining = 120.0f;
-
-    [SerializeField] private GameObject player;
-    [SerializeField] private ThirdPersonController thirdPersonController;
-
-    private StarterAssetsInputs playerInput;
-
-    private void Start()
+    void Start()
     {
         playerInput = player.GetComponent<StarterAssetsInputs>();
-        gameOverUI.SetActive(false); 
+        gameOverUI.SetActive(false);
         gameClearUI.SetActive(false);
     }
 
@@ -42,44 +43,29 @@ public class GameManager : MonoBehaviour
         UpdateSkillUI();
         CheckGameClear();
 
-        /* if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (isPaused) {ResumeGame();}
-            else {PauseGame();}
-        } */
-
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            if (isPaused)
-                ResumeGame();
-            else
-                PauseGame();
+            if (isPaused) ResumeGame();
+            else PauseGame();
         }
     }
 
     private void UpdateTimerUI()
     {
-        if (timeRemaining > 0)
+        float remaining = clearCondition.RemainingTime;
+        int minutes = Mathf.FloorToInt(remaining / 60);
+        int seconds = Mathf.FloorToInt(remaining % 60);
+        timerText.text = $"Timer: {minutes:00}:{seconds:00}";
+
+        if (clearCondition.TimeOver && !isGameOver && !isGameClear)
         {
-            timeRemaining -= Time.deltaTime;
-            int minutes = Mathf.FloorToInt(timeRemaining / 60);
-            int seconds = Mathf.FloorToInt(timeRemaining % 60);
-            timerText.text = string.Format("Timer: {0:00}:{1:00}", minutes, seconds);
-        }
-        else
-        {
-            if (!isGameOver && !isGameClear)
-            {
-                timerText.text = "00:00";
-                GameOver();
-            }
+            GameOver();
         }
     }
 
     private void UpdateSkillUI()
     {
         skill1Icon.color = isSkill1Available ? Color.white : Color.gray;
-
         skill1Description.text = "[Skill] Press E, Allows to walk on water";
     }
 
@@ -87,28 +73,36 @@ public class GameManager : MonoBehaviour
     {
         if (isGameClear || isGameOver) return;
 
-        if (player.transform.position.z >= 280f)
+        if (clearCondition.IsCleared)
         {
-            GameFlowManager.Instance.ClearStage("Stage1");
+            isGameClear = true;
             UpdateGameClearUI();
+
+            GameFlowManager.Instance.ClearStage(stageId);
         }
     }
 
     public void UpdateGameClearUI()
     {
-        isGameClear = true;
         Time.timeScale = 0f;
         gameClearUI.SetActive(true);
 
-        if (playerInput != null)
-        {
-            playerInput.enabled = false;  
-        }
+        if (playerInput != null) playerInput.enabled = false;
+        if (thirdPersonController != null) thirdPersonController.LockCameraPosition = true;
 
-        if (thirdPersonController != null)
-        {
-            thirdPersonController.LockCameraPosition = true;
-        }
+        Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
+    }
+
+    public void GameOver()
+    {
+        if (isGameOver) return;
+
+        isGameOver = true;
+        Time.timeScale = 0f;
+        gameOverUI.SetActive(true);
+
+        if (playerInput != null) playerInput.enabled = false;
+        if (thirdPersonController != null) thirdPersonController.LockCameraPosition = true;
     }
 
     public void PauseGame()
@@ -116,9 +110,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         pauseMenuUI.SetActive(true);
         isPaused = true;
-
-        if (playerInput != null)
-            playerInput.enabled = false;
+        if (playerInput != null) playerInput.enabled = false;
     }
 
     public void ResumeGame()
@@ -126,9 +118,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         pauseMenuUI.SetActive(false);
         isPaused = false;
-
-        if (playerInput != null)
-            playerInput.enabled = true;
+        if (playerInput != null) playerInput.enabled = true;
     }
 
     public void RestartGame()
@@ -139,30 +129,11 @@ public class GameManager : MonoBehaviour
 
     public void QuitGame()
     {
-        Time.timeScale = 1f;
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
     }
-
-    public void GameOver()
-    {
-        if (isGameOver) return;
-
-        isGameOver = true;
-        Time.timeScale = 0f;
-        gameOverUI.SetActive(true); 
-
-        if (playerInput != null)
-        {
-            playerInput.enabled = false;  
-        }
-
-        if (thirdPersonController != null)
-        {
-            thirdPersonController.LockCameraPosition = true;
-        }
-    }
 }
+

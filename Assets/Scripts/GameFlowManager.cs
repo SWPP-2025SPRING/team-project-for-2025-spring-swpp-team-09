@@ -46,11 +46,6 @@ public class GameFlowManager : MonoBehaviour
         SceneController.Instance.LoadDialogueThenScene($"{stageId}_Clear", "StageSelectScene");
     }
 
-    public void GameOver()
-    {
-        SceneController.Instance.LoadScene("GameOverScene");
-    }
-
     public void QuitGame()
     {
 #if UNITY_EDITOR
