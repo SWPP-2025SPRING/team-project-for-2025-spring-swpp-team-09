@@ -10,6 +10,7 @@ public class MovementController : MonoBehaviour
     public float rotationSmoothTime = 0.12f;
     public float gravity = -15f;
     public float jumpHeight = 1.2f;
+    public float accelerationRate = 10f;
 
     [Header("Dash")]
     public float dashDistance = 6f;
@@ -29,6 +30,8 @@ public class MovementController : MonoBehaviour
     private float rotationVelocity;
     private float targetRotation;
     private float speedMultiplier = 1f;
+    private float currentSpeed;
+    private float animationBlendPrev;
     private bool grounded;
 
     private void Awake()
@@ -36,22 +39,40 @@ public class MovementController : MonoBehaviour
         controller = GetComponent<CharacterController>();
     }
 
-    public void ProcessMovement(PlayerInputReader input)
+    public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool grounded, out bool triggerJump, out bool freeFall)
     {
-        GroundedCheck();  // ← 누락된 호출
+        GroundedCheck();
+        grounded = this.grounded;
 
         Vector2 move = input.MoveInput;
+        inputMagnitude = inputMagnitude = move.magnitude;
+
         float targetSpeed = input.SprintHeld ? sprintSpeed : moveSpeed;
         targetSpeed *= speedMultiplier;
-
         if (move == Vector2.zero) targetSpeed = 0f;
 
-        Vector3 inputDirection = new Vector3(move.x, 0f, move.y).normalized;
+        float currentHorizontalSpeed = new Vector3(controller.velocity.x, 0f, controller.velocity.z).magnitude;
+        float speedOffset = 0.1f;
 
-        if (inputDirection != Vector3.zero)
+        if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
+            currentSpeed = targetSpeed * inputMagnitude;
+        else
+            currentSpeed = targetSpeed;
+
+        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.deltaTime * accelerationRate);
+        animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
+        animationBlendPrev = animationBlend;
+
+        Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
+        if (inputDir != Vector3.zero)
         {
-            targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
-            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, rotationSmoothTime);
+            targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
+            float rotation = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetRotation,
+                ref rotationVelocity,
+                rotationSmoothTime
+            );
             transform.rotation = Quaternion.Euler(0f, rotation, 0f);
         }
 
@@ -59,21 +80,24 @@ public class MovementController : MonoBehaviour
 
         ApplyGravity();
 
+        triggerJump = false;
         if (grounded && input.JumpPressed)
         {
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
             input.ConsumeJump();
+            triggerJump = true;
         }
 
-        controller.Move((direction * targetSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
+        controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
 
         if (input.DashPressed && canDash)
         {
             Dash();
             input.ConsumeDash();
         }
-    }
 
+        freeFall = !grounded && verticalVelocity < 0f;
+    }
     private void Dash()
     {
         Vector3 dashDir = transform.forward;
