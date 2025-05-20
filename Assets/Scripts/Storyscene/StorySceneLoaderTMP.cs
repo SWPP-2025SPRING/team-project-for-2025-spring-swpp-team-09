@@ -1,6 +1,6 @@
 using UnityEngine.SceneManagement;
 
-public static class StorySceneLoader
+public static class StorySceneLoaderTMP
 {
     public static string cutsceneId;
 
