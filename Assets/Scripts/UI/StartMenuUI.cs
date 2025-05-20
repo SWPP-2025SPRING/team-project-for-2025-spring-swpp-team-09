@@ -5,8 +5,7 @@ public class StartMenuUI : MonoBehaviour
 {
     public void OnNewGameClicked()
     {
-        PlayerPrefs.DeleteAll();
-        SceneController.Instance.LoadDialogueThenScene("Prologue", "StageSelectScene");
+        GameFlowManager.Instance.StartNewGame();
     }
 
     public void OnContinueClicked()
