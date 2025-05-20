@@ -10,11 +10,11 @@ public class DialoguePlayer : MonoBehaviour
     private DialogueLine currentLine;
     private Coroutine typingCoroutine;
     private bool isTyping = false;
-    string dialogueId = SceneController.Instance.GetPendingDialogueId();
+    private string dialogueId;
 
     void Start()
     {
-        string dialogueId = StorySceneLoader.GetDialogueId();
+        dialogueId = SceneController.Instance.GetPendingDialogueId();
         DialogueData data = DialogueLoader.Load(dialogueId);
 
         if (data == null)

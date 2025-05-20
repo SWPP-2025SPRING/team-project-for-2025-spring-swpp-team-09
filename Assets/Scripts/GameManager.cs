@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
         if (player.transform.position.z >= 280f)
         {
             PlayerPrefs.SetInt("Stage1_Cleared", 1);
-            StorySceneLoader.LoadCutscene("Stage1_Clear");
+            SceneController.Instance.LoadDialogueThenScene("Stage1_Clear", "StageSelectScene");
             UpdateGameClearUI();
         }
     }
