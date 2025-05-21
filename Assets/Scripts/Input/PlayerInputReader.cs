@@ -29,9 +29,19 @@ public class PlayerInputReader : MonoBehaviour
         JumpPressed = keyboard.spaceKey.wasPressedThisFrame;
         MeleePressed = mouse.leftButton.wasPressedThisFrame;
         RangedPressed = mouse.rightButton.wasPressedThisFrame;
+        DashPressed = keyboard.leftShiftKey.wasPressedThisFrame;
     }
 
-    public void ConsumeJump() => JumpPressed = false;
+    public bool TryConsumeJump()
+    {
+        if (JumpPressed)
+        {
+            JumpPressed = false;
+            return true;
+        }
+        return false;
+    }
+
     public void ConsumeDash() => DashPressed = false;
     public void ConsumeMelee() => MeleePressed = false;
     public void ConsumeRanged() => RangedPressed = false;
