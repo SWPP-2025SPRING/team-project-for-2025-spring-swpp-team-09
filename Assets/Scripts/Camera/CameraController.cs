@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class CameraController : MonoBehaviour
     public bool lockCameraPosition = false;
 
     [Header("Sensitivity")]
-    public float sensitivity = 100f;
+    public float sensitivity = 85f;
 
     [SerializeField] private PlayerInputReader input;
 
