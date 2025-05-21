@@ -18,10 +18,10 @@ public class PlayerInputReader : MonoBehaviour
 
         float x = 0f;
         float y = 0f;
-        if (keyboard.wKey.isPressed) y += 1;
-        if (keyboard.sKey.isPressed) y -= 1;
-        if (keyboard.dKey.isPressed) x += 1;
-        if (keyboard.aKey.isPressed) x -= 1;
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) y += 1;
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) y -= 1;
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) x += 1;
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) x -= 1;
         MoveInput = new Vector2(x, y).normalized;
 
         LookInput = mouse.delta.ReadValue();

@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.InputSystem;
 
 public class MovementController : MonoBehaviour
 {
@@ -11,6 +10,10 @@ public class MovementController : MonoBehaviour
     public float gravity = -15f;
     public float jumpHeight = 1.2f;
     public float accelerationRate = 10f;
+
+    [Header("Double Jump")]
+    public float jumpTimeout = 0.5f;
+    public float fallTimeout = 0.15f;
 
     [Header("Dash")]
     public float dashDistance = 6f;
@@ -33,19 +36,23 @@ public class MovementController : MonoBehaviour
     private float currentSpeed;
     private float animationBlendPrev;
     private bool grounded;
+    private bool canDoubleJump = true;
+    private bool hasDoubleJumped = false;
+    private float jumpTimeoutDelta;
+    private float fallTimeoutDelta;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
     }
 
-    public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool grounded, out bool triggerJump, out bool freeFall)
+    public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool isGrounded, out bool triggerJump, out bool freeFall)
     {
         GroundedCheck();
-        grounded = this.grounded;
+        isGrounded = grounded;
 
         Vector2 move = input.MoveInput;
-        inputMagnitude = inputMagnitude = move.magnitude;
+        inputMagnitude = move.magnitude;
 
         float targetSpeed = input.SprintHeld ? sprintSpeed : moveSpeed;
         targetSpeed *= speedMultiplier;
@@ -81,12 +88,7 @@ public class MovementController : MonoBehaviour
         ApplyGravity();
 
         triggerJump = false;
-        if (grounded && input.JumpPressed)
-        {
-            verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            input.ConsumeJump();
-            triggerJump = true;
-        }
+        HandleJump(input, ref triggerJump);
 
         controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
 
@@ -98,6 +100,48 @@ public class MovementController : MonoBehaviour
 
         freeFall = !grounded && verticalVelocity < 0f;
     }
+
+    private void HandleJump(PlayerInputReader input, ref bool triggerJump)
+    {
+        if (grounded)
+        {
+            fallTimeoutDelta = fallTimeout;
+
+            if (verticalVelocity < 0f)
+                verticalVelocity = -2f;
+
+            if (input.JumpPressed && jumpTimeoutDelta <= 0f)
+            {
+                verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                input.ConsumeJump();
+                triggerJump = true;
+                hasDoubleJumped = false;
+            }
+
+            if (jumpTimeoutDelta > 0f)
+                jumpTimeoutDelta -= Time.deltaTime;
+
+            canDoubleJump = true;
+        }
+        else
+        {
+            jumpTimeoutDelta = jumpTimeout;
+
+            if (fallTimeoutDelta > 0f)
+                fallTimeoutDelta -= Time.deltaTime;
+
+            if (input.JumpPressed && canDoubleJump && !hasDoubleJumped)
+            {
+                verticalVelocity = Mathf.Sqrt(jumpHeight * -4f * gravity);
+                input.ConsumeJump();
+                triggerJump = true;
+                hasDoubleJumped = true;
+            }
+
+            input.ConsumeJump();
+        }
+    }
+
     private void Dash()
     {
         Vector3 dashDir = transform.forward;
@@ -110,14 +154,19 @@ public class MovementController : MonoBehaviour
 
     private void ApplyGravity()
     {
-        if (grounded && verticalVelocity < 0f) verticalVelocity = -2f;
-        else verticalVelocity += gravity * Time.deltaTime;
+        if (grounded && verticalVelocity < 0f)
+            verticalVelocity = -2f;
+        else
+            verticalVelocity += gravity * Time.deltaTime;
     }
 
     private void GroundedCheck()
     {
-        Vector3 pos = new Vector3(transform.position.x, transform.position.y + groundedOffset, transform.position.z);
-        grounded = Physics.CheckSphere(pos, groundedRadius, groundLayers, QueryTriggerInteraction.Ignore);
+        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z);
+        grounded = Physics.CheckSphere(spherePosition, groundedRadius, groundLayers, QueryTriggerInteraction.Ignore);
+
+        Debug.DrawRay(spherePosition, Vector3.down * 0.1f, grounded ? Color.green : Color.red, 0.1f);
+        Debug.Log($"[GroundedCheck] Position: {spherePosition}, Radius: {groundedRadius}, Grounded: {grounded}");
     }
 
     public void ApplySpeedModifier(float ratio, float duration)

@@ -7,15 +7,20 @@ public class PlayerController : MonoBehaviour
     public AttackController attackController;
     public AnimationController animationController;
 
+    void Start()
+    {
+        animationController.Initialize();
+    }
+
     private void Update()
     {
         attackController.HandleAttackInput(inputReader);
-        
+
         movementController.ProcessMovement(inputReader, out float animBlend, out float inputMag, out bool grounded, out bool jumpTrig, out bool freeFall);
 
         animationController.UpdateMovement(animBlend, inputMag);
-        animationController.SetGrounded(grounded);
         if (jumpTrig) animationController.TriggerJump();
+        animationController.SetGrounded(grounded);
         animationController.SetFreeFall(freeFall);
     }
 
