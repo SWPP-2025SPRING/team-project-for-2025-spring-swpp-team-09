@@ -164,9 +164,6 @@ public class MovementController : MonoBehaviour
     {
         Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z);
         grounded = Physics.CheckSphere(spherePosition, groundedRadius, groundLayers, QueryTriggerInteraction.Ignore);
-
-        Debug.DrawRay(spherePosition, Vector3.down * 0.1f, grounded ? Color.green : Color.red, 0.1f);
-        Debug.Log($"[GroundedCheck] Position: {spherePosition}, Radius: {groundedRadius}, Grounded: {grounded}");
     }
 
     public void ApplySpeedModifier(float ratio, float duration)

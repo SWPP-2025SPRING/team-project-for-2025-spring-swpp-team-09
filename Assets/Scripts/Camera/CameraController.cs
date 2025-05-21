@@ -23,6 +23,8 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
+        if (!Application.isFocused) return;
+
         if (input.LookInput.sqrMagnitude >= threshold && !lockCameraPosition)
         {
             float delta = sensitivity * Time.deltaTime;
