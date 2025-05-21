@@ -7,55 +7,67 @@ public class MovementController : MonoBehaviour
     public float moveSpeed = 10f;
     public float sprintSpeed = 15f;
     public float rotationSmoothTime = 0.12f;
-    public float gravity = -15f;
-    public float jumpHeight = 1.2f;
-    public float accelerationRate = 10f;
+    public float speedChangeRate = 10f;
 
-    [Header("Double Jump")]
+    [Header("Jump & Gravity")]
+    public float jumpHeight = 1.2f;
+    public float gravity = -15f;
+    public float terminalVelocity = -53f;
     public float jumpTimeout = 0.5f;
     public float fallTimeout = 0.15f;
-
-    [Header("Dash")]
-    public float dashDistance = 6f;
-    public float dashCooldown = 5f;
-    private bool canDash = true;
 
     [Header("Ground Check")]
     public float groundedOffset = -0.14f;
     public float groundedRadius = 0.28f;
     public LayerMask groundLayers;
 
+    [Header("Dash")]
+    public float dashDistance = 6f;
+    public float dashCooldown = 5f;
+    private bool canDash = true;
+
     [Header("Camera")]
     public GameObject cameraTarget;
 
     private CharacterController controller;
     private float verticalVelocity;
-    private float rotationVelocity;
     private float targetRotation;
-    private float speedMultiplier = 1f;
+    private float rotationVelocity;
     private float currentSpeed;
     private float animationBlendPrev;
     private bool grounded;
-    private bool canDoubleJump = true;
-    private bool hasDoubleJumped = false;
+    private bool wasGrounded;
+
     private float jumpTimeoutDelta;
     private float fallTimeoutDelta;
+
+    private bool canDoubleJump = true;
+    private bool hasDoubleJumped = false;
 
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        jumpTimeoutDelta = jumpTimeout;
+        fallTimeoutDelta = fallTimeout;
     }
 
     public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool isGrounded, out bool triggerJump, out bool freeFall)
     {
         GroundedCheck();
+        bool justLanded = !wasGrounded && grounded;
+        wasGrounded = grounded;
+
+        if (justLanded)
+        {
+            hasDoubleJumped = false;
+        }
+
         isGrounded = grounded;
 
         Vector2 move = input.MoveInput;
         inputMagnitude = move.magnitude;
 
         float targetSpeed = input.SprintHeld ? sprintSpeed : moveSpeed;
-        targetSpeed *= speedMultiplier;
         if (move == Vector2.zero) targetSpeed = 0f;
 
         float currentHorizontalSpeed = new Vector3(controller.velocity.x, 0f, controller.velocity.z).magnitude;
@@ -66,7 +78,7 @@ public class MovementController : MonoBehaviour
         else
             currentSpeed = targetSpeed;
 
-        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.deltaTime * accelerationRate);
+        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.deltaTime * speedChangeRate);
         animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
         animationBlendPrev = animationBlend;
 
@@ -74,21 +86,14 @@ public class MovementController : MonoBehaviour
         if (inputDir != Vector3.zero)
         {
             targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
-            float rotation = Mathf.SmoothDampAngle(
-                transform.eulerAngles.y,
-                targetRotation,
-                ref rotationVelocity,
-                rotationSmoothTime
-            );
+            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, rotationSmoothTime);
             transform.rotation = Quaternion.Euler(0f, rotation, 0f);
         }
 
         Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
 
-        ApplyGravity();
-
         triggerJump = false;
-        HandleJump(input, ref triggerJump);
+        JumpAndGravity(input, ref triggerJump);
 
         controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
 
@@ -101,7 +106,7 @@ public class MovementController : MonoBehaviour
         freeFall = !grounded && verticalVelocity < 0f;
     }
 
-    private void HandleJump(PlayerInputReader input, ref bool triggerJump)
+    private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
     {
         if (grounded)
         {
@@ -110,17 +115,16 @@ public class MovementController : MonoBehaviour
             if (verticalVelocity < 0f)
                 verticalVelocity = -2f;
 
-            if (input.JumpPressed && jumpTimeoutDelta <= 0f)
+            if (input.TryConsumeJump() && jumpTimeoutDelta <= 0f)
             {
                 verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
-                input.ConsumeJump();
                 triggerJump = true;
-                hasDoubleJumped = false;
             }
 
             if (jumpTimeoutDelta > 0f)
                 jumpTimeoutDelta -= Time.deltaTime;
 
+            hasDoubleJumped = false;
             canDoubleJump = true;
         }
         else
@@ -130,16 +134,16 @@ public class MovementController : MonoBehaviour
             if (fallTimeoutDelta > 0f)
                 fallTimeoutDelta -= Time.deltaTime;
 
-            if (input.JumpPressed && canDoubleJump && !hasDoubleJumped)
+            if (input.TryConsumeJump() && canDoubleJump && !hasDoubleJumped)
             {
                 verticalVelocity = Mathf.Sqrt(jumpHeight * -4f * gravity);
-                input.ConsumeJump();
-                triggerJump = true;
                 hasDoubleJumped = true;
+                triggerJump = true;
             }
-
-            input.ConsumeJump();
         }
+
+        verticalVelocity += gravity * Time.deltaTime;
+        verticalVelocity = Mathf.Max(verticalVelocity, terminalVelocity);
     }
 
     private void Dash()
@@ -151,14 +155,6 @@ public class MovementController : MonoBehaviour
     }
 
     private void ResetDash() => canDash = true;
-
-    private void ApplyGravity()
-    {
-        if (grounded && verticalVelocity < 0f)
-            verticalVelocity = -2f;
-        else
-            verticalVelocity += gravity * Time.deltaTime;
-    }
 
     private void GroundedCheck()
     {
@@ -173,10 +169,11 @@ public class MovementController : MonoBehaviour
 
     private IEnumerator SpeedModifierCoroutine(float ratio, float duration)
     {
-        speedMultiplier = ratio;
+        float originalSpeed = moveSpeed;
+        moveSpeed *= ratio;
         yield return new WaitForSeconds(duration);
-        speedMultiplier = 1f;
+        moveSpeed = originalSpeed;
     }
 
-    public float CurrentSpeed => moveSpeed * speedMultiplier;
+    public float CurrentSpeed => moveSpeed;
 }
