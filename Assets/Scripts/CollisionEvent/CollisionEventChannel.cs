@@ -11,6 +11,7 @@ public class CollisionEventChannel : ScriptableObject
     
     public void RaisePlayerHit(Collider playerCollider, float slowRatio, float duration)
     {
+        Debug.Log($"[CollisionEventChannel] RaisePlayerHit: {playerCollider.name}, ratio={slowRatio}, duration={duration}");
         OnPlayerHit.Invoke(playerCollider, slowRatio, duration);
     }
 }
