@@ -7,7 +7,9 @@ public class EnemyMovementController : MonoBehaviour
 
     public void Patrol()
     {
-        transform.Translate(direction * patrolSpeed * Time.deltaTime);
+        if (gameObject.name != "TestEnemy") return;
+        Debug.Log($"[{gameObject.name}] pos: {transform.position}");
+        transform.Translate(direction * patrolSpeed * Time.deltaTime, Space.World);
 
         if (transform.position.z > 10f || transform.position.z < -10f)
         {
