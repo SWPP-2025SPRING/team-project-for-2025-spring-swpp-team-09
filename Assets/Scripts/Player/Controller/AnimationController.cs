@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class AnimationController : MonoBehaviour
 {
@@ -11,43 +12,59 @@ public class AnimationController : MonoBehaviour
 
     private CharacterController characterController;
 
-    private int animIDSpeed;
-    private int animIDMotionSpeed;
-    private int animIDGrounded;
-    private int animIDJump;
-    private int animIDFreeFall;
+    private int animIdSpeed;
+    private int animIdMotionSpeed;
+    private int animIdGrounded;
+    private int animIdJump;
+    private int animIdFreeFall;
 
     private void Awake()
     {
         if (animator == null) animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
 
-        animIDSpeed = Animator.StringToHash("Speed");
-        animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
-        animIDGrounded = Animator.StringToHash("Grounded");
-        animIDJump = Animator.StringToHash("Jump");
-        animIDFreeFall = Animator.StringToHash("FreeFall");
+        animIdSpeed = Animator.StringToHash("Speed");
+        animIdMotionSpeed = Animator.StringToHash("MotionSpeed");
+        animIdGrounded = Animator.StringToHash("Grounded");
+        animIdJump = Animator.StringToHash("Jump");
+        animIdFreeFall = Animator.StringToHash("FreeFall");
+    }
+
+    public void Initialize()
+    {
+        animator.SetFloat(animIdSpeed, 0f);
+        animator.SetFloat(animIdMotionSpeed, 0f);
+        animator.SetBool(animIdGrounded, true);
+        animator.SetBool(animIdJump, false);
+        animator.SetBool(animIdFreeFall, false);
     }
 
     public void UpdateMovement(float animationBlend, float inputMagnitude)
     {
-        animator.SetFloat(animIDSpeed, animationBlend);
-        animator.SetFloat(animIDMotionSpeed, inputMagnitude);
+        animator.SetFloat(animIdSpeed, animationBlend);
+        animator.SetFloat(animIdMotionSpeed, inputMagnitude);
     }
 
     public void SetGrounded(bool grounded)
     {
-        animator.SetBool(animIDGrounded, grounded);
+        animator.SetBool(animIdGrounded, grounded);
     }
 
     public void TriggerJump()
     {
-        animator.SetTrigger(animIDJump);
+        animator.SetBool(animIdJump, true);
+        StartCoroutine(ResetJumpFlag());
+    }
+
+    private IEnumerator ResetJumpFlag()
+    {
+        yield return null;
+        animator.SetBool(animIdJump, false);
     }
 
     public void SetFreeFall(bool state)
     {
-        animator.SetBool(animIDFreeFall, state);
+        animator.SetBool(animIdFreeFall, state);
     }
 
     public void OnFootstep(AnimationEvent animationEvent)
