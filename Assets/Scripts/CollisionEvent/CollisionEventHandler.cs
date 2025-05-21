@@ -18,10 +18,12 @@ public class CollisionEventHandler : MonoBehaviour
 
     private void HandlePlayerHit(Collider col, float ratio, float duration)
     {
+        Debug.Log($"[CollisionEventHandler] OnPlayerHit received: {col.name}");
         PlayerController player = col.GetComponent<PlayerController>();
         if (player != null)
         {
+            Debug.Log($"[CollisionEventHandler] ApplySlow to {col.name} with ratio={ratio}, duration={duration}");
             player.ApplySlow(ratio, duration);
-        }
+        } else  Debug.LogWarning($"[CollisionEventHandler] {col.name} does not have PlayerController.");
     }
 }

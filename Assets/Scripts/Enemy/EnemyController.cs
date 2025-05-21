@@ -8,8 +8,6 @@ public class EnemyController : MonoBehaviour
     public int maxHP = 100;
     private int currentHP;
 
-    [SerializeField] private CollisionEventChannel collisionChannel;
-
     private void Start()
     {
         currentHP = maxHP;
@@ -36,13 +34,5 @@ public class EnemyController : MonoBehaviour
     {
         animationController?.PlayDeath();
         Destroy(gameObject, 1.0f);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            collisionChannel?.RaisePlayerHit(other, 0.8f, 2f);
-        }
     }
 }
