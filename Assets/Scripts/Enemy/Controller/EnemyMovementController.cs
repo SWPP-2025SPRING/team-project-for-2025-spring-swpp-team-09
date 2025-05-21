@@ -2,18 +2,39 @@ using UnityEngine;
 
 public class EnemyMovementController : MonoBehaviour
 {
-    public float patrolSpeed = 3f;
+    [Header("Movement")]
+    public float patrolSpeed = 15f;
+    public float patrolDistance = 4f;
+    public LayerMask groundLayers;
+
+    private Vector3 startPosition;
     private Vector3 direction = Vector3.forward;
+
+    private void Start()
+    {
+        startPosition = transform.position;
+    }
 
     public void Patrol()
     {
-        if (gameObject.name != "TestEnemy") return;
-        Debug.Log($"[{gameObject.name}] pos: {transform.position}");
-        transform.Translate(direction * patrolSpeed * Time.deltaTime, Space.World);
+        if (!IsGroundAhead())
+        {
+            direction = -direction;
+            return;
+        }
 
-        if (transform.position.z > 10f || transform.position.z < -10f)
+        transform.Translate(direction.normalized * patrolSpeed * Time.deltaTime, Space.World);
+
+        float distFromStart = Vector3.ProjectOnPlane(transform.position - startPosition, Vector3.up).magnitude;
+        if (distFromStart >= patrolDistance)
         {
             direction = -direction;
         }
+    }
+
+    private bool IsGroundAhead()
+    {
+        Vector3 origin = transform.position + direction.normalized * 0.5f + Vector3.up * 0.5f;
+        return Physics.Raycast(origin, Vector3.down, 2f, groundLayers);
     }
 }
