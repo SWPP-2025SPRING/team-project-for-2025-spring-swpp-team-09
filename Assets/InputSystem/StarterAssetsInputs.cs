@@ -12,6 +12,7 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public bool dash;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -31,6 +32,16 @@ namespace StarterAssets
 			{
 				LookInput(value.Get<Vector2>());
 			}
+		}
+
+		public void OnDash(InputValue value)
+		{
+			DashInput(value.isPressed);
+		}
+
+		public void DashInput(bool newDashState)
+		{
+			dash = newDashState;
 		}
 
 		public void OnJump(InputValue value)
