@@ -6,10 +6,7 @@ public class TimeStopSkill : ISkill
 {
     public IEnumerator Execute(SkillExecutionContext context)
     {
-        if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
-        {
-            context.RequestTimeStop?.Invoke();
-        }
+        context.RequestTimeStop?.Invoke();
         yield break;
     }
 }

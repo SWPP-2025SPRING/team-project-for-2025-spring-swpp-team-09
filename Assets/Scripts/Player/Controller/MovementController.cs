@@ -85,7 +85,7 @@ public class MovementController : MonoBehaviour
         else
             currentSpeed = targetSpeed;
 
-        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.deltaTime * speedChangeRate);
+        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.unscaledDeltaTime * speedChangeRate);
         animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
         animationBlendPrev = animationBlend;
 
@@ -102,7 +102,7 @@ public class MovementController : MonoBehaviour
         triggerJump = false;
         JumpAndGravity(input, ref triggerJump);
 
-        controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
+        controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.unscaledDeltaTime);
 
         if (input.DashPressed && canDash)
         {
@@ -111,15 +111,6 @@ public class MovementController : MonoBehaviour
         }
 
         freeFall = !grounded && verticalVelocity < 0f;
-
-        if (!controller.isGrounded && input.SkillPressed && glideTimeRemaining > 0f)
-        {
-            ActivateGlide();
-        }
-        else
-        {
-            isGliding = false;
-        }
     }
 
     private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
@@ -141,7 +132,7 @@ public class MovementController : MonoBehaviour
             }
 
             if (jumpTimeoutDelta > 0f)
-                jumpTimeoutDelta -= Time.deltaTime;
+                jumpTimeoutDelta -= Time.unscaledDeltaTime;
 
             hasDoubleJumped = false;
             canDoubleJump = true;
@@ -151,7 +142,7 @@ public class MovementController : MonoBehaviour
             jumpTimeoutDelta = jumpTimeout;
 
             if (fallTimeoutDelta > 0f)
-                fallTimeoutDelta -= Time.deltaTime;
+                fallTimeoutDelta -= Time.unscaledDeltaTime;
 
             if (input.TryConsumeJump() && canDoubleJump && !hasDoubleJumped)
             {
@@ -162,7 +153,7 @@ public class MovementController : MonoBehaviour
             }
         }
 
-        verticalVelocity += gravity * Time.deltaTime;
+        verticalVelocity += gravity * Time.unscaledDeltaTime;
         verticalVelocity = Mathf.Max(verticalVelocity, terminalVelocity);
     }
 
@@ -217,7 +208,7 @@ public class MovementController : MonoBehaviour
             verticalVelocity = Mathf.Max(verticalVelocity, 3f);
             Debug.Log($"[Glide] verticalVelocity after: {verticalVelocity}");
 
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             yield return null;
         }
 
