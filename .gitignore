@@ -71,8 +71,8 @@ Desktop.ini
 *.json.meta
 !Packages/manifest.json
 !Packages/packages-lock.json
-!Assets/Resources/cutscenes_ko.json
-!Assets/Resources/cutscenes_ko.json.meta
+!Assets/Resources/dialogues_ko.json
+!Assets/Resources/dialogues_ko.json.meta
 
 # Unity Collaborate
 .collab/
