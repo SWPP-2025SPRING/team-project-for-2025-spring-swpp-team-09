@@ -33,8 +33,8 @@ public class GameFlowManager : MonoBehaviour
     {
         ISkill skill = stageId switch
         {
-            "Stage1" => new GlideSkill(),
-            "Stage3" => new TimeStopSkill(),
+            "Stage2" => new GlideSkill(),
+            "Stage1" => new TimeStopSkill(),
             _ => null
         };
         currentStageContext = new StageContext(stageId, skill);

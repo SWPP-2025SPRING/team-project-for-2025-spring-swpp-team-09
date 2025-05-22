@@ -47,8 +47,10 @@ public class PlayerController : MonoBehaviour
         skillController.Initialize(skill, inputReader);
     }
 
+    /*
     private IEnumerator HandleTimeStop()
     {
+        Debug.Log("time stop");
         timeStopped = true;
 
         foreach (var rb in FindObjectsOfType<Rigidbody>())
@@ -66,5 +68,17 @@ public class PlayerController : MonoBehaviour
         }
 
         timeStopped = false;
+    }*/
+    private IEnumerator HandleTimeStop()
+    {
+        Debug.Log("TimeStop: begin");
+        timeStopped = true;
+        Time.timeScale = 0f;
+
+        yield return new WaitForSecondsRealtime(3f);
+
+        Time.timeScale = 1f;
+        timeStopped = false;
+        Debug.Log("TimeStop: end");
     }
 }
