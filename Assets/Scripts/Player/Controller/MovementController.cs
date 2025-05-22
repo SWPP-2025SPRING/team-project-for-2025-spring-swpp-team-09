@@ -27,6 +27,11 @@ public class MovementController : MonoBehaviour
     public float dashCooldown = 5f;
     private bool canDash = true;
 
+    [Header("Glide")]
+    private float glideTimeRemaining = 0f;
+    [SerializeField] private float maxGlideTime = 3.0f;
+    private bool isGliding = false;
+
     [Header("Camera")]
     public GameObject cameraTarget;
 
@@ -60,7 +65,6 @@ public class MovementController : MonoBehaviour
 
         if (justLanded)
         {
-            Debug.Log("[Jump] Landed → Reset double jump");
             hasDoubleJumped = false;
         }
 
@@ -107,10 +111,20 @@ public class MovementController : MonoBehaviour
         }
 
         freeFall = !grounded && verticalVelocity < 0f;
+
+        if (!controller.isGrounded && input.SkillPressed && glideTimeRemaining > 0f)
+        {
+            ActivateGlide();
+        }
+        else
+        {
+            isGliding = false;
+        }
     }
 
     private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
     {
+        if (isGliding) return;
         if (grounded)
         {
             fallTimeoutDelta = fallTimeout;
@@ -122,6 +136,8 @@ public class MovementController : MonoBehaviour
             {
                 verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
                 triggerJump = true;
+
+                glideTimeRemaining = maxGlideTime;
             }
 
             if (jumpTimeoutDelta > 0f)
@@ -177,6 +193,37 @@ public class MovementController : MonoBehaviour
         yield return new WaitForSeconds(duration);
         speedMultiplier = 1f;
     }
+
+    public void ActivateGlide()
+    {
+        if (!controller.isGrounded && !isGliding)
+        {
+            StartCoroutine(GlideRoutine());
+        }
+    }
+
+    private IEnumerator GlideRoutine()
+    {
+        isGliding = true;
+
+        float duration = 3f;
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            if (controller.isGrounded) break;
+
+            Debug.Log($"[Glide] verticalVelocity before: {verticalVelocity}");
+            verticalVelocity = Mathf.Max(verticalVelocity, 3f);
+            Debug.Log($"[Glide] verticalVelocity after: {verticalVelocity}");
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        isGliding = false;
+    }
+
 
     public float CurrentSpeed => moveSpeed;
 }
