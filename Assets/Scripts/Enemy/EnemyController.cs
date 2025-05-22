@@ -2,12 +2,21 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public EnemyMovementController movementController;
+    public EnemyAnimationController animationController;
+
     public int maxHP = 100;
     private int currentHP;
 
     private void Start()
     {
         currentHP = maxHP;
+    }
+
+    private void Update()
+    {
+        movementController?.Patrol();
+        //animationController?.PlayIdle();
     }
 
     public void TakeDamage(int damage)
@@ -23,20 +32,7 @@ public class EnemyController : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Enemy died");
-        Destroy(gameObject);
+        animationController?.PlayDeath();
+        Destroy(gameObject, 1.0f);
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            StarterAssets.ThirdPersonController player = other.GetComponent<StarterAssets.ThirdPersonController>();
-            if (player != null)
-            {
-                player.ApplySpeedModifier(0.8f, 2f);
-            }
-        }
-    }
-
 }
