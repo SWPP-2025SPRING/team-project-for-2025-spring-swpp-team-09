@@ -18,8 +18,8 @@ public class MovementController : MonoBehaviour
     public float fallTimeout = 0.15f;
 
     [Header("Ground Check")]
-    public float groundedOffset = -0.14f;
-    public float groundedRadius = 0.28f;
+    public float groundedOffset = 0.14f;
+    public float groundedRadius = 0.15f;
     public LayerMask groundLayers;
 
     [Header("Dash")]
@@ -60,6 +60,7 @@ public class MovementController : MonoBehaviour
 
         if (justLanded)
         {
+            Debug.Log("[Jump] Landed → Reset double jump");
             hasDoubleJumped = false;
         }
 
@@ -141,6 +142,7 @@ public class MovementController : MonoBehaviour
                 verticalVelocity = Mathf.Sqrt(jumpHeight * -4f * gravity);
                 hasDoubleJumped = true;
                 triggerJump = true;
+
             }
         }
 
