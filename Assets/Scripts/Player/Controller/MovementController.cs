@@ -8,6 +8,7 @@ public class MovementController : MonoBehaviour
     public float sprintSpeed = 15f;
     public float rotationSmoothTime = 0.12f;
     public float speedChangeRate = 10f;
+    private float speedMultiplier = 1f;
 
     [Header("Jump & Gravity")]
     public float jumpHeight = 1.2f;
@@ -17,8 +18,8 @@ public class MovementController : MonoBehaviour
     public float fallTimeout = 0.15f;
 
     [Header("Ground Check")]
-    public float groundedOffset = -0.14f;
-    public float groundedRadius = 0.28f;
+    public float groundedOffset = 0.14f;
+    public float groundedRadius = 0.15f;
     public LayerMask groundLayers;
 
     [Header("Dash")]
@@ -59,6 +60,7 @@ public class MovementController : MonoBehaviour
 
         if (justLanded)
         {
+            Debug.Log("[Jump] Landed → Reset double jump");
             hasDoubleJumped = false;
         }
 
@@ -68,6 +70,7 @@ public class MovementController : MonoBehaviour
         inputMagnitude = move.magnitude;
 
         float targetSpeed = input.SprintHeld ? sprintSpeed : moveSpeed;
+        targetSpeed *= speedMultiplier;
         if (move == Vector2.zero) targetSpeed = 0f;
 
         float currentHorizontalSpeed = new Vector3(controller.velocity.x, 0f, controller.velocity.z).magnitude;
@@ -139,6 +142,7 @@ public class MovementController : MonoBehaviour
                 verticalVelocity = Mathf.Sqrt(jumpHeight * -4f * gravity);
                 hasDoubleJumped = true;
                 triggerJump = true;
+
             }
         }
 
@@ -169,10 +173,9 @@ public class MovementController : MonoBehaviour
 
     private IEnumerator SpeedModifierCoroutine(float ratio, float duration)
     {
-        float originalSpeed = moveSpeed;
-        moveSpeed *= ratio;
+        speedMultiplier = ratio;
         yield return new WaitForSeconds(duration);
-        moveSpeed = originalSpeed;
+        speedMultiplier = 1f;
     }
 
     public float CurrentSpeed => moveSpeed;
