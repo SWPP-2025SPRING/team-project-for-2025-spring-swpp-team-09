@@ -15,7 +15,7 @@ public class EnemyController : MonoBehaviour
 
     private void Update()
     {
-        movementController?.Patrol();
+        //movementController?.Patrol();
         //animationController?.PlayIdle();
     }
 
