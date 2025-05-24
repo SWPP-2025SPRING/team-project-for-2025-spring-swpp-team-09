@@ -10,6 +10,13 @@ public class PlayerInputReader : MonoBehaviour
     public bool RangedPressed { get; private set; }
     public bool SprintHeld { get; private set; }
     public bool DashPressed { get; private set; }
+    public bool SkillPressed { get; private set; }
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 
     void Update()
     {
@@ -30,6 +37,7 @@ public class PlayerInputReader : MonoBehaviour
         MeleePressed = mouse.leftButton.wasPressedThisFrame;
         RangedPressed = mouse.rightButton.wasPressedThisFrame;
         DashPressed = keyboard.leftShiftKey.wasPressedThisFrame;
+        SkillPressed = keyboard.eKey.wasPressedThisFrame;
     }
 
     public bool TryConsumeJump()
@@ -45,4 +53,5 @@ public class PlayerInputReader : MonoBehaviour
     public void ConsumeDash() => DashPressed = false;
     public void ConsumeMelee() => MeleePressed = false;
     public void ConsumeRanged() => RangedPressed = false;
+    public void ConsumeSkill() => SkillPressed = false;
 }
