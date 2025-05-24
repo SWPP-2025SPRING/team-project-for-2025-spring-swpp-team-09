@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class EnemyAnimationController : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
+    public Animator animator;
 
-    public void PlayIdle()
+    void Awake()
     {
-        animator.Play("Idle");
+        if (animator == null)
+            animator = GetComponent<Animator>();
+    }
+
+    public void PlayWalk()
+    {
+        Debug.Log("PlayWalk() called");
+        animator.Play("Walk");
     }
 
     public void PlayDeath()
