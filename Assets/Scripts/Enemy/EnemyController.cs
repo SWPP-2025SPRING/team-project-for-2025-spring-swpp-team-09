@@ -16,7 +16,7 @@ public class EnemyController : MonoBehaviour
     private void Update()
     {
         movementController?.Patrol();
-        //animationController?.PlayIdle();
+        animationController?.PlayWalk();
     }
 
     public void TakeDamage(int damage)
