@@ -21,7 +21,6 @@ public class AnimationController : MonoBehaviour
     private void Awake()
     {
         if (animator == null) animator = GetComponent<Animator>();
-        animator.updateMode = AnimatorUpdateMode.UnscaledTime;
         characterController = GetComponent<CharacterController>();
 
         animIdSpeed = Animator.StringToHash("Speed");
