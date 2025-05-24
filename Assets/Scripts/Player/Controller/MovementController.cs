@@ -85,7 +85,7 @@ public class MovementController : MonoBehaviour
         else
             currentSpeed = targetSpeed;
 
-        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.unscaledDeltaTime * speedChangeRate);
+        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.deltaTime * speedChangeRate);
         animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
         animationBlendPrev = animationBlend;
 
@@ -102,7 +102,7 @@ public class MovementController : MonoBehaviour
         triggerJump = false;
         JumpAndGravity(input, ref triggerJump);
 
-        controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.unscaledDeltaTime);
+        controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
 
         if (input.DashPressed && canDash)
         {
@@ -132,7 +132,7 @@ public class MovementController : MonoBehaviour
             }
 
             if (jumpTimeoutDelta > 0f)
-                jumpTimeoutDelta -= Time.unscaledDeltaTime;
+                jumpTimeoutDelta -= Time.deltaTime;
 
             hasDoubleJumped = false;
             canDoubleJump = true;
@@ -142,7 +142,7 @@ public class MovementController : MonoBehaviour
             jumpTimeoutDelta = jumpTimeout;
 
             if (fallTimeoutDelta > 0f)
-                fallTimeoutDelta -= Time.unscaledDeltaTime;
+                fallTimeoutDelta -= Time.deltaTime;
 
             if (input.TryConsumeJump() && canDoubleJump && !hasDoubleJumped)
             {
@@ -153,7 +153,7 @@ public class MovementController : MonoBehaviour
             }
         }
 
-        verticalVelocity += gravity * Time.unscaledDeltaTime;
+        verticalVelocity += gravity * Time.deltaTime;
         verticalVelocity = Mathf.Max(verticalVelocity, terminalVelocity);
     }
 
@@ -208,13 +208,12 @@ public class MovementController : MonoBehaviour
             verticalVelocity = Mathf.Max(verticalVelocity, 3f);
             Debug.Log($"[Glide] verticalVelocity after: {verticalVelocity}");
 
-            timer += Time.unscaledDeltaTime;
+            timer += Time.deltaTime;
             yield return null;
         }
 
         isGliding = false;
     }
-
 
     public float CurrentSpeed => moveSpeed;
 }
