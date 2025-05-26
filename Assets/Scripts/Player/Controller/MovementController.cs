@@ -43,7 +43,7 @@ public class MovementController : MonoBehaviour
     private float animationBlendPrev;
     private bool grounded;
     private bool wasGrounded;
-
+ 
     private float jumpTimeoutDelta;
     private float fallTimeoutDelta;
 
