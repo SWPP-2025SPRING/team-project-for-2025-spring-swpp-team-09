@@ -1,12 +1,16 @@
 using UnityEngine;
 using System.Collections;
-public class PlayerController : MonoBehaviour
+
+// 카메라 관련 로직은 디자인 패턴대로 수정 필요 + StageGameManager
+public class PlayerController : MonoBehaviour, IPlayerControlHandler
 {
     public PlayerInputReader inputReader;
     public MovementController movementController;
     public AttackController attackController;
     public AnimationController animationController;
     public SkillController skillController;
+
+    [SerializeField] private GameObject followCamera;
 
     private bool timeStopped = false;
 
@@ -45,6 +49,18 @@ public class PlayerController : MonoBehaviour
     public void SetSkill(ISkill skill)
     {
         skillController.Initialize(skill, inputReader);
+    }
+
+    public void EnableInput(bool enabled)
+    {
+        if (inputReader != null)
+            inputReader.enabled = enabled;
+    }
+
+    public void LockCamera(bool isLocked)
+    {
+        if (followCamera != null)
+            followCamera.SetActive(!isLocked);
     }
 
     /*

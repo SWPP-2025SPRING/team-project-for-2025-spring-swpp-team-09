@@ -20,10 +20,9 @@ public class StageGameManager : MonoBehaviour
     [Header("Core")]
     [SerializeField] private string stageId = "Stage1";
     [SerializeField] private GameObject player;
-    [SerializeField] private ThirdPersonController thirdPersonController;
     [SerializeField] private StageClearCondition clearCondition;
 
-    private StarterAssetsInputs playerInput;
+    private IPlayerControlHandler controlHandler;
     private bool isPaused = false;
     private bool isSkill1Available = true;
     private bool isGameOver = false;
@@ -31,7 +30,7 @@ public class StageGameManager : MonoBehaviour
 
     void Start()
     {
-        playerInput = player.GetComponent<StarterAssetsInputs>();
+        controlHandler = player.GetComponent<IPlayerControlHandler>();
         gameOverUI.SetActive(false);
         gameClearUI.SetActive(false);
     }
@@ -86,8 +85,8 @@ public class StageGameManager : MonoBehaviour
         Time.timeScale = 0f;
         gameClearUI.SetActive(true);
 
-        if (playerInput != null) playerInput.enabled = false;
-        if (thirdPersonController != null) thirdPersonController.LockCameraPosition = true;
+        controlHandler?.EnableInput(false);
+        controlHandler?.LockCamera(true);
 
         Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
     }
@@ -100,8 +99,8 @@ public class StageGameManager : MonoBehaviour
         Time.timeScale = 0f;
         gameOverUI.SetActive(true);
 
-        if (playerInput != null) playerInput.enabled = false;
-        if (thirdPersonController != null) thirdPersonController.LockCameraPosition = true;
+        controlHandler?.EnableInput(false);
+        controlHandler?.LockCamera(true);
     }
 
     public void PauseGame()
@@ -109,7 +108,7 @@ public class StageGameManager : MonoBehaviour
         Time.timeScale = 0f;
         pauseMenuUI.SetActive(true);
         isPaused = true;
-        if (playerInput != null) playerInput.enabled = false;
+        controlHandler?.EnableInput(false);
     }
 
     public void ResumeGame()
@@ -117,7 +116,7 @@ public class StageGameManager : MonoBehaviour
         Time.timeScale = 1f;
         pauseMenuUI.SetActive(false);
         isPaused = false;
-        if (playerInput != null) playerInput.enabled = true;
+        controlHandler?.EnableInput(true);
     }
 
     public void RestartGame()
