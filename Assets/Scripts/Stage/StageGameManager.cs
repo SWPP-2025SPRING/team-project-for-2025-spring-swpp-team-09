@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using TMPro;
-using StarterAssets;
 using Cinemachine;
 
 public class StageGameManager : MonoBehaviour
