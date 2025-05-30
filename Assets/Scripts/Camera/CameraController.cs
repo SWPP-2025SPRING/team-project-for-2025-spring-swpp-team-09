@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
     public bool lockCameraPosition = false;
 
     [Header("Sensitivity")]
-    public float sensitivity = 70f;
+    public float sensitivity = 85f;
 
     [SerializeField] private PlayerInputReader input;
 

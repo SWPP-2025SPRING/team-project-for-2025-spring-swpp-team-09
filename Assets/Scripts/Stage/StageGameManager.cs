@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using TMPro;
+using StarterAssets;
 using Cinemachine;
 
 public class StageGameManager : MonoBehaviour
@@ -20,9 +21,10 @@ public class StageGameManager : MonoBehaviour
     [Header("Core")]
     [SerializeField] private string stageId = "Stage1";
     [SerializeField] private GameObject player;
+    [SerializeField] private ThirdPersonController thirdPersonController;
     [SerializeField] private StageClearCondition clearCondition;
 
-    private IPlayerControlHandler controlHandler;
+    private StarterAssetsInputs playerInput;
     private bool isPaused = false;
     private bool isSkill1Available = true;
     private bool isGameOver = false;
@@ -30,7 +32,7 @@ public class StageGameManager : MonoBehaviour
 
     void Start()
     {
-        controlHandler = player.GetComponent<IPlayerControlHandler>();
+        playerInput = player.GetComponent<StarterAssetsInputs>();
         gameOverUI.SetActive(false);
         gameClearUI.SetActive(false);
     }
@@ -85,8 +87,8 @@ public class StageGameManager : MonoBehaviour
         Time.timeScale = 0f;
         gameClearUI.SetActive(true);
 
-        controlHandler?.EnableInput(false);
-        controlHandler?.LockCamera(true);
+        if (playerInput != null) playerInput.enabled = false;
+        if (thirdPersonController != null) thirdPersonController.LockCameraPosition = true;
 
         Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
     }
@@ -99,8 +101,8 @@ public class StageGameManager : MonoBehaviour
         Time.timeScale = 0f;
         gameOverUI.SetActive(true);
 
-        controlHandler?.EnableInput(false);
-        controlHandler?.LockCamera(true);
+        if (playerInput != null) playerInput.enabled = false;
+        if (thirdPersonController != null) thirdPersonController.LockCameraPosition = true;
     }
 
     public void PauseGame()
@@ -108,7 +110,7 @@ public class StageGameManager : MonoBehaviour
         Time.timeScale = 0f;
         pauseMenuUI.SetActive(true);
         isPaused = true;
-        controlHandler?.EnableInput(false);
+        if (playerInput != null) playerInput.enabled = false;
     }
 
     public void ResumeGame()
@@ -116,7 +118,7 @@ public class StageGameManager : MonoBehaviour
         Time.timeScale = 1f;
         pauseMenuUI.SetActive(false);
         isPaused = false;
-        controlHandler?.EnableInput(true);
+        if (playerInput != null) playerInput.enabled = true;
     }
 
     public void RestartGame()
