@@ -19,21 +19,4 @@ public class ObjectControllerL : MonoBehaviour
         float offset = Mathf.Sin(Time.time * moveSpeed) * moveDistance;
         transform.position = new Vector3(startPos.x - offset, startPos.y, startPos.z);
     }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            other.transform.SetParent(transform);
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            other.transform.SetParent(null);
-        }
-    }
-
 }
