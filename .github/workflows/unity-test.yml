@@ -16,8 +16,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Run Tests without license
+      - name: Run Tests with Personal License
         uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           unityVersion: 2021.3.45f1
           testMode: ${{ matrix.testMode }}
