@@ -9,12 +9,24 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        testMode: [editmode, playmode]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Run Tests without license
-        uses: game-ci/unity-test-runner@v3
+        uses: game-ci/unity-test-runner@v4
         with:
           unityVersion: 2021.3.45f1
-          testMode: all
+          testMode: ${{ matrix.testMode }}
+          customImage: unityci/editor:ubuntu-2021.3.45f1-base-3.1.0
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+
+      - name: Upload Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test Results (${{ matrix.testMode }})
+          path: ${{ matrix.testMode }}-artifacts
