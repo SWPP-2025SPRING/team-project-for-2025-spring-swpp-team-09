@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class GameFlowManager : MonoBehaviour
 {
     public static GameFlowManager Instance { get; private set; }
+    private StageContext currentStageContext;
 
     private void Awake()
     {
@@ -14,6 +15,7 @@ public class GameFlowManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     public void StartNewGame()
@@ -29,6 +31,15 @@ public class GameFlowManager : MonoBehaviour
 
     public void EnterStage(string stageId)
     {
+        ISkill skill = stageId switch
+        {
+            // "Stage2" => new GlideSkill(),
+            "Stage2" => new WallWalkSkill(),
+            "Stage1" => new TimeStopSkill(),
+            _ => null
+        };
+        currentStageContext = new StageContext(stageId, skill);
+
         string key = $"{stageId}_Cleared";
         if (PlayerPrefs.HasKey(key))
         {
@@ -48,10 +59,24 @@ public class GameFlowManager : MonoBehaviour
 
     public void QuitGame()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #else
+                Application.Quit();
+        #endif
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (currentStageContext == null) return;
+
+        Debug.Log($"[GameFlowManager] Scene loaded: {scene.name}");
+
+        var player = FindObjectOfType<PlayerController>();
+        if (player != null && currentStageContext.Skill != null)
+        {
+            Debug.Log("[GameFlowManager] Injecting skill into PlayerController");
+            player.SetSkill(currentStageContext.Skill);
+        }
     }
 }
