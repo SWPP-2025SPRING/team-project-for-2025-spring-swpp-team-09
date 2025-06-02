@@ -3949,7 +3949,7 @@ MonoBehaviour:
   bottomClamp: -30
   cameraAngleOverride: 0
   lockCameraPosition: 0
-  sensitivity: 70
+  sensitivity: 30
   input: {fileID: 1959155456}
 --- !u!1001 &823798881
 PrefabInstance:
