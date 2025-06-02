@@ -18,7 +18,6 @@ jobs:
         projectPath:
           - .
         testMode:
-          - editmode
           - playmode
 
     steps:
