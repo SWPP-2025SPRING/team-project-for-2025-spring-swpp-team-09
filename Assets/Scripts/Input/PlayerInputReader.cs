@@ -3,13 +3,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputReader : MonoBehaviour
 {
-    public Vector2 MoveInput { get; private set; }
+    public Vector2 MoveInput { get; set; }
     public Vector2 LookInput { get; private set; }
-    public bool JumpPressed { get; private set; }
+    public bool JumpPressed { get; set; }
     public bool MeleePressed { get; private set; }
     public bool RangedPressed { get; private set; }
     public bool SprintHeld { get; private set; }
-    public bool DashPressed { get; private set; }
+    public bool DashPressed { get; set; }
     public bool SkillPressed { get; private set; }
 
     void Update()
