@@ -292,6 +292,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1720966747, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+      propertyPath: followCamera
+      value: 
+      objectReference: {fileID: 1767078848}
+    - target: {fileID: 1720966747, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+      propertyPath: skillController
+      value: 
+      objectReference: {fileID: 1466765596}
     - target: {fileID: 3687461888841831020, guid: 9cad301281f1ab448bafbf0183e36d2e,
         type: 3}
       propertyPath: m_Name
@@ -366,7 +374,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1466765585}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1466765590}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be70b74a0e0d84140b2a3996bcf61803, type: 3}
@@ -384,12 +392,31 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1466765585}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1466765590 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3687461888841831020, guid: 9cad301281f1ab448bafbf0183e36d2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1466765585}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &1466765595 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 4606363130744390639, guid: 9cad301281f1ab448bafbf0183e36d2e,
     type: 3}
   m_PrefabInstance: {fileID: 1466765585}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1466765596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1466765590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8787a568de392f740a47c79e2ffce68d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldownDuration: 5
 --- !u!1 &1638342688
 GameObject:
   m_ObjectHideFlags: 0

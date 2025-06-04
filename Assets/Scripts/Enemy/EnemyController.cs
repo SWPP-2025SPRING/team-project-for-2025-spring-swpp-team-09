@@ -8,6 +8,11 @@ public class EnemyController : MonoBehaviour
     public int maxHP = 100;
     private int currentHP;
 
+    // for testing
+    private bool isDead = false;
+    public int CurrentHP => currentHP;
+    public bool IsDead => isDead;
+
     private void Start()
     {
         currentHP = maxHP;
@@ -33,6 +38,7 @@ public class EnemyController : MonoBehaviour
     private void Die()
     {
         animationController?.PlayDeath();
+        isDead = true;
         Destroy(gameObject, 1.0f);
     }
 }

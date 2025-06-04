@@ -1,4 +1,3 @@
-/* EnemyController 변수 추가 필요
 using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
@@ -34,7 +33,7 @@ public class PlayerCombatTests
     [UnityTearDown]
     public IEnumerator TearDown()
     {
-        inputReader.AttackPressed = false;
+        inputReader.MeleePressed = false;
         yield return null;
     }
 
@@ -44,18 +43,18 @@ public class PlayerCombatTests
         // 첫 번째 공격
         int hpBefore = enemyController.CurrentHP;
 
-        inputReader.AttackPressed = true;
+        inputReader.MeleePressed = true;
         yield return null;
-        inputReader.AttackPressed = false;
+        inputReader.MeleePressed = false;
         yield return new WaitForSeconds(0.5f);
 
         int hpAfter = enemyController.CurrentHP;
         Assert.Less(hpAfter, hpBefore, "Enemy HP did not decrease after first attack.");
 
         // 두 번째 공격 → 사망
-        inputReader.AttackPressed = true;
+        inputReader.MeleePressed = true;
         yield return null;
-        inputReader.AttackPressed = false;
+        inputReader.MeleePressed = false;
         yield return new WaitForSeconds(0.6f);
 
         Assert.IsTrue(enemyController.IsDead, "Enemy not marked as dead.");
@@ -67,7 +66,9 @@ public class PlayerCombatTests
     {
         bool collisionOccurred = false;
 
-        CollisionEventChannel collisionChannel = Object.FindObjectOfType<CollisionEventHandler>()?.collisionChannel;
+        var handler = Object.FindObjectOfType<CollisionEventHandler>();
+        var collisionChannel = handler?.GetCollisionChannel();
+
         Assert.IsNotNull(collisionChannel, "CollisionEventChannel not found.");
 
         // 충돌 이벤트 리스너 등록
@@ -106,4 +107,3 @@ public class PlayerCombatTests
     }
 
 }
-*/

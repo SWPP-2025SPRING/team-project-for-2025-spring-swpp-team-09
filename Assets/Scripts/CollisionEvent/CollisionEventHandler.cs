@@ -4,6 +4,8 @@ public class CollisionEventHandler : MonoBehaviour
 {
     [SerializeField] private CollisionEventChannel collisionChannel;
 
+    public CollisionEventChannel GetCollisionChannel() => collisionChannel;
+
     private void OnEnable()
     {
         if (collisionChannel != null)
