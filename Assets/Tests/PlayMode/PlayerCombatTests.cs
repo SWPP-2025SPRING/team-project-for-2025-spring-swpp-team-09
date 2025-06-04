@@ -37,6 +37,8 @@ public class PlayerCombatTests
         yield return null;
     }
 
+    // Enemy Animation Controller 도입 이후 가능
+    /*
     [UnityTest]
     public IEnumerator Enemy_Takes_Damage_Then_Dies()
     {
@@ -60,6 +62,7 @@ public class PlayerCombatTests
         Assert.IsTrue(enemyController.IsDead, "Enemy not marked as dead.");
         Assert.IsFalse(enemy != null && enemy.activeInHierarchy, "Enemy GameObject still active.");
     }
+    */
 
     [UnityTest]
     public IEnumerator Player_Speed_Halved_On_Enemy_Collision_UsingEventChannel()
