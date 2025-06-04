@@ -132,6 +132,29 @@ public class PlayerMovementTests
         Assert.Greater(dashDist, 1f, "Dash movement too short.");
     }
 
+    [UnityTest]
+    public IEnumerator Dash_Cooldown_Prevents_Immediate_Reuse()
+    {
+        Vector3 start = player.transform.position;
+
+        inputReader.DashPressed = true;
+        yield return null;
+        inputReader.DashPressed = false;
+        yield return new WaitForSeconds(0.2f);
+
+        Vector3 afterFirstDash = player.transform.position;
+
+        inputReader.DashPressed = true;
+        yield return null;
+        inputReader.DashPressed = false;
+        yield return new WaitForSeconds(0.5f);
+
+        Vector3 afterSecondAttempt = player.transform.position;
+        float secondDashDistance = Vector3.Distance(afterFirstDash, afterSecondAttempt);
+
+        Assert.Less(secondDashDistance, 1f, "Second dash executed before cooldown ended.");
+    }
+
     private void ResetInputs()
     {
         inputReader.MoveInput = Vector2.zero;
