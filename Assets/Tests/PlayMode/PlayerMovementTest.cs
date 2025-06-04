@@ -159,6 +159,106 @@ public class PlayerMovementTests
         Assert.Less(secondDashDistance, 1f, "Second dash executed before cooldown ended.");
     }
 
+    [UnityTest]
+    public IEnumerator MoveInput_Triggers_IdleRun_Animation()
+    {
+        var animator = player.GetComponentInChildren<Animator>();
+        Assert.IsNotNull(animator, "Animator not found.");
+
+        inputReader.testing = true;
+        inputReader.MoveInput = Vector2.right;
+
+        yield return new WaitForSeconds(0.4f);
+
+        var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        Assert.IsTrue(stateInfo.IsName("Idle Run"),
+            $"Expected animation state 'Idle Run', but was '{stateInfo.fullPathHash}'");
+
+        inputReader.MoveInput = Vector2.zero;
+    }
+
+    [UnityTest]
+    public IEnumerator Jump_Triggers_JumpStart_And_InAir_Animation()
+    {
+        var animator = player.GetComponentInChildren<Animator>();
+        Assert.IsNotNull(animator, "Animator not found.");
+
+        inputReader.testing = true;
+        inputReader.JumpPressed = true;
+        yield return null;
+        inputReader.JumpPressed = false;
+
+        float timeout = 0.5f;
+        float elapsed = 0f;
+        bool enteredJumpStart = false;
+
+        while (elapsed < timeout)
+        {
+            var state = animator.GetCurrentAnimatorStateInfo(0);
+            if (state.IsName("JumpStart"))
+            {
+                enteredJumpStart = true;
+                break;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        Assert.IsTrue(enteredJumpStart, "Did not enter 'JumpStart' animation state.");
+
+        timeout = 1f;
+        elapsed = 0f;
+
+        while (elapsed < timeout)
+        {
+            var state = animator.GetCurrentAnimatorStateInfo(0);
+            if (state.IsName("InAir"))
+            {
+                Assert.Pass("Entered 'InAir' animation state after 'Jump Start'.");
+                yield break;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        Assert.Fail("Did not enter 'InAir' animation state after 'Jump Start'.");
+    }
+
+    [UnityTest]
+    public IEnumerator Landing_Triggers_JumpLand_Animation()
+    {
+        var animator = player.GetComponentInChildren<Animator>();
+        Assert.IsNotNull(animator, "Animator not found.");
+
+        inputReader.testing = true;
+
+        inputReader.JumpPressed = true;
+        yield return null;
+        inputReader.JumpPressed = false;
+
+        yield return new WaitForSeconds(0.4f);
+        yield return new WaitUntil(() => player.GetComponent<CharacterController>().isGrounded); // 착지할 때까지 대기
+
+        float timeout = 0.5f;
+        float elapsed = 0f;
+        while (elapsed < timeout)
+        {
+            var stateLand = animator.GetCurrentAnimatorStateInfo(0);
+            if (stateLand.IsName("JumpLand"))
+            {
+                Assert.Pass("Entered JumpLand animation state after landing.");
+                yield break;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        Assert.Fail("JumpLand animation did not play after landing.");
+    }
+
     private void ResetInputs()
     {
         inputReader.MoveInput = Vector2.zero;
