@@ -13,7 +13,7 @@ public class PlayerMovementTests
     public IEnumerator SetUp()
     {
         SceneManager.LoadScene("PlayerControlTestScene");
-        yield return new WaitForSeconds(1f);       
+        yield return new WaitForSeconds(1f);
 
         player = GameObject.FindWithTag("Player");
         Assert.IsNotNull(player, "Player not found in scene.");
@@ -32,6 +32,7 @@ public class PlayerMovementTests
     [UnityTest]
     public IEnumerator MoveRight_IncreasesX()
     {
+        inputReader.testing = true;
         Vector3 start = player.transform.position;
 
         inputReader.MoveInput = Vector2.right;
@@ -45,6 +46,7 @@ public class PlayerMovementTests
     [UnityTest]
     public IEnumerator MoveLeft_DecreasesX()
     {
+        inputReader.testing = true;
         Vector3 start = player.transform.position;
 
         inputReader.MoveInput = Vector2.left;
@@ -58,6 +60,7 @@ public class PlayerMovementTests
     [UnityTest]
     public IEnumerator MoveForward_IncreasesZ()
     {
+        inputReader.testing = true;
         Vector3 start = player.transform.position;
 
         inputReader.MoveInput = Vector2.up;
@@ -71,6 +74,7 @@ public class PlayerMovementTests
     [UnityTest]
     public IEnumerator MoveBackward_DecreasesZ()
     {
+        inputReader.testing = true;
         Vector3 start = player.transform.position;
 
         inputReader.MoveInput = Vector2.down;
@@ -160,5 +164,6 @@ public class PlayerMovementTests
         inputReader.MoveInput = Vector2.zero;
         inputReader.JumpPressed = false;
         inputReader.DashPressed = false;
+        inputReader.testing = false;
     }
 }

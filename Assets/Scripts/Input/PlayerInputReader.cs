@@ -11,6 +11,7 @@ public class PlayerInputReader : MonoBehaviour
     public bool SprintHeld { get; private set; }
     public bool DashPressed { get; set; }
     public bool SkillPressed { get; set; }
+    public bool testing = false;
 
     void Start()
     {
@@ -20,6 +21,8 @@ public class PlayerInputReader : MonoBehaviour
 
     void Update()
     {
+        if (testing) return;
+        
         var keyboard = Keyboard.current;
         var mouse = Mouse.current;
 

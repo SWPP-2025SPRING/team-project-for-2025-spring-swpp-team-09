@@ -64,6 +64,7 @@ public class PlayerCombatTests
     [UnityTest]
     public IEnumerator Player_Speed_Halved_On_Enemy_Collision_UsingEventChannel()
     {
+        inputReader.testing = true;
         bool collisionOccurred = false;
 
         var handler = Object.FindObjectOfType<CollisionEventHandler>();
@@ -99,6 +100,7 @@ public class PlayerCombatTests
         collisionChannel.OnPlayerHit.RemoveListener(listener); // 리스너 정리
 
         float distanceAfter = Vector3.Distance(start, end);
+        inputReader.testing = false;
 
         // 플레이어 이동 속도 10f 가정
         float maxExpectedDistance = 2.5f;
