@@ -137,14 +137,14 @@ public class PlayerMovementTests
     }
 
     [UnityTest]
-    public IEnumerator Dash_Cooldown_Prevents_Immediate_Reuse()
+    public IEnumerator Dash_Cooldown_Is_Exactly_5_Seconds()
     {
         Vector3 start = player.transform.position;
 
         inputReader.DashPressed = true;
         yield return null;
         inputReader.DashPressed = false;
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
 
         Vector3 afterFirstDash = player.transform.position;
 
@@ -154,10 +154,21 @@ public class PlayerMovementTests
         yield return new WaitForSeconds(0.5f);
 
         Vector3 afterSecondAttempt = player.transform.position;
-        float secondDashDistance = Vector3.Distance(afterFirstDash, afterSecondAttempt);
+        float earlyDashDistance = Vector3.Distance(afterFirstDash, afterSecondAttempt);
+        Assert.Less(earlyDashDistance, 1f, "Dash should not be available before 5 seconds.");
 
-        Assert.Less(secondDashDistance, 1f, "Second dash executed before cooldown ended.");
+        yield return new WaitForSeconds(4.5f);
+
+        inputReader.DashPressed = true;
+        yield return null;
+        inputReader.DashPressed = false;
+        yield return new WaitForSeconds(0.5f);
+
+        Vector3 afterThirdAttempt = player.transform.position;
+        float lateDashDistance = Vector3.Distance(afterSecondAttempt, afterThirdAttempt);
+        Assert.Greater(lateDashDistance, 1f, "Dash should be available after 5 seconds.");
     }
+
 
     [UnityTest]
     public IEnumerator MoveInput_Triggers_IdleRun_Animation()
