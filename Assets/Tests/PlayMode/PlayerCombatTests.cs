@@ -37,12 +37,9 @@ public class PlayerCombatTests
         yield return null;
     }
 
-    // Enemy Animation Controller 도입 이후 가능
-    /*
     [UnityTest]
-    public IEnumerator Enemy_Takes_Damage_Then_Dies()
+    public IEnumerator Enemy_Takes_Damage_On_Attack()
     {
-        // 첫 번째 공격
         int hpBefore = enemyController.CurrentHP;
 
         inputReader.MeleePressed = true;
@@ -51,9 +48,19 @@ public class PlayerCombatTests
         yield return new WaitForSeconds(0.5f);
 
         int hpAfter = enemyController.CurrentHP;
-        Assert.Less(hpAfter, hpBefore, "Enemy HP did not decrease after first attack.");
+        Assert.Less(hpAfter, hpBefore, "Enemy HP did not decrease after attack.");
+    }
 
-        // 두 번째 공격 → 사망
+    // Enemy Animation Controller 도입 이후 가능
+    /*
+    [UnityTest]
+    public IEnumerator Enemy_Dies_After_Second_Attack()
+    {
+        inputReader.MeleePressed = true;
+        yield return null;
+        inputReader.MeleePressed = false;
+        yield return new WaitForSeconds(0.5f);
+
         inputReader.MeleePressed = true;
         yield return null;
         inputReader.MeleePressed = false;
