@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     public void EnableInput(bool enabled)
     {
         if (inputReader != null)
-            inputReader.enabled = enabled;
+            inputReader.inputEnabled = enabled;
     }
 
     public void LockCamera(bool isLocked)

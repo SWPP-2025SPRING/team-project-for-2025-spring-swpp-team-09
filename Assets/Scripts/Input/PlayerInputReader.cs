@@ -12,16 +12,30 @@ public class PlayerInputReader : MonoBehaviour
     public bool DashPressed { get; set; }
     public bool SkillPressed { get; set; }
     public bool testing = false;
-
-    void Start()
+    private bool _inputEnabled = true;
+    public bool inputEnabled
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        get => _inputEnabled;
+        set
+        {
+            _inputEnabled = value;
+
+            if (!value)
+            {
+                MoveInput = Vector2.zero;
+                LookInput = Vector2.zero;
+                JumpPressed = false;
+                MeleePressed = false;
+                RangedPressed = false;
+                DashPressed = false;
+                SkillPressed = false;
+            }
+        }
     }
 
     void Update()
     {
-        if (testing) return;
+        if (!inputEnabled || testing) return;
         
         var keyboard = Keyboard.current;
         var mouse = Mouse.current;

@@ -16,14 +16,27 @@ public class StageGameManager : MonoBehaviour
 
     private IPlayerControlHandler controlHandler;
     private bool isPaused = false;
-    private bool isSkill1Available = true;
+    private bool isSkillAvailable = true;
     private bool isGameOver = false;
     private bool isGameClear = false;
 
     void Start()
     {
+        if (player == null)
+        {
+            player = GameObject.FindWithTag("Player"); 
+        }
         controlHandler = player.GetComponent<IPlayerControlHandler>();
+        if (controlHandler == null)
+        {
+            Debug.Log("no control handler");
+        }
+        else
+        {
+           Debug.Log("control handler"); 
+        }
 
+        uiController.ShowPauseUI(false);
         uiController.ShowGameOverUI(false);
         uiController.ShowGameClearUI(false);
 
@@ -40,6 +53,7 @@ public class StageGameManager : MonoBehaviour
         UpdateSkillUI();
         CheckGameClear();
 
+        // 리팩토링할 때 키보드 입력 직접 안받게 수정
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (isPaused) ResumeGame();
@@ -60,7 +74,7 @@ public class StageGameManager : MonoBehaviour
 
     private void UpdateSkillUI()
     {
-        uiController.SetSkillAvailability(isSkill1Available);
+        uiController.SetSkillAvailability(isSkillAvailable);
     }
 
     private void CheckGameClear()
@@ -95,7 +109,8 @@ public class StageGameManager : MonoBehaviour
 
     public void PauseGame()
     {
-        Time.timeScale = 0f;
+        if (isGameOver || isGameClear) return;
+
         uiController.ShowPauseUI(true);
         isPaused = true;
         controlHandler?.EnableInput(false);
@@ -103,7 +118,6 @@ public class StageGameManager : MonoBehaviour
 
     public void ResumeGame()
     {
-        Time.timeScale = 1f;
         uiController.ShowPauseUI(false);
         isPaused = false;
         controlHandler?.EnableInput(true);
@@ -111,16 +125,11 @@ public class StageGameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameFlowManager.Instance.EnterStage(stageId);
     }
 
     public void QuitGame()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        GameFlowManager.Instance.ContinueGame();
     }
 }
