@@ -26,7 +26,18 @@ public class GameFlowManager : MonoBehaviour
 
     public void ContinueGame()
     {
-        SceneController.Instance.LoadScene("StageSelectScene");
+        // 예: 적어도 하나의 스테이지라도 클리어된 기록이 있어야 이어하기 허용
+        bool anyCleared = PlayerPrefs.HasKey("Stage1_Cleared") || PlayerPrefs.HasKey("Stage2_Cleared");
+
+        if (anyCleared)
+        {
+            SceneController.Instance.LoadScene("StageSelectScene");
+        }
+        else
+        {
+            Debug.LogWarning("[GameFlowManager] 이어할 수 있는 클리어 기록이 없습니다.");
+            // UIManager.Instance.ShowPopup("이어할 수 있는 저장 정보가 없습니다.");
+        }
     }
 
     public void EnterStage(string stageId)
