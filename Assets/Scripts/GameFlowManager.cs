@@ -26,16 +26,18 @@ public class GameFlowManager : MonoBehaviour
 
     public void ContinueGame()
     {
-        // 예: 적어도 하나의 스테이지라도 클리어된 기록이 있어야 이어하기 허용
-        bool anyCleared = PlayerPrefs.HasKey("Stage1_Cleared") || PlayerPrefs.HasKey("Stage2_Cleared");
+        bool anyPlayed =
+            PlayerPrefs.HasKey("Stage1_Played") ||
+            PlayerPrefs.HasKey("Stage2_Played") ||
+            PlayerPrefs.HasKey("Stage3_Played");
 
-        if (anyCleared)
+        if (anyPlayed)
         {
             SceneController.Instance.LoadScene("StageSelectScene");
         }
         else
         {
-            Debug.LogWarning("[GameFlowManager] 이어할 수 있는 클리어 기록이 없습니다.");
+            Debug.LogWarning("[GameFlowManager] 이어할 수 있는 기록이 없습니다.");
             // UIManager.Instance.ShowPopup("이어할 수 있는 저장 정보가 없습니다.");
         }
     }
@@ -45,7 +47,6 @@ public class GameFlowManager : MonoBehaviour
         if (!IsStageUnlocked(stageId))
         {
             Debug.LogWarning($"[GameFlowManager] {stageId}은(는) 잠겨 있어 진입할 수 없습니다.");
-            // UIManager.Instance.ShowPopup("이전 스테이지를 먼저 클리어해야 합니다.");
             return;
         }
 
@@ -57,8 +58,10 @@ public class GameFlowManager : MonoBehaviour
         };
         currentStageContext = new StageContext(stageId, skill);
 
-        string key = $"{stageId}_Cleared";
-        if (PlayerPrefs.HasKey(key))
+        string playedKey = $"{stageId}_Played";
+        bool alreadyPlayed = PlayerPrefs.HasKey(playedKey);
+
+        if (alreadyPlayed)
         {
             SceneController.Instance.LoadScene($"{stageId}GameScene");
         }
@@ -66,6 +69,8 @@ public class GameFlowManager : MonoBehaviour
         {
             SceneController.Instance.LoadDialogueThenScene($"{stageId}_Enter", $"{stageId}GameScene");
         }
+
+        PlayerPrefs.SetInt(playedKey, 1);
     }
 
     public void ClearStage(string stageId)

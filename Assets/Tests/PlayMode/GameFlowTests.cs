@@ -73,7 +73,7 @@ public class GameFlowTests
     [UnityTest]
     public IEnumerator ContinueGame_WithSaveData()
     {
-        PlayerPrefs.SetInt("Stage1_Cleared", 1);
+        PlayerPrefs.SetInt("Stage1_Played", 1);
         startMenuUI.OnContinueClicked();
         yield return new WaitForSeconds(0.1f);
 
@@ -83,6 +83,7 @@ public class GameFlowTests
     [UnityTest]
     public IEnumerator ContinueGame_WithoutSaveData()
     {
+        PlayerPrefs.DeleteKey("Stage1_Played");
         startMenuUI.OnContinueClicked();
         yield return new WaitForSeconds(0.1f);
 
