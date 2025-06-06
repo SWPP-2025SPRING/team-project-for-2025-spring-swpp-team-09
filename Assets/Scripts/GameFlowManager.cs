@@ -116,7 +116,7 @@ public class GameFlowManager : MonoBehaviour
             player.SetSkill(currentStageContext.Skill);
         }
     }
-    
+
     private bool IsStageUnlocked(string stageId)
     {
         return stageId switch
@@ -127,4 +127,10 @@ public class GameFlowManager : MonoBehaviour
             _ => false
         };
     }
+    
+    public StageContext GetStageContext()
+    {
+        return currentStageContext;
+    }
+
 }

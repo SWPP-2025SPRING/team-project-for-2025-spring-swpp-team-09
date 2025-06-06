@@ -1,21 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using TMPro;
-using Cinemachine;
 
 public class StageGameManager : MonoBehaviour
 {
     [Header("UI")]
-    public TMP_Text timerText;
-    public Image skill1Icon;
-    public TMP_Text skill1Description;
-    public GameObject pauseMenuUI;
-    public GameObject gameOverUI;
-    public GameObject gameClearUI;
+    [SerializeField] private StageUIController uiController;
 
     [Header("Core")]
     [SerializeField] private string stageId = "Stage1";
@@ -31,8 +23,15 @@ public class StageGameManager : MonoBehaviour
     void Start()
     {
         controlHandler = player.GetComponent<IPlayerControlHandler>();
-        gameOverUI.SetActive(false);
-        gameClearUI.SetActive(false);
+
+        uiController.ShowGameOverUI(false);
+        uiController.ShowGameClearUI(false);
+
+        var context = GameFlowManager.Instance?.GetStageContext();
+        if (context != null)
+        {
+            uiController.SetSkill(context.Skill);
+        }
     }
 
     void Update()
@@ -51,9 +50,7 @@ public class StageGameManager : MonoBehaviour
     private void UpdateTimerUI()
     {
         float remaining = clearCondition.RemainingTime;
-        int minutes = Mathf.FloorToInt(remaining / 60);
-        int seconds = Mathf.FloorToInt(remaining % 60);
-        timerText.text = $"Timer: {minutes:00}:{seconds:00}";
+        uiController.UpdateTimer(remaining);
 
         if (clearCondition.TimeOver && !isGameOver && !isGameClear)
         {
@@ -63,8 +60,7 @@ public class StageGameManager : MonoBehaviour
 
     private void UpdateSkillUI()
     {
-        skill1Icon.color = isSkill1Available ? Color.white : Color.gray;
-        skill1Description.text = "[Skill] Press E, Allows to walk on water";
+        uiController.SetSkillAvailability(isSkill1Available);
     }
 
     private void CheckGameClear()
@@ -74,21 +70,15 @@ public class StageGameManager : MonoBehaviour
         if (clearCondition.IsCleared)
         {
             isGameClear = true;
-            UpdateGameClearUI();
+            Time.timeScale = 0f;
 
+            uiController.ShowGameClearUI(true);
+            controlHandler?.EnableInput(false);
+            controlHandler?.LockCamera(true);
+
+            Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
             GameFlowManager.Instance.ClearStage(stageId);
         }
-    }
-
-    public void UpdateGameClearUI()
-    {
-        Time.timeScale = 0f;
-        gameClearUI.SetActive(true);
-
-        controlHandler?.EnableInput(false);
-        controlHandler?.LockCamera(true);
-
-        Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
     }
 
     public void GameOver()
@@ -97,8 +87,8 @@ public class StageGameManager : MonoBehaviour
 
         isGameOver = true;
         Time.timeScale = 0f;
-        gameOverUI.SetActive(true);
 
+        uiController.ShowGameOverUI(true);
         controlHandler?.EnableInput(false);
         controlHandler?.LockCamera(true);
     }
@@ -106,7 +96,7 @@ public class StageGameManager : MonoBehaviour
     public void PauseGame()
     {
         Time.timeScale = 0f;
-        pauseMenuUI.SetActive(true);
+        uiController.ShowPauseUI(true);
         isPaused = true;
         controlHandler?.EnableInput(false);
     }
@@ -114,7 +104,7 @@ public class StageGameManager : MonoBehaviour
     public void ResumeGame()
     {
         Time.timeScale = 1f;
-        pauseMenuUI.SetActive(false);
+        uiController.ShowPauseUI(false);
         isPaused = false;
         controlHandler?.EnableInput(true);
     }
