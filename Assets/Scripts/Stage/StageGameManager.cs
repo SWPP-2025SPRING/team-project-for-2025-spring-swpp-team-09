@@ -20,11 +20,14 @@ public class StageGameManager : MonoBehaviour
     private bool isGameOver = false;
     private bool isGameClear = false;
 
+    // 테스트를 위한 임시 변수
+    private PlayerInputReader inputReader;
+
     void Start()
     {
         if (player == null)
         {
-            player = GameObject.FindWithTag("Player"); 
+            player = GameObject.FindWithTag("Player");
         }
         controlHandler = player.GetComponent<IPlayerControlHandler>();
         if (controlHandler == null)
@@ -33,17 +36,25 @@ public class StageGameManager : MonoBehaviour
         }
         else
         {
-           Debug.Log("control handler"); 
+            Debug.Log("control handler");
         }
 
         uiController.ShowPauseUI(false);
         uiController.ShowGameOverUI(false);
         uiController.ShowGameClearUI(false);
+        uiController.SetClearRank(false, null);
 
         var context = GameFlowManager.Instance?.GetStageContext();
         if (context != null)
         {
             uiController.SetSkill(context.Skill);
+        }
+
+        // 테스트를 위한 임시 변수
+        var player1 = FindObjectOfType<PlayerController>();
+        if (player1 != null)
+        {
+            inputReader = player1.inputReader;
         }
     }
 
@@ -53,11 +64,12 @@ public class StageGameManager : MonoBehaviour
         UpdateSkillUI();
         CheckGameClear();
 
-        // 리팩토링할 때 키보드 입력 직접 안받게 수정
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (inputReader != null && inputReader.PausePressed)
         {
             if (isPaused) ResumeGame();
             else PauseGame();
+
+            inputReader.ConsumePause();
         }
     }
 
@@ -89,6 +101,9 @@ public class StageGameManager : MonoBehaviour
             uiController.ShowGameClearUI(true);
             controlHandler?.EnableInput(false);
             controlHandler?.LockCamera(true);
+
+            string rank = clearCondition.GetClearRank();
+            uiController.SetClearRank(true, rank);
 
             Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
             GameFlowManager.Instance.ClearStage(stageId);

@@ -11,6 +11,7 @@ public class StageUIController : MonoBehaviour
     public GameObject pauseMenuUI;
     public GameObject gameOverUI;
     public GameObject gameClearUI;
+    public TMP_Text gameClearRank;
 
     private ISkill currentSkill;
 
@@ -58,5 +59,12 @@ public class StageUIController : MonoBehaviour
     public void ShowPauseUI(bool show)
     {
         pauseMenuUI.SetActive(show);
+    }
+
+    public void SetClearRank(bool show, string rank)
+    {
+        gameClearRank.gameObject.SetActive(show);
+        if (gameClearRank != null)
+            gameClearRank.text = $"Rank: {rank}";
     }
 }

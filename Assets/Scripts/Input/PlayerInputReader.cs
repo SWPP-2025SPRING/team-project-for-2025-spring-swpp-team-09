@@ -11,6 +11,7 @@ public class PlayerInputReader : MonoBehaviour
     public bool SprintHeld { get; private set; }
     public bool DashPressed { get; set; }
     public bool SkillPressed { get; set; }
+    public bool PausePressed { get; set; }
     public bool testing = false;
     private bool _inputEnabled = true;
     public bool inputEnabled
@@ -35,10 +36,12 @@ public class PlayerInputReader : MonoBehaviour
 
     void Update()
     {
-        if (!inputEnabled || testing) return;
-        
         var keyboard = Keyboard.current;
         var mouse = Mouse.current;
+
+        PausePressed = keyboard.escapeKey.wasPressedThisFrame;
+
+        if (!inputEnabled || testing) return;
 
         float x = 0f;
         float y = 0f;
@@ -71,4 +74,5 @@ public class PlayerInputReader : MonoBehaviour
     public void ConsumeMelee() => MeleePressed = false;
     public void ConsumeRanged() => RangedPressed = false;
     public void ConsumeSkill() => SkillPressed = false;
+    public void ConsumePause() => PausePressed = false;
 }
