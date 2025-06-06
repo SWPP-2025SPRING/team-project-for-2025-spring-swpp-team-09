@@ -72,7 +72,7 @@ public class PlayerCombatTests
     */
 
     [UnityTest]
-    public IEnumerator Player_Speed_Halved_On_Enemy_Collision_UsingEventChannel()
+    public IEnumerator Player_Speed_Halved_Then_Restores_After_Enemy_Collision()
     {
         inputReader.testing = true;
         bool collisionOccurred = false;
@@ -91,7 +91,7 @@ public class PlayerCombatTests
 
         inputReader.MoveInput = Vector2.up;
 
-        // 충돌이 발생할 때까지 최대 2초 대기
+        // 충돌 발생까지 대기 (최대 2초)
         float timeout = 2f;
         float elapsed = 0f;
         while (!collisionOccurred && elapsed < timeout)
@@ -102,20 +102,30 @@ public class PlayerCombatTests
 
         Assert.IsTrue(collisionOccurred, "Player did not collide with Enemy (OnPlayerHit not called).");
 
-        Vector3 start = player.transform.position;
+        // 충돌 직후 이동 거리 측정
+        Vector3 slowedStart = player.transform.position;
         yield return new WaitForSeconds(0.5f);
-        Vector3 end = player.transform.position;
+        Vector3 slowedEnd = player.transform.position;
+
+        float slowedDistance = Vector3.Distance(slowedStart, slowedEnd);
+
+        // 회복 시간(1.5초) 경과 후, 다시 같은 방향으로 이동
+        yield return new WaitForSeconds(1.6f);
+        Vector3 restoredStart = player.transform.position;
+        yield return new WaitForSeconds(0.5f);
+        Vector3 restoredEnd = player.transform.position;
+
+        float restoredDistance = Vector3.Distance(restoredStart, restoredEnd);
 
         inputReader.MoveInput = Vector2.zero;
-        collisionChannel.OnPlayerHit.RemoveListener(listener); // 리스너 정리
-
-        float distanceAfter = Vector3.Distance(start, end);
+        collisionChannel.OnPlayerHit.RemoveListener(listener);
         inputReader.testing = false;
 
-        // 플레이어 이동 속도 10f 가정
-        float maxExpectedDistance = 2.5f;
-        Assert.LessOrEqual(distanceAfter, maxExpectedDistance,
-            $"Player did not slow down after collision. Moved {distanceAfter:F2} units.");
-    }
+        // 판단 기준
+        Assert.Less(slowedDistance, restoredDistance * 0.7f,
+            $"Slowed movement was not significantly less. Slowed: {slowedDistance:F2}, Restored: {restoredDistance:F2}");
 
+        Assert.Greater(restoredDistance, slowedDistance,
+            $"Player speed did not recover after slow duration. Slowed: {slowedDistance:F2}, Restored: {restoredDistance:F2}");
+    }
 }
