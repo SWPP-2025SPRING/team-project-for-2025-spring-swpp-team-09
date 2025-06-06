@@ -7654,7 +7654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 206586436}
-  requiredZ: 50
+  requiredZ: 420
 --- !u!4 &999948060
 Transform:
   m_ObjectHideFlags: 0
