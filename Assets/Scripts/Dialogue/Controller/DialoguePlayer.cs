@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class DialoguePlayer : MonoBehaviour
 {
@@ -19,7 +18,9 @@ public class DialoguePlayer : MonoBehaviour
 
         if (data == null)
         {
-            Debug.LogError("대화 데이터를 찾을 수 없습니다: " + dialogueId);
+            Debug.LogError($"[DialoguePlayer] 대화 데이터를 찾을 수 없습니다: {dialogueId}");
+            SceneController.Instance.ClearPendingSceneData();
+            SceneController.Instance.LoadScene("StageSelectScene");
             return;
         }
 
@@ -33,7 +34,10 @@ public class DialoguePlayer : MonoBehaviour
         {
             if (isTyping)
             {
-                StopCoroutine(typingCoroutine);
+                if (typingCoroutine != null)
+                {
+                    StopCoroutine(typingCoroutine);
+                }
                 uiController.ShowFullText(currentLine.text);
                 isTyping = false;
             }
@@ -73,14 +77,32 @@ public class DialoguePlayer : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        string nextScene = SceneController.Instance.GetPendingGameScene();
+        string nextScene = state.NextSceneName;
+        if (string.IsNullOrEmpty(nextScene))
+        {
+            Debug.LogWarning("[DialoguePlayer] 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
+            nextScene = "StageSelectScene";
+        }
+
         SceneController.Instance.ClearPendingSceneData();
         SceneController.Instance.LoadScene(nextScene);
     }
 
     public void SkipDialogue()
     {
-        StopAllCoroutines();
-        SceneManager.LoadScene(state.NextSceneName);
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+        }
+
+        string nextScene = state.NextSceneName;
+        if (string.IsNullOrEmpty(nextScene))
+        {
+            Debug.LogWarning("[DialoguePlayer] Skip 시 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
+            nextScene = "StageSelectScene";
+        }
+
+        SceneController.Instance.ClearPendingSceneData();
+        SceneController.Instance.LoadScene(nextScene);
     }
 }

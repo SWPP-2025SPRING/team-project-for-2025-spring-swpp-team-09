@@ -42,9 +42,15 @@ public class GameFlowManager : MonoBehaviour
 
     public void EnterStage(string stageId)
     {
+        if (!IsStageUnlocked(stageId))
+        {
+            Debug.LogWarning($"[GameFlowManager] {stageId}은(는) 잠겨 있어 진입할 수 없습니다.");
+            // UIManager.Instance.ShowPopup("이전 스테이지를 먼저 클리어해야 합니다.");
+            return;
+        }
+
         ISkill skill = stageId switch
         {
-            // "Stage2" => new GlideSkill(),
             "Stage2" => new WallWalkSkill(),
             "Stage1" => new TimeStopSkill(),
             _ => null
@@ -64,17 +70,32 @@ public class GameFlowManager : MonoBehaviour
 
     public void ClearStage(string stageId)
     {
-        PlayerPrefs.SetInt($"{stageId}_Cleared", 1);
-        SceneController.Instance.LoadDialogueThenScene($"{stageId}_Clear", "StageSelectScene");
+        Time.timeScale = 1f;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        string key = $"{stageId}_Cleared";
+        bool alreadyCleared = PlayerPrefs.HasKey(key);
+
+        PlayerPrefs.SetInt(key, 1);
+
+        if (alreadyCleared)
+        {
+            SceneController.Instance.LoadScene("StageSelectScene");
+        }
+        else
+        {
+            SceneController.Instance.LoadDialogueThenScene($"{stageId}_Clear", "StageSelectScene");
+        }
     }
 
     public void QuitGame()
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
-        #else
-                Application.Quit();
-        #endif
+#else
+        Application.Quit();
+#endif
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -89,5 +110,16 @@ public class GameFlowManager : MonoBehaviour
             Debug.Log("[GameFlowManager] Injecting skill into PlayerController");
             player.SetSkill(currentStageContext.Skill);
         }
+    }
+    
+    private bool IsStageUnlocked(string stageId)
+    {
+        return stageId switch
+        {
+            "Stage1" => true,
+            "Stage2" => PlayerPrefs.HasKey("Stage1_Cleared"),
+            "Stage3" => PlayerPrefs.HasKey("Stage1_Cleared") && PlayerPrefs.HasKey("Stage2_Cleared"),
+            _ => false
+        };
     }
 }
