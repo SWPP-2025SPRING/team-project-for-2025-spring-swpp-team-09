@@ -3,7 +3,10 @@ guid: b2c1ef74d5f1eb449a9eba37ed49e52c
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - leftFootTransform: {fileID: 5465940246521907071, guid: 6ccf7efb26fa6484bb85ce1f4bbaab36,
+      type: 3}
+  - cameraTarget: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

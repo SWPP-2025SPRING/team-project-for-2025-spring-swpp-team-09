@@ -33,18 +33,21 @@ public class MovementController : MonoBehaviour
     private bool isGliding = false;
 
     [Header("Wall Walk")]
-    public float wallWalkDuration = 3f;
+    public float wallWalkDuration = 5f;
     public float wallWalkSpeed = 5f;
     public float wallCheckDistance = 1f;
     public LayerMask wallLayer;
     private bool isWallWalking = false;
     private Vector3 wallNormal;
 
+    [SerializeField] private Transform leftFootTransform;
+    [SerializeField] private float footToWallOffset = 0.05f;
 
     [Header("Camera")]
     public GameObject cameraTarget;
 
     private CharacterController controller;
+    private AnimationController animationController;
     private float verticalVelocity;
     private float targetRotation;
     private float rotationVelocity;
@@ -126,6 +129,11 @@ public class MovementController : MonoBehaviour
             StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill(); // E.g., E 키를 소비
         }
+        if (isWallWalking)
+        {
+            isGrounded = true; // Animator에 Grounded 전달용
+            animationController?.SetGrounded(true);
+        }
 
     }
 
@@ -187,6 +195,11 @@ public class MovementController : MonoBehaviour
     {
         Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - groundedOffset, transform.position.z);
         grounded = Physics.CheckSphere(spherePosition, groundedRadius, groundLayers, QueryTriggerInteraction.Ignore);
+
+        if (!grounded && isWallWalking)
+        {
+            grounded = Physics.CheckSphere(spherePosition, groundedRadius, wallLayer, QueryTriggerInteraction.Ignore);
+        }
     }
 
     public void ApplySpeedModifier(float ratio, float duration)
@@ -206,14 +219,6 @@ public class MovementController : MonoBehaviour
         if (!controller.isGrounded && !isGliding)
         {
             StartCoroutine(GlideRoutine());
-        }
-    }
-
-    public void StartWallWalk(PlayerInputReader input)
-    {
-        if (!isWallWalking && CanWallWalk(out Vector3 wallNormal))
-        {
-            StartCoroutine(WallWalkRoutine(wallNormal, input));
         }
     }
 
@@ -237,6 +242,14 @@ public class MovementController : MonoBehaviour
         }
 
         isGliding = false;
+    }
+
+    public void StartWallWalk(PlayerInputReader input)
+    {
+        if (!isWallWalking && CanWallWalk(out Vector3 wallNormal))
+        {
+            StartCoroutine(WallWalkRoutine(wallNormal, input));
+        }
     }
 
     private bool CanWallWalk(out Vector3 normal)
@@ -266,36 +279,54 @@ public class MovementController : MonoBehaviour
         isWallWalking = true;
 
         float timer = 0f;
-        float stickForce = 2f; // 벽 쪽으로 밀어붙이는 정도
-        float minDistanceToWall = 0.1f;
+        float stickForce = 2f;
 
+        // 1. 회전 방향 설정
         Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;
-        Quaternion targetRotation = Quaternion.LookRotation(-wallNormal, Vector3.up);
+        Vector3 upDir = Vector3.Cross(wallForward, -wallNormal); // 발 → 머리 방향
+        Quaternion targetRotation = Quaternion.LookRotation(wallForward, upDir);
         transform.rotation = targetRotation;
 
+        // 2. 발 기준으로 벽 정렬
+        if (Physics.Raycast(leftFootTransform.position, -wallNormal, out RaycastHit hit, 1f, wallLayer))
+        {
+            // 벽면 방향으로의 수직 거리만 추출
+            Vector3 footToWall = wallNormal * Vector3.Dot((hit.point - leftFootTransform.position), wallNormal);
+            Vector3 correction = footToWall + wallNormal * footToWallOffset; // 약간 띄우기
+            controller.Move(correction); // 충돌 대응 안전 이동
+        }
+
+        // 3. 루프: 이동, 밀착, 중력 제거, 애니메이션 처리
         while (timer < wallWalkDuration)
         {
-            // 1. 벽으로 밀착: 벽 방향으로 살짝 당겨붙임
+            // 벽에 밀착
             Vector3 toWall = -wallNormal * stickForce * Time.deltaTime;
             controller.Move(toWall);
 
-            // 2. 이동: 유저 입력이 있다면 그 방향으로
+            // 입력 방향으로 벽 위 이동
             Vector2 move = input.MoveInput;
-            Vector3 walkDir = (wallForward * move.y + Vector3.up * move.x).normalized;
+            Vector3 walkDir = (wallForward * move.y + upDir * move.x).normalized;
             controller.Move(walkDir * wallWalkSpeed * Time.deltaTime);
 
-            // 3. 중력 제거
+            // 중력 제거 + 애니메이션
             verticalVelocity = 0f;
+            grounded = true;
+            animationController?.SetGrounded(true);
+            animationController?.UpdateMovement(wallWalkSpeed, move.magnitude);
 
-            // 4. Debug 표시
+            // Debug 시각화
             Debug.DrawRay(transform.position, -wallNormal * 0.5f, Color.red);
 
             timer += Time.deltaTime;
             yield return null;
         }
 
+        // 종료 처리
         isWallWalking = false;
+        animationController?.SetGrounded(false);
+        animationController?.UpdateMovement(0f, 0f);
     }
+
 
     public float CurrentSpeed => moveSpeed;
 }
