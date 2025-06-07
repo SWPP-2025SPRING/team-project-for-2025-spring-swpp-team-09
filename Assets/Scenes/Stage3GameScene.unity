@@ -17244,7 +17244,7 @@ PrefabInstance:
     - target: {fileID: 1871393328860063609, guid: 183f6e7e63e7e3847ac5e50980807b78,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.05
+      value: 8.95
       objectReference: {fileID: 0}
     - target: {fileID: 2523482438753169609, guid: 183f6e7e63e7e3847ac5e50980807b78,
         type: 3}
@@ -17887,7 +17887,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDistance: 4
-  moveSpeed: 1.5
+  moveSpeed: 6
 --- !u!4 &1669790678 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6966664904189484220, guid: 54ce0d7f051ec004994c0cd4a245357f,
