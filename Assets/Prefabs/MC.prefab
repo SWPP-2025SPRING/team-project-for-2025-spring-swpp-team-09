@@ -539,6 +539,7 @@ GameObject:
   - component: {fileID: 1720966745}
   - component: {fileID: 1720966746}
   - component: {fileID: 1720966747}
+  - component: {fileID: 5350415849231382890}
   m_Layer: 8
   m_Name: MC
   m_TagString: Player
@@ -633,18 +634,26 @@ MonoBehaviour:
   moveSpeed: 10
   sprintSpeed: 15
   rotationSmoothTime: 0.12
-  gravity: -15
+  speedChangeRate: 10
   jumpHeight: 1.2
-  accelerationRate: 10
+  gravity: -15
+  terminalVelocity: -53
   jumpTimeout: 0.5
   fallTimeout: 0.15
-  dashDistance: 6
-  dashCooldown: 5
   groundedOffset: -0.14
   groundedRadius: 0.28
   groundLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  dashDistance: 6
+  dashCooldown: 5
+  maxGlideTime: 3
+  wallWalkDuration: 3
+  wallWalkSpeed: 5
+  wallCheckDistance: 1
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
   cameraTarget: {fileID: 4606363130636419777}
 --- !u!114 &1720966745
 MonoBehaviour:
@@ -694,6 +703,21 @@ MonoBehaviour:
   movementController: {fileID: 1720966744}
   attackController: {fileID: 1720966745}
   animationController: {fileID: 1720966746}
+  skillController: {fileID: 0}
+  followCamera: {fileID: 0}
+--- !u!114 &5350415849231382890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3687461888841831020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8787a568de392f740a47c79e2ffce68d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldownDuration: 5
 --- !u!1 &4463688073676402043
 GameObject:
   m_ObjectHideFlags: 0
