@@ -10,7 +10,7 @@ public class StartMenuUI : MonoBehaviour
 
     public void OnContinueClicked()
     {
-        SceneController.Instance.LoadScene("StageSelectScene");
+        GameFlowManager.Instance.ContinueGame();
     }
 }
 

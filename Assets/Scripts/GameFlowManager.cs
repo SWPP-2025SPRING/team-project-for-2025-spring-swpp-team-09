@@ -26,22 +26,42 @@ public class GameFlowManager : MonoBehaviour
 
     public void ContinueGame()
     {
-        SceneController.Instance.LoadScene("StageSelectScene");
+        bool anyPlayed =
+            PlayerPrefs.HasKey("Stage1_Played") ||
+            PlayerPrefs.HasKey("Stage2_Played") ||
+            PlayerPrefs.HasKey("Stage3_Played");
+
+        if (anyPlayed)
+        {
+            SceneController.Instance.LoadScene("StageSelectScene");
+        }
+        else
+        {
+            Debug.LogWarning("[GameFlowManager] 이어할 수 있는 기록이 없습니다.");
+            // UIManager.Instance.ShowPopup("이어할 수 있는 저장 정보가 없습니다.");
+        }
     }
 
     public void EnterStage(string stageId)
     {
+        if (!IsStageUnlocked(stageId))
+        {
+            Debug.LogWarning($"[GameFlowManager] {stageId}은(는) 잠겨 있어 진입할 수 없습니다.");
+            return;
+        }
+
         ISkill skill = stageId switch
         {
-            // "Stage2" => new GlideSkill(),
             "Stage2" => new WallWalkSkill(),
             "Stage1" => new TimeStopSkill(),
             _ => null
         };
         currentStageContext = new StageContext(stageId, skill);
 
-        string key = $"{stageId}_Cleared";
-        if (PlayerPrefs.HasKey(key))
+        string playedKey = $"{stageId}_Played";
+        bool alreadyPlayed = PlayerPrefs.HasKey(playedKey);
+
+        if (alreadyPlayed)
         {
             SceneController.Instance.LoadScene($"{stageId}GameScene");
         }
@@ -49,21 +69,38 @@ public class GameFlowManager : MonoBehaviour
         {
             SceneController.Instance.LoadDialogueThenScene($"{stageId}_Enter", $"{stageId}GameScene");
         }
+
+        PlayerPrefs.SetInt(playedKey, 1);
     }
 
     public void ClearStage(string stageId)
     {
-        PlayerPrefs.SetInt($"{stageId}_Cleared", 1);
-        SceneController.Instance.LoadDialogueThenScene($"{stageId}_Clear", "StageSelectScene");
+        Time.timeScale = 1f;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        string key = $"{stageId}_Cleared";
+        bool alreadyCleared = PlayerPrefs.HasKey(key);
+
+        PlayerPrefs.SetInt(key, 1);
+
+        if (alreadyCleared)
+        {
+            SceneController.Instance.LoadScene("StageSelectScene");
+        }
+        else
+        {
+            SceneController.Instance.LoadDialogueThenScene($"{stageId}_Clear", "StageSelectScene");
+        }
     }
 
     public void QuitGame()
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
-        #else
-                Application.Quit();
-        #endif
+#else
+        Application.Quit();
+#endif
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -79,4 +116,21 @@ public class GameFlowManager : MonoBehaviour
             player.SetSkill(currentStageContext.Skill);
         }
     }
+
+    private bool IsStageUnlocked(string stageId)
+    {
+        return stageId switch
+        {
+            "Stage1" => true,
+            "Stage2" => PlayerPrefs.HasKey("Stage1_Cleared"),
+            "Stage3" => PlayerPrefs.HasKey("Stage1_Cleared") && PlayerPrefs.HasKey("Stage2_Cleared"),
+            _ => false
+        };
+    }
+    
+    public StageContext GetStageContext()
+    {
+        return currentStageContext;
+    }
+
 }
