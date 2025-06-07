@@ -1376,6 +1376,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 83828892}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &84301563 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2003002595477630246, guid: 183f6e7e63e7e3847ac5e50980807b78,
+    type: 3}
+  m_PrefabInstance: {fileID: 1699283161}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &108500902
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5433,12 +5439,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2845662873144838091, guid: 206622a73723b3a4e9a3caff62e06ebd,
     type: 3}
   m_PrefabInstance: {fileID: 503991309}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &543702054 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2003002595477630246, guid: 183f6e7e63e7e3847ac5e50980807b78,
-    type: 3}
-  m_PrefabInstance: {fileID: 1446683297}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &543740470
 PrefabInstance:
@@ -24229,7 +24229,7 @@ PrefabInstance:
         type: 3}
       propertyPath: door
       value: 
-      objectReference: {fileID: 543702054}
+      objectReference: {fileID: 84301563}
     - target: {fileID: 481241349358578614, guid: c088068c808336440a286cbf1e9c1b1a,
         type: 3}
       propertyPath: promptUI
