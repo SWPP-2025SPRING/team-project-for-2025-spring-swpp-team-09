@@ -21,7 +21,11 @@ public class EnemyController : MonoBehaviour
     private void Update()
     {
         movementController?.Patrol();
-        //animationController?.PlayIdle();
+        
+        if (animationController != null)
+        {
+            animationController.SetSpeed(movementController.GetCurrentSpeed());
+        }
     }
 
     public void TakeDamage(int damage)
@@ -38,7 +42,6 @@ public class EnemyController : MonoBehaviour
     private void Die()
     {
         animationController?.PlayDeath();
-        isDead = true;
-        Destroy(gameObject, 1.0f);
+        Destroy(gameObject, 1.5f);
     }
 }
