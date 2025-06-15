@@ -18,6 +18,11 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     {
         animationController.Initialize();
         skillController = GetComponent<SkillController>();
+
+        // Manually inject skill for testing
+        //delete bottom line before pull request.
+        skillController.Initialize(new TimeStopSkill(), inputReader);
+
         skillController.OnGlideRequested += () =>
         {
             movementController.ActivateGlide();
@@ -49,6 +54,9 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
 
     public void SetSkill(ISkill skill)
     {
+        //added first line for checking skill added
+        //remove before pull request.
+        Debug.Log($"[PlayerController] Received skill: {skill?.GetType().Name}");
         skillController.Initialize(skill, inputReader);
     }
 

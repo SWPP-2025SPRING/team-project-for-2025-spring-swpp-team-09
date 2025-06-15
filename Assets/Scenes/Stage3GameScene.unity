@@ -11102,19 +11102,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1024834703}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &949689096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 949689094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8787a568de392f740a47c79e2ffce68d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cooldownDuration: 5
 --- !u!95 &949689097 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 4606363130744390639, guid: 9cad301281f1ab448bafbf0183e36d2e,
@@ -12012,7 +11999,7 @@ PrefabInstance:
     - target: {fileID: 1720966747, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: skillController
       value: 
-      objectReference: {fileID: 949689096}
+      objectReference: {fileID: 0}
     - target: {fileID: 3687461888841831020, guid: 9cad301281f1ab448bafbf0183e36d2e,
         type: 3}
       propertyPath: m_Name
@@ -19795,7 +19782,7 @@ PrefabInstance:
     - target: {fileID: 6972200054664452289, guid: 183f6e7e63e7e3847ac5e50980807b78,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.6
+      value: 2.72
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 183f6e7e63e7e3847ac5e50980807b78, type: 3}
@@ -19992,7 +19979,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ShowDebugText: 0
   m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
+  m_IgnoreTimeScale: 1
   m_WorldUpOverride: {fileID: 0}
   m_UpdateMethod: 2
   m_BlendUpdateMethod: 1
