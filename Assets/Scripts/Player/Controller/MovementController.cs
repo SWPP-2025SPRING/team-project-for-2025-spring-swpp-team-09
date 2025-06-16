@@ -66,7 +66,7 @@ public class MovementController : MonoBehaviour
         fallTimeoutDelta = fallTimeout;
     }
 
-    public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool isGrounded, out bool triggerJump, out bool freeFall)
+    public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool isGrounded, out bool triggerJump, out bool freeFall, out bool climb)
     {
         GroundedCheck();
         bool justLanded = !wasGrounded && grounded;
@@ -123,10 +123,12 @@ public class MovementController : MonoBehaviour
 
         if (input.SkillPressed && CanWallWalk(out wallNormal))
         {
+            Debug.Log($"WallWalkRoutine started. Wall normal: {wallNormal}");
             StartCoroutine(WallWalkRoutine(wallNormal, input));
-            input.ConsumeSkill(); // E.g., E 키를 소비
+            input.ConsumeSkill();
+            climb = true;
         }
-
+        else {climb = false;}
     }
 
     private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
@@ -264,6 +266,7 @@ public class MovementController : MonoBehaviour
     private IEnumerator WallWalkRoutine(Vector3 wallNormal, PlayerInputReader input)
     {
         isWallWalking = true;
+        Debug.Log("WallWalkRoutine: Started");
 
         float timer = 0f;
         float stickForce = 2f; // 벽 쪽으로 밀어붙이는 정도
