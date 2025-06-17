@@ -44,16 +44,16 @@ public class GameFlowManager : MonoBehaviour
 
     public void EnterStage(string stageId)
     {
-        if (!IsStageUnlocked(stageId))
-        {
-            Debug.LogWarning($"[GameFlowManager] {stageId}은(는) 잠겨 있어 진입할 수 없습니다.");
-            return;
-        }
+        //if (!IsStageUnlocked(stageId))
+        //{
+        //    Debug.LogWarning($"[GameFlowManager] {stageId}은(는) 잠겨 있어 진입할 수 없습니다.");
+        //    return;
+        //}
 
         ISkill skill = stageId switch
         {
             "Stage2" => new WallWalkSkill(),
-            "Stage1" => new TimeStopSkill(),
+            "Stage3" => new TimeStopSkill(),
             _ => null
         };
         currentStageContext = new StageContext(stageId, skill);
