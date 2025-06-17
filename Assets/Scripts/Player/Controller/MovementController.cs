@@ -99,29 +99,6 @@ public class MovementController : MonoBehaviour
         animationBlendPrev = animationBlend;
 
         Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
-        Vector3 direction;
-
-        climb = isWallWalking;
-
-        if (input.SkillPressed && CanWallWalk(out wallNormal))
-        {
-            StartCoroutine(WallWalkRoutine(wallNormal, input));
-            input.ConsumeSkill();
-            Debug.Log($"WallWalkRoutine started. Wall normal: {wallNormal}");
-        }
-
-        if (climb)
-    {
-        // 벽 기준 방향 재설정
-        Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;  // 벽을 따라 좌우
-        Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;     // 벽을 따라 상하
-
-        direction = wallForward * move.x + wallUp * move.y;
-
-        transform.rotation = Quaternion.LookRotation(-wallNormal);
-    }
-    else
-    {
         if (inputDir != Vector3.zero)
         {
             targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
@@ -140,6 +117,25 @@ public class MovementController : MonoBehaviour
         }
         Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
 
+        climb = isWallWalking;
+        if (input.SkillPressed && CanWallWalk(out wallNormal))
+        {
+            StartCoroutine(WallWalkRoutine(wallNormal, input));
+            input.ConsumeSkill();
+            Debug.Log($"WallWalkRoutine started. Wall normal: {wallNormal}");
+        }
+
+        if (climb)
+        {
+            // 벽 기준 방향 재설정
+            Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;  // 벽을 따라 좌우
+            Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;     // 벽을 따라 상하
+
+            direction = wallForward * move.x + wallUp * move.y;
+
+            transform.rotation = Quaternion.LookRotation(-wallNormal);
+        }
+
         triggerJump = false;
         JumpAndGravity(input, ref triggerJump);
 
@@ -152,6 +148,12 @@ public class MovementController : MonoBehaviour
         }
 
         freeFall = !grounded && verticalVelocity < 0f;
+
+        if (input.SkillPressed && CanWallWalk(out wallNormal))
+        {
+            StartCoroutine(WallWalkRoutine(wallNormal, input));
+            input.ConsumeSkill(); // E.g., E 키를 소비
+        }
     }
 
     private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
