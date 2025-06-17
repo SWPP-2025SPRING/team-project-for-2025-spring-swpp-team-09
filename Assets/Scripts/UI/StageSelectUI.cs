@@ -5,18 +5,16 @@ public class StageSelectUI : MonoBehaviour
 {
     public void OnStage1Clicked()
     {
-        bool isFirstPlay = !PlayerPrefs.HasKey("Stage1_Cleared");
-
-        if (isFirstPlay)
-        {
-            StorySceneLoader.cutsceneId = "Stage1_Enter";
-            StorySceneLoader.LoadCutscene("Stage1_Enter");
-        }
-        else
-        {
-            SceneManager.LoadScene("Stage1GameScene");
-        }
+        GameFlowManager.Instance.EnterStage("Stage1");
     }
 
-    // 향후 Stage2 등 추가
+    public void OnStage2Clicked()
+    {
+        GameFlowManager.Instance.EnterStage("Stage2");
+    }
+
+    public void OnStage3Clicked()
+    {
+        GameFlowManager.Instance.EnterStage("Stage3");
+    }
 }
