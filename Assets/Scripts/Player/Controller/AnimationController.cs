@@ -8,6 +8,7 @@ public class AnimationController : MonoBehaviour
     [Header("Footstep Sounds")]
     [SerializeField] private AudioClip landingClip;
     [SerializeField] private AudioClip[] footstepClips;
+    [SerializeField] private AudioClip jumpingClip;
     [Range(0f, 1f)] [SerializeField] private float volume = 0.5f;
 
     private CharacterController characterController;
@@ -58,6 +59,8 @@ public class AnimationController : MonoBehaviour
     {
         animator.SetBool(animIdJump, true);
         StartCoroutine(ResetJumpFlag());
+        Vector3 pos = transform.position + characterController.center;
+        AudioSource.PlayClipAtPoint(jumpingClip, pos, volume);
     }
 
     private IEnumerator ResetJumpFlag()
