@@ -4,7 +4,6 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 
-// temp -> Stage1GameScene 변경 필요
 public class StageFlowTests
 {
     private StageGameManager gameManager;
@@ -28,6 +27,7 @@ public class StageFlowTests
 
         PlayerPrefs.SetInt("Stage1_Played", 1);
 
+        //Stage1GameScene으로 수정 필요
         SceneManager.LoadScene("temp");
         yield return new WaitForSeconds(1f);
 
@@ -46,6 +46,8 @@ public class StageFlowTests
     [UnityTest]
     public IEnumerator Pause_ShowsPauseUI()
     {
+        inputReader.testing = true;
+
         inputReader.PausePressed = true;
         yield return null;
         Assert.IsTrue(uiController.pauseMenuUI.activeSelf);
