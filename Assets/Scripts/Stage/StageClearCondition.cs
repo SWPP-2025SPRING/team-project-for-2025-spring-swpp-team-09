@@ -49,3 +49,4 @@ public class StageClearCondition : MonoBehaviour
     {
         elapsed = TimeLimit + 1f;
     }
+}
