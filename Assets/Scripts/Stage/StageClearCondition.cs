@@ -44,9 +44,4 @@ public class StageClearCondition : MonoBehaviour
 
     public bool TimeOver => elapsed > TimeLimit;
 
-    public void SetYCheck(bool enabled, float yValue = 0f)
-    {
-        checkY = enabled;
-        requiredY = yValue;
-    }
 }

@@ -56,16 +56,6 @@ public class StageGameManager : MonoBehaviour
         {
             inputReader = player1.inputReader;
         }
-
-        if (stageId == "Stage2")
-        {
-            // 예: 건물 윗부분 높이 직접 지정
-            clearCondition.SetYCheck(true, 100f);
-        }
-        else
-        {
-            clearCondition.SetYCheck(false);
-        }
     }
 
     void Update()
