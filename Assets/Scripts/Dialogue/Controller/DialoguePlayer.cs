@@ -1,9 +1,11 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialoguePlayer : MonoBehaviour
 {
     [SerializeField] private DialogueUIController uiController;
+    [SerializeField] private Image backgroundImage;
 
     private DialogueState state;
     private DialogueLine currentLine;
@@ -25,6 +27,20 @@ public class DialoguePlayer : MonoBehaviour
         }
 
         state = new DialogueState(data);
+
+        if (!string.IsNullOrEmpty(data.backgroundPath))
+        {
+            Sprite bgSprite = Resources.Load<Sprite>(data.backgroundPath);
+            if (bgSprite != null)
+            {
+                backgroundImage.sprite = bgSprite;
+            }
+            else
+            {
+                Debug.LogWarning($"[DialoguePlayer] 배경 이미지 로드 실패: {data.backgroundPath}");
+            }
+        }
+
         PlayNext();
     }
 
@@ -59,6 +75,12 @@ public class DialoguePlayer : MonoBehaviour
         currentLine = state.NextLine();
         uiController.Clear();
         uiController.DisplayLine(currentLine);
+
+        if (!currentLine.IsNarration)
+        {
+            uiController.DisplayCharacter(currentLine);
+        }
+
         typingCoroutine = StartCoroutine(TypeLine(currentLine.text));
     }
 
