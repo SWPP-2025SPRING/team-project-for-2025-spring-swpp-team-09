@@ -4,7 +4,6 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 
-/*
 public class StageFlowTests
 {
     private StageGameManager gameManager;
@@ -28,7 +27,6 @@ public class StageFlowTests
 
         PlayerPrefs.SetInt("Stage1_Played", 1);
 
-        //Stage1GameScene으로 수정 필요
         SceneManager.LoadScene("Stage1GameScene");
         yield return new WaitForSeconds(1f);
 
@@ -57,16 +55,12 @@ public class StageFlowTests
             yield return null;
         }
         Assert.IsTrue(uiController.pauseMenuUI.activeSelf);
+        Time.timeScale = 1f;
     }
 
     [UnityTest]
     public IEnumerator Resume_AllowsPlayerMovement()
     {
-        inputReader.PausePressed = true;
-        yield return null;
-        Assert.IsTrue(uiController.pauseMenuUI.activeSelf);
-        yield return new WaitForSeconds(1f);
-
         gameManager.ResumeGame();
         yield return new WaitForSeconds(1f);
 
@@ -87,6 +81,11 @@ public class StageFlowTests
         string before = SceneManager.GetActiveScene().name;
         gameManager.RestartGame();
         yield return new WaitForSeconds(1f);
+
+        gameManager = GameObject.FindObjectOfType<StageGameManager>();
+        uiController = GameObject.FindObjectOfType<StageUIController>();
+        inputReader = GameObject.FindWithTag("Player").GetComponent<PlayerController>().inputReader;
+
         Assert.AreEqual(before, SceneManager.GetActiveScene().name);
     }
 
@@ -95,9 +94,19 @@ public class StageFlowTests
     public IEnumerator Quit_LeadsToStageSelect()
     {
         gameManager.QuitGame();
-        yield return new WaitForSeconds(1f);
+
+        float timeout = 3f;
+        float elapsed = 0f;
+
+        while (SceneManager.GetActiveScene().name != "StageSelectScene" && elapsed < timeout)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
         Assert.AreEqual("StageSelectScene", SceneManager.GetActiveScene().name);
     }
+
 
     [UnityTest]
     public IEnumerator GameClear_ShowsRank()
@@ -148,4 +157,3 @@ public class StageFlowTests
         Assert.IsTrue(uiController.gameOverUI.activeSelf, "GameOver UI was not activated after timeout");
     }
 }
-*/

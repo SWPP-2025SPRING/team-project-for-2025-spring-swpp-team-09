@@ -143,11 +143,13 @@ public class StageGameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        Time.timeScale = 1f;
         GameFlowManager.Instance.EnterStage(stageId);
     }
 
     public void QuitGame()
     {
+        Time.timeScale = 1f;
         GameFlowManager.Instance.ContinueGame();
     }
 
