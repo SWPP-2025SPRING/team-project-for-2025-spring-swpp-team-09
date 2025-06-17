@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     {
         animationController.Initialize();
         skillController = GetComponent<SkillController>();
+
         skillController.OnGlideRequested += () =>
         {
             movementController.ActivateGlide();

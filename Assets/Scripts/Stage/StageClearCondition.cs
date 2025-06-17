@@ -4,8 +4,7 @@ public class StageClearCondition : MonoBehaviour
 {
     [SerializeField] private Transform player;
     [SerializeField] private float requiredZ = 280f;
-
-    private const float TimeLimit = 120f;
+    [SerializeField] private float TimeLimit = 120f;
     private float elapsed = 0f;
 
     public bool IsCleared => elapsed <= TimeLimit && player.position.z >= requiredZ;

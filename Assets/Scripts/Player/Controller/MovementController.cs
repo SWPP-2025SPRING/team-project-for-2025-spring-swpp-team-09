@@ -94,7 +94,7 @@ public class MovementController : MonoBehaviour
         else
             currentSpeed = targetSpeed;
 
-        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.deltaTime * speedChangeRate);
+        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.unscaledDeltaTime * speedChangeRate);
         animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
         animationBlendPrev = animationBlend;
 
@@ -102,16 +102,25 @@ public class MovementController : MonoBehaviour
         if (inputDir != Vector3.zero)
         {
             targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
-            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, rotationSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, rotation, 0f);
-        }
 
+            float rotation = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetRotation,
+                ref rotationVelocity,
+                rotationSmoothTime,
+                Mathf.Infinity,
+                Time.unscaledDeltaTime
+            );
+
+            if (!float.IsNaN(rotation))
+                transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+        }
         Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
 
         triggerJump = false;
         JumpAndGravity(input, ref triggerJump);
 
-        controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
+        controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.unscaledDeltaTime);
 
         if (input.DashPressed && canDash)
         {
@@ -148,7 +157,7 @@ public class MovementController : MonoBehaviour
             }
 
             if (jumpTimeoutDelta > 0f)
-                jumpTimeoutDelta -= Time.deltaTime;
+                jumpTimeoutDelta -= Time.unscaledDeltaTime;
 
             hasDoubleJumped = false;
             canDoubleJump = true;
@@ -158,7 +167,7 @@ public class MovementController : MonoBehaviour
             jumpTimeoutDelta = jumpTimeout;
 
             if (fallTimeoutDelta > 0f)
-                fallTimeoutDelta -= Time.deltaTime;
+                fallTimeoutDelta -= Time.unscaledDeltaTime;
 
             if (input.TryConsumeJump() && canDoubleJump && !hasDoubleJumped)
             {
@@ -169,7 +178,7 @@ public class MovementController : MonoBehaviour
             }
         }
 
-        verticalVelocity += gravity * Time.deltaTime;
+        verticalVelocity += gravity * Time.unscaledDeltaTime;
         verticalVelocity = Mathf.Max(verticalVelocity, terminalVelocity);
     }
 
