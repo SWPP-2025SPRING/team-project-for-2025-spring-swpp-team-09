@@ -33,7 +33,8 @@ public class GameFlowManager : MonoBehaviour
     {
         ISkill skill = stageId switch
         {
-            "Stage2" => new GlideSkill(),
+            // "Stage2" => new GlideSkill(),
+            "Stage2" => new WallWalkSkill(),
             "Stage1" => new TimeStopSkill(),
             _ => null
         };
