@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
         {
             StartCoroutine(HandleTimeStop());
         };
+        skillController.OnWallWalkRequested += HandleWallWalkRequested; // Design Pattern 통일 필요
     }
 
     private void Update()
@@ -96,5 +97,9 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
         Time.timeScale = 1f;
         timeStopped = false;
         Debug.Log("TimeStop: end");
+    }
+    private void HandleWallWalkRequested()
+    {
+        movementController.StartWallWalk(inputReader); // 다음 단계에서 구현할 메서드
     }
 }

@@ -134,4 +134,3 @@ public class StageGameManager : MonoBehaviour
 #endif
     }
 }
-

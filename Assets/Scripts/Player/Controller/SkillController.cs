@@ -13,6 +13,7 @@ public class SkillController : MonoBehaviour
 
     public event Action OnGlideRequested;
     public event Action OnTimeStopRequested;
+    public event Action OnWallWalkRequested;
 
     public void Initialize(ISkill skill, PlayerInputReader input)
     {
@@ -23,7 +24,8 @@ public class SkillController : MonoBehaviour
 
         context = new SkillExecutionContext(
             requestGlide: () => OnGlideRequested?.Invoke(),
-            requestTimeStop: () => OnTimeStopRequested?.Invoke()
+            requestTimeStop: () => OnTimeStopRequested?.Invoke(),
+            requestWallWalk: () => OnWallWalkRequested?.Invoke()
         );
     }
 
