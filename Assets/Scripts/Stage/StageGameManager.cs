@@ -106,7 +106,7 @@ public class StageGameManager : MonoBehaviour
             uiController.SetClearRank(true, rank);
 
             Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
-            GameFlowManager.Instance.ClearStage(stageId);
+            StartCoroutine(WaitThenClearStageCoroutine());
         }
     }
 
@@ -146,5 +146,11 @@ public class StageGameManager : MonoBehaviour
     public void QuitGame()
     {
         GameFlowManager.Instance.ContinueGame();
+    }
+
+    private IEnumerator WaitThenClearStageCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+        GameFlowManager.Instance.ClearStage(stageId);
     }
 }

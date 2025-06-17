@@ -43,5 +43,9 @@ public class StageClearCondition : MonoBehaviour
     }
 
     public bool TimeOver => elapsed > TimeLimit;
-
-}
+    
+    // 테스트용 수동 타임아웃 트리거
+    public void TriggerTimeout()
+    {
+        elapsed = TimeLimit + 1f;
+    }
