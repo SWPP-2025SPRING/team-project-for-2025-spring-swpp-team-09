@@ -17,6 +17,7 @@ public class AnimationController : MonoBehaviour
     private int animIdGrounded;
     private int animIdJump;
     private int animIdFreeFall;
+    private int animIdClimb;
 
     private void Awake()
     {
@@ -29,6 +30,7 @@ public class AnimationController : MonoBehaviour
         animIdGrounded = Animator.StringToHash("Grounded");
         animIdJump = Animator.StringToHash("Jump");
         animIdFreeFall = Animator.StringToHash("FreeFall");
+        animIdClimb = Animator.StringToHash("Climb");
     }
 
     public void Initialize()
@@ -38,6 +40,7 @@ public class AnimationController : MonoBehaviour
         animator.SetBool(animIdGrounded, true);
         animator.SetBool(animIdJump, false);
         animator.SetBool(animIdFreeFall, false);
+        animator.SetBool(animIdClimb, false);
     }
 
     public void UpdateMovement(float animationBlend, float inputMagnitude)
@@ -66,6 +69,11 @@ public class AnimationController : MonoBehaviour
     public void SetFreeFall(bool state)
     {
         animator.SetBool(animIdFreeFall, state);
+    }
+
+    public void SetClimb (bool state)
+    {
+        animator.SetBool(animIdClimb, state);
     }
 
     public void OnFootstep(AnimationEvent animationEvent)
