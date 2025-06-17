@@ -106,7 +106,7 @@ public class StageGameManager : MonoBehaviour
             uiController.SetClearRank(true, rank);
 
             Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
-            GameFlowManager.Instance.ClearStage(stageId);
+            StartCoroutine(WaitThenClearStageCoroutine());
         }
     }
 
@@ -126,6 +126,8 @@ public class StageGameManager : MonoBehaviour
     {
         if (isGameOver || isGameClear) return;
 
+        Time.timeScale = 0f;
+
         uiController.ShowPauseUI(true);
         isPaused = true;
         controlHandler?.EnableInput(false);
@@ -133,6 +135,7 @@ public class StageGameManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        Time.timeScale = 1f;
         uiController.ShowPauseUI(false);
         isPaused = false;
         controlHandler?.EnableInput(true);
@@ -140,11 +143,19 @@ public class StageGameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        Time.timeScale = 1f;
         GameFlowManager.Instance.EnterStage(stageId);
     }
 
     public void QuitGame()
     {
+        Time.timeScale = 1f;
         GameFlowManager.Instance.ContinueGame();
+    }
+
+    private IEnumerator WaitThenClearStageCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+        GameFlowManager.Instance.ClearStage(stageId);
     }
 }

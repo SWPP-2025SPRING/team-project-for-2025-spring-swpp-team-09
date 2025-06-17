@@ -66,7 +66,7 @@ public class MovementController : MonoBehaviour
         fallTimeoutDelta = fallTimeout;
     }
 
-    public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool isGrounded, out bool triggerJump, out bool freeFall)
+    public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool isGrounded, out bool triggerJump, out bool freeFall, out bool climb)
     {
         GroundedCheck();
         bool justLanded = !wasGrounded && grounded;
@@ -94,7 +94,7 @@ public class MovementController : MonoBehaviour
         else
             currentSpeed = targetSpeed;
 
-        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.deltaTime * speedChangeRate);
+        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.unscaledDeltaTime * speedChangeRate);
         animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
         animationBlendPrev = animationBlend;
 
@@ -102,16 +102,44 @@ public class MovementController : MonoBehaviour
         if (inputDir != Vector3.zero)
         {
             targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
-            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity, rotationSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+
+            float rotation = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetRotation,
+                ref rotationVelocity,
+                rotationSmoothTime,
+                Mathf.Infinity,
+                Time.unscaledDeltaTime
+            );
+
+            if (!float.IsNaN(rotation))
+                transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+        }
+        Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
+
+        climb = isWallWalking;
+        if (input.SkillPressed && CanWallWalk(out wallNormal))
+        {
+            StartCoroutine(WallWalkRoutine(wallNormal, input));
+            input.ConsumeSkill();
+            Debug.Log($"WallWalkRoutine started. Wall normal: {wallNormal}");
         }
 
-        Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
+        if (climb)
+        {
+            // 벽 기준 방향 재설정
+            Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;  // 벽을 따라 좌우
+            Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;     // 벽을 따라 상하
+
+            direction = wallForward * move.x + wallUp * move.y;
+
+            transform.rotation = Quaternion.LookRotation(-wallNormal);
+        }
 
         triggerJump = false;
         JumpAndGravity(input, ref triggerJump);
 
-        controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.deltaTime);
+        controller.Move((direction * currentSpeed + Vector3.up * verticalVelocity) * Time.unscaledDeltaTime);
 
         if (input.DashPressed && canDash)
         {
@@ -126,7 +154,6 @@ public class MovementController : MonoBehaviour
             StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill(); // E.g., E 키를 소비
         }
-
     }
 
     private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
@@ -148,7 +175,7 @@ public class MovementController : MonoBehaviour
             }
 
             if (jumpTimeoutDelta > 0f)
-                jumpTimeoutDelta -= Time.deltaTime;
+                jumpTimeoutDelta -= Time.unscaledDeltaTime;
 
             hasDoubleJumped = false;
             canDoubleJump = true;
@@ -158,7 +185,7 @@ public class MovementController : MonoBehaviour
             jumpTimeoutDelta = jumpTimeout;
 
             if (fallTimeoutDelta > 0f)
-                fallTimeoutDelta -= Time.deltaTime;
+                fallTimeoutDelta -= Time.unscaledDeltaTime;
 
             if (input.TryConsumeJump() && canDoubleJump && !hasDoubleJumped)
             {
@@ -169,7 +196,7 @@ public class MovementController : MonoBehaviour
             }
         }
 
-        verticalVelocity += gravity * Time.deltaTime;
+        verticalVelocity += gravity * Time.unscaledDeltaTime;
         verticalVelocity = Mathf.Max(verticalVelocity, terminalVelocity);
     }
 
@@ -264,37 +291,71 @@ public class MovementController : MonoBehaviour
     private IEnumerator WallWalkRoutine(Vector3 wallNormal, PlayerInputReader input)
     {
         isWallWalking = true;
+        Debug.Log("WallWalkRoutine: Started");
 
         float timer = 0f;
         float stickForce = 2f; // 벽 쪽으로 밀어붙이는 정도
-        float minDistanceToWall = 0.1f;
+        float wallWalkSpeed = 0.1f;
 
-        Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;
-        Quaternion targetRotation = Quaternion.LookRotation(-wallNormal, Vector3.up);
-        transform.rotation = targetRotation;
+        // 1. 안전한 wallRight 설정
+        Vector3 wallRight = Vector3.Cross(Vector3.up, wallNormal);
+        if (wallRight.magnitude < 0.01f)
+            wallRight = Vector3.Cross(Vector3.forward, wallNormal);
+        wallRight.Normalize();
+
+        // 2. wallUp 생성
+        Vector3 wallUp = Vector3.Cross(wallNormal, wallRight).normalized;
+
+        // 3. 회전 생성
+        Quaternion wallRotation = Quaternion.LookRotation(-wallNormal, wallUp);
 
         while (timer < wallWalkDuration)
         {
-            // 1. 벽으로 밀착: 벽 방향으로 살짝 당겨붙임
-            Vector3 toWall = -wallNormal * stickForce * Time.deltaTime;
-            controller.Move(toWall);
+            // 매 프레임 벽 기준으로 회전 고정
+            transform.rotation = wallRotation;
 
-            // 2. 이동: 유저 입력이 있다면 그 방향으로
+            Debug.DrawRay(transform.position, wallNormal, Color.blue);   // 벽 방향
+            Debug.DrawRay(transform.position, wallRight, Color.red);     // 좌우 방향
+            Debug.DrawRay(transform.position, wallUp, Color.green);      // 위아래 방향
+
+            // ↓ 입력 처리: 아래 방향(S키)만
             Vector2 move = input.MoveInput;
-            Vector3 walkDir = (wallForward * move.y + Vector3.up * move.x).normalized;
-            controller.Move(walkDir * wallWalkSpeed * Time.deltaTime);
+            Vector3 moveDir = (wallRight * move.x + wallUp * move.y).normalized;
 
-            // 3. 중력 제거
+            if (moveDir != Vector3.zero)
+            {
+                controller.Move(moveDir * wallWalkSpeed * Time.deltaTime);
+                Debug.DrawRay(transform.position, moveDir, Color.yellow); // 실제 이동 방향
+            }
+
+            // 중력 제거
             verticalVelocity = 0f;
-
-            // 4. Debug 표시
-            Debug.DrawRay(transform.position, -wallNormal * 0.5f, Color.red);
 
             timer += Time.deltaTime;
             yield return null;
+
+            /*
+            // 벽 쪽으로 밀착
+            Vector3 toWall = -wallNormal * stickForce * Time.deltaTime;
+            controller.Move(toWall);
+
+            // 입력값을 월드 기준 → 벽 기준 좌표계로 회전
+            Vector2 move = input.MoveInput;
+            Vector3 localInput = new Vector3(move.x, 0f, move.y); // W = +z, S = -z
+            Vector3 moveDir = wallRotation * localInput; // ← 핵심: 입력을 벽 기준으로 회전
+            moveDir = moveDir.normalized;
+
+            controller.Move(moveDir * wallWalkSpeed * Time.deltaTime);
+
+            // 중력 제거
+            verticalVelocity = 0f;
+
+            timer += Time.deltaTime;
+            yield return null;
+            */
         }
 
-        isWallWalking = false;
+    isWallWalking = false;
     }
 
     public float CurrentSpeed => moveSpeed;

@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     {
         animationController.Initialize();
         skillController = GetComponent<SkillController>();
+
         skillController.OnGlideRequested += () =>
         {
             movementController.ActivateGlide();
@@ -34,12 +35,13 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     {
         attackController.HandleAttackInput(inputReader);
 
-        movementController.ProcessMovement(inputReader, out float animBlend, out float inputMag, out bool grounded, out bool jumpTrig, out bool freeFall);
+        movementController.ProcessMovement(inputReader, out float animBlend, out float inputMag, out bool grounded, out bool jumpTrig, out bool freeFall, out bool climb);
 
         animationController.UpdateMovement(animBlend, inputMag);
         if (jumpTrig) animationController.TriggerJump();
         animationController.SetGrounded(grounded);
         animationController.SetFreeFall(freeFall);
+        animationController.SetClimb(climb);
     }
 
     public void ApplySlow(float ratio, float duration)
