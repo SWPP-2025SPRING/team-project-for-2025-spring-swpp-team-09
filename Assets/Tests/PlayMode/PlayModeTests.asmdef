@@ -1,7 +1,9 @@
 {
   "name": "PlayModeTests",
   "references": [
-    "GameRuntime"
+    "GameRuntime",
+    "Unity.TextMeshPro",
+    "UnityEngine.UI"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

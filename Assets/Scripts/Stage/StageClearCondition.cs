@@ -44,9 +44,9 @@ public class StageClearCondition : MonoBehaviour
 
     public bool TimeOver => elapsed > TimeLimit;
 
-    public void SetYCheck(bool enabled, float yValue = 0f)
+    // 테스트용 수동 타임아웃 트리거
+    public void TriggerTimeout()
     {
-        checkY = enabled;
-        requiredY = yValue;
+        elapsed = TimeLimit + 1f;
     }
 }
