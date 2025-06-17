@@ -6,8 +6,8 @@ public class StageClearCondition : MonoBehaviour
     [SerializeField] private float requiredZ = 280f;
     [SerializeField] private float requiredY = 0f;
     [SerializeField] private bool checkY = false;
-
-    private const float TimeLimit = 120f;
+    [SerializeField] private float TimeLimit = 120f;
+    
     private float elapsed = 0f;
 
     public bool IsCleared

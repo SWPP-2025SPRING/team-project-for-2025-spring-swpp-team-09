@@ -23,6 +23,7 @@ public class AnimationController : MonoBehaviour
     {
         if (animator == null) animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
+        animator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
         animIdSpeed = Animator.StringToHash("Speed");
         animIdMotionSpeed = Animator.StringToHash("MotionSpeed");
