@@ -8841,6 +8841,18 @@ Animator:
     type: 3}
   m_PrefabInstance: {fileID: 1842175254}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1208675560 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1842175254}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208675554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23ccfda591389c14d8d991611f949660, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1231871587
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12946,6 +12958,10 @@ PrefabInstance:
       propertyPath: groundedRadius
       value: 0.15
       objectReference: {fileID: 0}
+    - target: {fileID: 1720966744, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+      propertyPath: animationController
+      value: 
+      objectReference: {fileID: 1208675560}
     - target: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: animator
       value: 
