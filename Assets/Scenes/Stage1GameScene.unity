@@ -53211,6 +53211,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 206586436}
   requiredZ: 705
+  requiredY: 0
+  checkY: 0
+  TimeLimit: 120
 --- !u!4 &999948060
 Transform:
   m_ObjectHideFlags: 0
@@ -63539,7 +63542,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1197995705}
-  m_LocalRotation: {x: 0.5213153, y: 0.008431209, z: 0.0022510192, w: 0.8533196}
+  m_LocalRotation: {x: 0.5213154, y: 0.008431211, z: 0.002251018, w: 0.8533195}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -65705,7 +65708,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1239917520}
-  m_LocalRotation: {x: 0.5409683, y: 0.008481155, z: 0.002054846, w: 0.84099776}
+  m_LocalRotation: {x: 0.5409684, y: 0.008481156, z: 0.0020548448, w: 0.8409977}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -69970,7 +69973,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1321277632}
-  m_LocalRotation: {x: 0.5604138, y: 0.008526725, z: 0.0018567072, w: 0.82816684}
+  m_LocalRotation: {x: 0.5604138, y: 0.008526724, z: 0.0018567066, w: 0.82816684}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -70309,6 +70312,7 @@ GameObject:
   - component: {fileID: 1329627066}
   - component: {fileID: 1329627065}
   - component: {fileID: 1329627064}
+  - component: {fileID: 1329627068}
   m_Layer: 0
   m_Name: Boat (4)
   m_TagString: Untagged
@@ -70338,7 +70342,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1329627062}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 80b96244000e7604489c60c663e2b5fd, type: 3}
   m_Name: 
@@ -70409,6 +70413,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1329627062}
   m_Mesh: {fileID: 8536425139288874787, guid: 8c206f505f08b44a3a2f160ce8a1038a, type: 3}
+--- !u!114 &1329627068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1329627062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c58ee915d5c658a43a2d36dfa8d65104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveDirection: 2
+  moveDistance: 4
+  moveSpeed: 1.5
+  enableRotation: 0
+  spinSpeed: 0
 --- !u!1 &1331431944 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5317621499353570459, guid: 65f69d45a9c9ab74e8af05a4096abc65,
