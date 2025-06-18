@@ -39,9 +39,9 @@ public class PlayerInputReader : MonoBehaviour
         var keyboard = Keyboard.current;
         var mouse = Mouse.current;
 
-        PausePressed = keyboard.escapeKey.wasPressedThisFrame;
-
         if (!inputEnabled || testing) return;
+
+        PausePressed = keyboard.escapeKey.wasPressedThisFrame;        
 
         float x = 0f;
         float y = 0f;

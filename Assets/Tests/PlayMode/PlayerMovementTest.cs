@@ -78,7 +78,14 @@ public class PlayerMovementTests
         Vector3 start = player.transform.position;
 
         inputReader.MoveInput = Vector2.down;
-        yield return new WaitForSeconds(0.5f);
+        float waitTime = 0.5f;
+        float elapsed = 0f;
+
+        while (elapsed < waitTime)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
         inputReader.MoveInput = Vector2.zero;
 
         Vector3 end = player.transform.position;

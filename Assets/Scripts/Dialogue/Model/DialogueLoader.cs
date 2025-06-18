@@ -17,9 +17,39 @@ public static class DialogueLoader
         {
             if (entry.id == id)
             {
-                var data = new DialogueData(entry.nextScene);
+                var data = new DialogueData(entry.nextScene, entry.background);
+
                 foreach (var line in entry.lines)
-                    data.Add(line.speaker, line.text);
+                {
+                    string spriteName = line.spriteName;
+                    bool isLeft = line.isLeft;
+
+                    if (string.IsNullOrEmpty(spriteName))
+                    {
+                        switch (line.speaker)
+                        {
+                            case "정파 맹주":
+                                spriteName = "stage1enemy";
+                                isLeft = false;
+                                break;
+                            case "울트론":
+                                spriteName = "stage2enemy";
+                                isLeft = false;
+                                break;
+                            case "프레데터":
+                                spriteName = "stage3enemy";
+                                isLeft = false;
+                                break;
+                            case "멸화사":
+                                spriteName = "boss";
+                                isLeft = false;
+                                break;
+                        }
+                    }
+
+                    data.Add(line.speaker, line.text, spriteName, isLeft);
+                }
+
                 return data;
             }
         }
@@ -39,6 +69,7 @@ public static class DialogueLoader
     {
         public string id;
         public string nextScene;
+        public string background;
         public List<DialogueLineJSON> lines;
     }
 
@@ -47,5 +78,7 @@ public static class DialogueLoader
     {
         public string speaker;
         public string text;
+        public string spriteName;
+        public bool isLeft = true;
     }
 }
