@@ -33,18 +33,18 @@ public class MovementController : MonoBehaviour
     private bool isGliding = false;
 
     [Header("Wall Walk")]
-    public float wallWalkDuration = 3f;
+    public float wallWalkDuration = 5f;
     public float wallWalkSpeed = 5f;
     public float wallCheckDistance = 1f;
     public LayerMask wallLayer;
     private bool isWallWalking = false;
     private Vector3 wallNormal;
 
-
     [Header("Camera")]
     public GameObject cameraTarget;
 
     private CharacterController controller;
+    public SkillController skillcontroller;
     private float verticalVelocity;
     private float targetRotation;
     private float rotationVelocity;
@@ -118,20 +118,22 @@ public class MovementController : MonoBehaviour
         Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
 
         climb = isWallWalking;
-        if (input.SkillPressed && CanWallWalk(out wallNormal))
+        
+        
+        if (input.SkillPressed && CanWallWalk(out wallNormal) && skillcontroller.CanUseSkill())
         {
             StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill();
             Debug.Log($"WallWalkRoutine started. Wall normal: {wallNormal}");
         }
-
+        
         if (climb)
         {
             // 벽 기준 방향 재설정
             Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;  // 벽을 따라 좌우
             Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;     // 벽을 따라 상하
 
-            direction = (wallForward * move.x + wallUp * move.y) / 3;
+            direction = (wallForward * move.x + wallUp * move.y) / 4;
 
             transform.rotation = Quaternion.LookRotation(-wallNormal);
         }
@@ -235,6 +237,7 @@ public class MovementController : MonoBehaviour
         if (!isWallWalking && CanWallWalk(out Vector3 wallNormal))
         {
             StartCoroutine(WallWalkRoutine(wallNormal, input));
+            input.ConsumeSkill();
         }
     }
 
@@ -332,6 +335,7 @@ public class MovementController : MonoBehaviour
         }
 
     isWallWalking = false;
+    skillcontroller.NotifySkillEnded();
     }
 
     private bool IsStillOnSameWall(Vector3 originalWallNormal)
