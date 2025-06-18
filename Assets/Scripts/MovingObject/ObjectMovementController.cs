@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectMovementController : MonoBehaviour
+public class ObjectMovementController : MonoBehaviour, IMovablePlatform
 {
     public enum MoveDirection
     {
@@ -17,10 +18,16 @@ public class ObjectMovementController : MonoBehaviour
 
     [Header("Rotation Settings")]
     public bool enableRotation = false;
-    public float spinSpeed = 0f; // Degrees per second
+    public float spinSpeed = 0f;
 
     private Vector3 startPos;
+    private Vector3 lastPosition;
+    private Vector3 deltaMovement;
     private Transform cachedTransform;
+
+    private PlayerPlatformSync rider;
+
+    public Vector3 DeltaMovement => deltaMovement;
 
     void Awake()
     {
@@ -30,12 +37,21 @@ public class ObjectMovementController : MonoBehaviour
     void Start()
     {
         startPos = cachedTransform.position;
+        lastPosition = startPos;
     }
 
     void Update()
     {
         HandleMovement();
         HandleRotation();
+
+        deltaMovement = cachedTransform.position - lastPosition;
+        lastPosition = cachedTransform.position;
+
+        if (rider != null)
+        {
+            rider.OnPlatformMoved(deltaMovement);
+        }
     }
 
     private void HandleMovement()
@@ -63,5 +79,16 @@ public class ObjectMovementController : MonoBehaviour
         if (!enableRotation) return;
 
         cachedTransform.Rotate(0, spinSpeed * Time.deltaTime, 0);
+    }
+
+    public void RegisterPlatformSync(PlayerPlatformSync sync)
+    {
+        rider = sync;
+    }
+
+    public void UnregisterPlatformSync(PlayerPlatformSync sync)
+    {
+        if (rider == sync)
+            rider = null;
     }
 }
