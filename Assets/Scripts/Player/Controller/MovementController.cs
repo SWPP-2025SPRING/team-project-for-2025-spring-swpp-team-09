@@ -3,6 +3,8 @@ using System.Collections;
 
 public class MovementController : MonoBehaviour
 {
+    [SerializeField] private SoundEventChannel soundEventChannel;
+
     [Header("Movement")]
     public float moveSpeed = 10f;
     public float sprintSpeed = 15f;
@@ -172,6 +174,8 @@ public class MovementController : MonoBehaviour
                 verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
                 triggerJump = true;
 
+                soundEventChannel?.RaisePlaySFX("jump");
+
                 glideTimeRemaining = maxGlideTime;
             }
 
@@ -203,6 +207,7 @@ public class MovementController : MonoBehaviour
 
     private void Dash()
     {
+        soundEventChannel.RaisePlaySFX("dash");
         Vector3 dashDir = transform.forward;
         controller.Move(dashDir.normalized * dashDistance);
         canDash = false;

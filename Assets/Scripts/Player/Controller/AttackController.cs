@@ -3,6 +3,7 @@ using UnityEngine;
 public class AttackController : MonoBehaviour
 {
     [SerializeField] private CombatEventChannel combatEventChannel;
+    [SerializeField] private SoundEventChannel soundEventChannel;
     [SerializeField] private Transform meleePoint;
     [SerializeField] private float meleeRange = 2f;
     [SerializeField] private int meleeDamage = 50;
@@ -18,6 +19,8 @@ public class AttackController : MonoBehaviour
 
     private void PerformMeleeAttack()
     {
+        soundEventChannel?.RaisePlaySFX("punch");
+        
         Collider[] hitEnemies = Physics.OverlapSphere(meleePoint.position, meleeRange);
         Debug.Log("Attack attempted. Detected: " + hitEnemies.Length);
 

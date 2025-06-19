@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SkillController : MonoBehaviour
 {
+    [SerializeField] private SoundEventChannel soundEventChannel;
+
     [SerializeField] private float cooldownDuration = 20f;
     private float lastSkillTime = -Mathf.Infinity;
 
@@ -47,7 +49,7 @@ public class SkillController : MonoBehaviour
     }
 
     private bool ShouldUseSkill()
-    {
+    {   
         if (inputReader == null) return false;
         return inputReader.SkillPressed && (Time.time >= lastSkillTime + cooldownDuration);
     }
