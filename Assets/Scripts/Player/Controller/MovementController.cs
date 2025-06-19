@@ -66,8 +66,13 @@ public class MovementController : MonoBehaviour
         fallTimeoutDelta = fallTimeout;
     }
 
-    public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool isGrounded, out bool triggerJump, out bool freeFall, out bool climb)
+    public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool isGrounded, out bool triggerJump, out bool freeFall, out bool climb, Vector3 platformDelta)
     {
+        if (platformDelta.magnitude > 0.001f)
+        {
+            controller.Move(platformDelta);
+        }
+
         GroundedCheck();
         bool justLanded = !wasGrounded && grounded;
         wasGrounded = grounded;
@@ -130,8 +135,8 @@ public class MovementController : MonoBehaviour
         if (climb)
         {
             // 벽 기준 방향 재설정
-            Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;  // 벽을 따라 좌우
-            Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;     // 벽을 따라 상하
+            Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;
+            Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;
 
             direction = (wallForward * move.x + wallUp * move.y) / 4;
 

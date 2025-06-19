@@ -9,10 +9,16 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     public AttackController attackController;
     public AnimationController animationController;
     public SkillController skillController;
+    private PlayerPlatformSync platformSync;
 
     [SerializeField] private GameObject followCamera;
 
     private bool timeStopped = false;
+
+    void Awake()
+    {
+        platformSync = GetComponent<PlayerPlatformSync>();
+    }
 
     void Start()
     {
@@ -33,9 +39,11 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
 
     private void Update()
     {
+        Vector3 platformDelta = platformSync != null ? platformSync.ConsumePlatformDelta() : Vector3.zero;
+
         attackController.HandleAttackInput(inputReader);
 
-        movementController.ProcessMovement(inputReader, out float animBlend, out float inputMag, out bool grounded, out bool jumpTrig, out bool freeFall, out bool climb);
+        movementController.ProcessMovement(inputReader, out float animBlend, out float inputMag, out bool grounded, out bool jumpTrig, out bool freeFall, out bool climb, platformDelta);
 
         animationController.UpdateMovement(animBlend, inputMag);
         if (jumpTrig) animationController.TriggerJump();
