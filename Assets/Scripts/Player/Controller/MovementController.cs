@@ -33,18 +33,18 @@ public class MovementController : MonoBehaviour
     private bool isGliding = false;
 
     [Header("Wall Walk")]
-    public float wallWalkDuration = 3f;
+    public float wallWalkDuration = 5f;
     public float wallWalkSpeed = 5f;
     public float wallCheckDistance = 1f;
     public LayerMask wallLayer;
     private bool isWallWalking = false;
     private Vector3 wallNormal;
 
-
     [Header("Camera")]
     public GameObject cameraTarget;
 
     private CharacterController controller;
+    public SkillController skillcontroller;
     private float verticalVelocity;
     private float targetRotation;
     private float rotationVelocity;
@@ -118,20 +118,22 @@ public class MovementController : MonoBehaviour
         Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
 
         climb = isWallWalking;
-        if (input.SkillPressed && CanWallWalk(out wallNormal))
+        
+        
+        if (input.SkillPressed && CanWallWalk(out wallNormal) && skillcontroller.CanUseSkill())
         {
             StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill();
             Debug.Log($"WallWalkRoutine started. Wall normal: {wallNormal}");
         }
-
+        
         if (climb)
         {
             // 벽 기준 방향 재설정
             Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;  // 벽을 따라 좌우
             Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;     // 벽을 따라 상하
 
-            direction = wallForward * move.x + wallUp * move.y;
+            direction = (wallForward * move.x + wallUp * move.y) / 4;
 
             transform.rotation = Quaternion.LookRotation(-wallNormal);
         }
@@ -148,12 +150,6 @@ public class MovementController : MonoBehaviour
         }
 
         freeFall = !grounded && verticalVelocity < 0f;
-
-        if (input.SkillPressed && CanWallWalk(out wallNormal))
-        {
-            StartCoroutine(WallWalkRoutine(wallNormal, input));
-            input.ConsumeSkill(); // E.g., E 키를 소비
-        }
     }
 
     private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
@@ -241,6 +237,7 @@ public class MovementController : MonoBehaviour
         if (!isWallWalking && CanWallWalk(out Vector3 wallNormal))
         {
             StartCoroutine(WallWalkRoutine(wallNormal, input));
+            input.ConsumeSkill();
         }
     }
 
@@ -311,13 +308,16 @@ public class MovementController : MonoBehaviour
 
         while (timer < wallWalkDuration)
         {
+            if (!IsStillOnSameWall(wallNormal))
+            {
+                Debug.Log("벽에서 떨어져서 벽타기 종료");
+                isWallWalking = false;
+                break;
+            }
+            
             // 매 프레임 벽 기준으로 회전 고정
             transform.rotation = wallRotation;
-
-            Debug.DrawRay(transform.position, wallNormal, Color.blue);   // 벽 방향
-            Debug.DrawRay(transform.position, wallRight, Color.red);     // 좌우 방향
-            Debug.DrawRay(transform.position, wallUp, Color.green);      // 위아래 방향
-
+            
             // ↓ 입력 처리: 아래 방향(S키)만
             Vector2 move = input.MoveInput;
             Vector3 moveDir = (wallRight * move.x + wallUp * move.y).normalized;
@@ -325,7 +325,6 @@ public class MovementController : MonoBehaviour
             if (moveDir != Vector3.zero)
             {
                 controller.Move(moveDir * wallWalkSpeed * Time.deltaTime);
-                Debug.DrawRay(transform.position, moveDir, Color.yellow); // 실제 이동 방향
             }
 
             // 중력 제거
@@ -333,29 +332,20 @@ public class MovementController : MonoBehaviour
 
             timer += Time.deltaTime;
             yield return null;
-
-            /*
-            // 벽 쪽으로 밀착
-            Vector3 toWall = -wallNormal * stickForce * Time.deltaTime;
-            controller.Move(toWall);
-
-            // 입력값을 월드 기준 → 벽 기준 좌표계로 회전
-            Vector2 move = input.MoveInput;
-            Vector3 localInput = new Vector3(move.x, 0f, move.y); // W = +z, S = -z
-            Vector3 moveDir = wallRotation * localInput; // ← 핵심: 입력을 벽 기준으로 회전
-            moveDir = moveDir.normalized;
-
-            controller.Move(moveDir * wallWalkSpeed * Time.deltaTime);
-
-            // 중력 제거
-            verticalVelocity = 0f;
-
-            timer += Time.deltaTime;
-            yield return null;
-            */
         }
 
     isWallWalking = false;
+    skillcontroller.NotifySkillEnded();
+    }
+
+    private bool IsStillOnSameWall(Vector3 originalWallNormal)
+    {
+        if (CanWallWalk(out Vector3 currentNormal))
+        {
+            float angle = Vector3.Angle(originalWallNormal, currentNormal);
+            return angle < 15f; // 충분히 같은 방향이면 유지
+        }
+        return false;
     }
 
     public float CurrentSpeed => moveSpeed;

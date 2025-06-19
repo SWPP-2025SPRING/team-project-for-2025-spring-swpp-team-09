@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class SkillController : MonoBehaviour
 {
-    [SerializeField] private float cooldownDuration = 5f;
+    [SerializeField] private float cooldownDuration = 20f;
     private float lastSkillTime = -Mathf.Infinity;
 
     private ISkill currentSkill;
     private SkillExecutionContext context;
     private PlayerInputReader inputReader;
+    public MovementController movementController;
 
     public event Action OnGlideRequested;
     public event Action OnTimeStopRequested;
@@ -27,13 +28,19 @@ public class SkillController : MonoBehaviour
             requestTimeStop: () => OnTimeStopRequested?.Invoke(),
             requestWallWalk: () => OnWallWalkRequested?.Invoke()
         );
+
+        OnWallWalkRequested += () =>
+        {
+            movementController.StartWallWalk(inputReader);
+        };
     }
 
     void Update()
     {
+        Debug.Log($"[SkillController] Update - Time: {Time.time:F2}, LastSkillTime: {lastSkillTime:F2}, CooldownDuration: {cooldownDuration:F2}, (Time - LastSkillTime): {(Time.time - lastSkillTime):F2}, CanUse: {(Time.time >= lastSkillTime + cooldownDuration)}");
+        
         if (ShouldUseSkill())
         {
-            lastSkillTime = Time.time;
             StartCoroutine(currentSkill.Execute(context));
             inputReader.ConsumeSkill();
         }
@@ -44,4 +51,16 @@ public class SkillController : MonoBehaviour
         if (inputReader == null) return false;
         return inputReader.SkillPressed && (Time.time >= lastSkillTime + cooldownDuration);
     }
+
+    public void NotifySkillEnded()
+    {
+        lastSkillTime = Time.time;
+        Debug.Log($"[SkillController] Skill ended, cooldown started at: {lastSkillTime:F2}");
+    }
+
+    public bool CanUseSkill()
+    {
+        return (Time.time >= lastSkillTime + cooldownDuration);
+    }
+
 }
