@@ -26,6 +26,7 @@ public class MovementController : MonoBehaviour
     public float dashDistance = 6f;
     public float dashCooldown = 5f;
     private bool canDash = true;
+    public SkillCooldownUI dashCooldownUI;
 
     [Header("Glide")]
     private float glideTimeRemaining = 0f;
@@ -152,6 +153,7 @@ public class MovementController : MonoBehaviour
         {
             Dash();
             input.ConsumeDash();
+            dashCooldownUI?.StartCooldown(dashCooldown);
         }
 
         freeFall = !grounded && verticalVelocity < 0f;
