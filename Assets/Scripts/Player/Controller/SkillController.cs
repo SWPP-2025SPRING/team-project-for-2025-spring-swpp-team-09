@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SkillController : MonoBehaviour
 {
-    [SerializeField] private float cooldownDuration = 20f;
+    [SerializeField] private float cooldownDuration = 3f;
     private float lastSkillTime = -Mathf.Infinity;
 
     private ISkill currentSkill;
