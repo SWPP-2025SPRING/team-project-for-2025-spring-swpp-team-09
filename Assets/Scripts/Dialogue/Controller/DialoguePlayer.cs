@@ -6,6 +6,7 @@ public class DialoguePlayer : MonoBehaviour
 {
     [SerializeField] private DialogueUIController uiController;
     [SerializeField] private Image backgroundImage;
+    [SerializeField] private SoundEventChannel soundEventChannel;
 
     private DialogueState state;
     private DialogueLine currentLine;
@@ -27,6 +28,7 @@ public class DialoguePlayer : MonoBehaviour
         }
 
         state = new DialogueState(data);
+        PlayBGMForDialogue(dialogueId);
 
         if (!string.IsNullOrEmpty(data.backgroundPath))
         {
@@ -126,5 +128,26 @@ public class DialoguePlayer : MonoBehaviour
 
         SceneController.Instance.ClearPendingSceneData();
         SceneController.Instance.LoadScene(nextScene);
+    }
+
+    private void PlayBGMForDialogue(string id)
+    {
+        string bgmToPlay = id switch
+        {
+            "Prologue" => "prologue",
+            "Stage1_Enter" or "Stage1_Clear" => "stage1dialogue",
+            "Stage2_Enter" or "Stage2_Clear" => "stage2dialogue",
+            "Stage3_Enter" or "Stage3_Clear" => "stage3dialogue",
+            _ => null
+        };
+
+        if (!string.IsNullOrEmpty(bgmToPlay))
+        {
+            soundEventChannel.RaisePlayBGM(bgmToPlay);
+        }
+        else
+        {
+            Debug.LogWarning($"[DialoguePlayer] Unknown BGM for dialogue ID: {id}");
+        }
     }
 }
