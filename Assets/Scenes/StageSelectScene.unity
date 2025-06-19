@@ -210,6 +210,7 @@ GameObject:
   - component: {fileID: 434034429}
   - component: {fileID: 434034428}
   - component: {fileID: 434034427}
+  - component: {fileID: 434034430}
   m_Layer: 5
   m_Name: Stage3Button
   m_TagString: Untagged
@@ -332,6 +333,98 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 434034425}
   m_CullTransparentMesh: 1
+--- !u!114 &434034430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434034425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90be8ca3ea7dc4ff693c32e548c81eb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundEventChannel: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422, type: 2}
+--- !u!1001 &485963343
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1044495292113336827, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: bgmName
+      value: mainStage
+      objectReference: {fileID: 0}
+    - target: {fileID: 1044495292113336827, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: playOnStart
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9194446391741048469, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_Name
+      value: BGMStarter
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: eccfc3ef23ec7401094d6c7ce8c9731e, type: 3}
 --- !u!1 &659359108
 GameObject:
   m_ObjectHideFlags: 0
@@ -813,6 +906,7 @@ GameObject:
   - component: {fileID: 1032264793}
   - component: {fileID: 1032264794}
   - component: {fileID: 1032264791}
+  - component: {fileID: 1032264795}
   m_Layer: 5
   m_Name: Stage1Button
   m_TagString: Untagged
@@ -935,6 +1029,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1032264795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032264789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90be8ca3ea7dc4ff693c32e548c81eb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundEventChannel: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422, type: 2}
 --- !u!1 &1149766797
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,6 +1271,7 @@ GameObject:
   - component: {fileID: 1419131619}
   - component: {fileID: 1419131618}
   - component: {fileID: 1419131617}
+  - component: {fileID: 1419131620}
   m_Layer: 5
   m_Name: Stage2Button
   m_TagString: Untagged
@@ -1286,6 +1394,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1419131615}
   m_CullTransparentMesh: 1
+--- !u!114 &1419131620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419131615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90be8ca3ea7dc4ff693c32e548c81eb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundEventChannel: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422, type: 2}
 --- !u!1 &1648576008
 GameObject:
   m_ObjectHideFlags: 0

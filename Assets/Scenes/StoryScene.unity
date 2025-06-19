@@ -590,6 +590,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiController: {fileID: 1198226190}
   backgroundImage: {fileID: 347778392}
+  soundEventChannel: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422, type: 2}
 --- !u!4 &1228024399
 Transform:
   m_ObjectHideFlags: 0
@@ -1130,6 +1131,7 @@ GameObject:
   - component: {fileID: 1842732263}
   - component: {fileID: 1842732262}
   - component: {fileID: 1842732261}
+  - component: {fileID: 1842732264}
   m_Layer: 5
   m_Name: SkipButton
   m_TagString: Untagged
@@ -1252,6 +1254,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1842732259}
   m_CullTransparentMesh: 1
+--- !u!114 &1842732264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842732259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90be8ca3ea7dc4ff693c32e548c81eb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundEventChannel: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422, type: 2}
 --- !u!1 &2013369010
 GameObject:
   m_ObjectHideFlags: 0
