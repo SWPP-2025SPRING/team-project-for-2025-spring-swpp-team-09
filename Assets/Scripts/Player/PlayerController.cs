@@ -107,6 +107,7 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
         Time.timeScale = 1f;
         timeStopped = false;
         Debug.Log("TimeStop: end");
+        skillController.NotifySkillEnded();
     }
     private void HandleWallWalkRequested()
     {

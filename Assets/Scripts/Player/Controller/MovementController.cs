@@ -28,6 +28,7 @@ public class MovementController : MonoBehaviour
     public float dashDistance = 6f;
     public float dashCooldown = 5f;
     private bool canDash = true;
+    public SkillCooldownUI dashCooldownUI;
 
     [Header("Glide")]
     private float glideTimeRemaining = 0f;
@@ -35,7 +36,7 @@ public class MovementController : MonoBehaviour
     private bool isGliding = false;
 
     [Header("Wall Walk")]
-    public float wallWalkDuration = 5f;
+    public float wallWalkDuration = 2f;
     public float wallWalkSpeed = 5f;
     public float wallCheckDistance = 1f;
     public LayerMask wallLayer;
@@ -140,7 +141,7 @@ public class MovementController : MonoBehaviour
             Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;
             Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;
 
-            direction = (wallForward * move.x + wallUp * move.y) / 4;
+            direction = (wallForward * move.x + wallUp * move.y) / 3;
 
             transform.rotation = Quaternion.LookRotation(-wallNormal);
         }
@@ -154,6 +155,7 @@ public class MovementController : MonoBehaviour
         {
             Dash();
             input.ConsumeDash();
+            dashCooldownUI?.StartCooldown(dashCooldown);
         }
 
         freeFall = !grounded && verticalVelocity < 0f;
