@@ -11,7 +11,7 @@ public class SkillController : MonoBehaviour
     private SkillExecutionContext context;
     private PlayerInputReader inputReader;
     public MovementController movementController;
-
+    public SkillCooldownUI cooldownUI;
     public event Action OnGlideRequested;
     public event Action OnTimeStopRequested;
     public event Action OnWallWalkRequested;
@@ -55,6 +55,7 @@ public class SkillController : MonoBehaviour
     public void NotifySkillEnded()
     {
         lastSkillTime = Time.time;
+        cooldownUI?.StartCooldown(cooldownDuration);
         Debug.Log($"[SkillController] Skill ended, cooldown started at: {lastSkillTime:F2}");
     }
 
