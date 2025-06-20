@@ -153,7 +153,7 @@ public class StageFlowTests
         condition.TriggerTimeout();
 
         yield return new WaitForSecondsRealtime(1f);
-
+        Time.timeScale = 1f;
         Assert.IsTrue(uiController.gameOverUI.activeSelf, "GameOver UI was not activated after timeout");
     }
 }
