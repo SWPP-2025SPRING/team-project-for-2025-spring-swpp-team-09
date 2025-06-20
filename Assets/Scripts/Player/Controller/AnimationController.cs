@@ -4,6 +4,7 @@ using System.Collections;
 public class AnimationController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+    [SerializeField] private SoundEventChannel soundEventChannel;
 
     [Header("Footstep Sounds")]
     [SerializeField] private AudioClip landingClip;
@@ -71,13 +72,15 @@ public class AnimationController : MonoBehaviour
         animator.SetBool(animIdFreeFall, state);
     }
 
-    public void SetClimb (bool state)
+    public void SetClimb(bool state)
     {
         animator.SetBool(animIdClimb, state);
     }
 
     public void OnFootstep(AnimationEvent animationEvent)
     {
+        soundEventChannel?.RaisePlaySFX("run");
+
         if (footstepClips.Length == 0 || animationEvent.animatorClipInfo.weight < 0.5f) return;
 
         var index = Random.Range(0, footstepClips.Length);
@@ -87,6 +90,8 @@ public class AnimationController : MonoBehaviour
 
     public void OnLand(AnimationEvent animationEvent)
     {
+        soundEventChannel?.RaisePlaySFX("land");
+        
         if (animationEvent.animatorClipInfo.weight < 0.5f) return;
 
         Vector3 pos = transform.position + characterController.center;

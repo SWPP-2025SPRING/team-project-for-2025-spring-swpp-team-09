@@ -1044,6 +1044,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementController: {fileID: 5770553198900690255}
   animationController: {fileID: 5770553198900690254}
+  soundEventChannel: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422, type: 2}
   maxHP: 100
 --- !u!114 &5770553198900690250
 MonoBehaviour:

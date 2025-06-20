@@ -4,6 +4,8 @@ public class EnemyController : MonoBehaviour
 {
     public EnemyMovementController movementController;
     public EnemyAnimationController animationController;
+    
+    [SerializeField] private SoundEventChannel soundEventChannel;
 
     public int maxHP = 100;
     private int currentHP;
@@ -30,6 +32,8 @@ public class EnemyController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        soundEventChannel?.RaisePlaySFX("enemy_hit");
+
         currentHP -= damage;
         Debug.Log($"Enemy damaged: {damage}, HP: {currentHP}");
 
