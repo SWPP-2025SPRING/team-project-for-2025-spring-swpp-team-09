@@ -48,13 +48,13 @@ public class SoundManager : MonoBehaviour
 
     private void PlaySFX(string name)
     {
-        AudioClip clip = soundLibrary.GetSFX(name);
+        (AudioClip clip, float volume) = soundLibrary.GetSFX(name);
         if (clip == null)
         {
             Debug.LogWarning($"[SoundManager] SFX '{name}' not found.");
             return;
         }
-        sfxSource.PlayOneShot(clip);
+        sfxSource.PlayOneShot(clip, volume);
     }
 
     private void PlayBGM(string name)
