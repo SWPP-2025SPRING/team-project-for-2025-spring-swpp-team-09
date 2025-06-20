@@ -51,8 +51,6 @@ public class PlayerCombatTests
         Assert.Less(hpAfter, hpBefore, "Enemy HP did not decrease after attack.");
     }
 
-    // Enemy Animation Controller 도입 이후 가능
-    /*
     [UnityTest]
     public IEnumerator Enemy_Dies_After_Second_Attack()
     {
@@ -64,12 +62,11 @@ public class PlayerCombatTests
         inputReader.MeleePressed = true;
         yield return null;
         inputReader.MeleePressed = false;
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(2f);
 
         Assert.IsTrue(enemyController.IsDead, "Enemy not marked as dead.");
         Assert.IsFalse(enemy != null && enemy.activeInHierarchy, "Enemy GameObject still active.");
     }
-    */
 
     [UnityTest]
     public IEnumerator Player_Speed_Halved_Then_Restores_After_Enemy_Collision()
@@ -127,5 +124,28 @@ public class PlayerCombatTests
 
         Assert.Greater(restoredDistance, slowedDistance,
             $"Player speed did not recover after slow duration. Slowed: {slowedDistance:F2}, Restored: {restoredDistance:F2}");
+    }
+
+    [UnityTest]
+    public IEnumerator Enemy_Moves_Towards_Player_With_Walk_Animation()
+    {
+        Vector3 start = enemy.transform.position;
+        Vector3 target = player.transform.position;
+
+        // 일정 시간 동안 기다리며 이동 여부 확인
+        yield return new WaitForSeconds(1f);
+
+        Vector3 end = enemy.transform.position;
+        float movedDistance = Vector3.Distance(start, end);
+
+        Assert.Greater(movedDistance, 0.1f, "Enemy did not move toward the player.");
+
+        Animator animator = enemy.GetComponent<Animator>();
+        Assert.IsNotNull(animator, "Enemy Animator not found.");
+
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+        bool isWalking = state.IsName("Walk") || state.IsTag("Walk");
+
+        Assert.IsTrue(isWalking, $"Enemy is not playing walk animation (current state: {state.fullPathHash}).");
     }
 }

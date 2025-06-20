@@ -192,7 +192,7 @@ PrefabInstance:
     - target: {fileID: 5770553198900690255, guid: 3befb54a3d9c74cd992a387f0c014579,
         type: 3}
       propertyPath: patrolDistance
-      value: 1
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6313948765028011496, guid: 3befb54a3d9c74cd992a387f0c014579,
         type: 3}
@@ -202,7 +202,7 @@ PrefabInstance:
     - target: {fileID: 6313948765028011496, guid: 3befb54a3d9c74cd992a387f0c014579,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.5251384
+      value: 3.41
       objectReference: {fileID: 0}
     - target: {fileID: 6313948765028011496, guid: 3befb54a3d9c74cd992a387f0c014579,
         type: 3}
@@ -212,7 +212,7 @@ PrefabInstance:
     - target: {fileID: 6313948765028011496, guid: 3befb54a3d9c74cd992a387f0c014579,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.8399844
+      value: 3.84
       objectReference: {fileID: 0}
     - target: {fileID: 6313948765028011496, guid: 3befb54a3d9c74cd992a387f0c014579,
         type: 3}
@@ -896,7 +896,7 @@ GameObject:
   - component: {fileID: 2129561882}
   - component: {fileID: 2129561881}
   - component: {fileID: 2129561880}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
