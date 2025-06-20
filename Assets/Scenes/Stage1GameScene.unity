@@ -98880,8 +98880,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 700260867}
-  skillIcon: {fileID: 0}
-  skillDescription: {fileID: 0}
+  skillIcon: {fileID: 1487288134}
   pauseMenuUI: {fileID: 607327856}
   gameOverUI: {fileID: 973951829}
   gameClearUI: {fileID: 1261762538}

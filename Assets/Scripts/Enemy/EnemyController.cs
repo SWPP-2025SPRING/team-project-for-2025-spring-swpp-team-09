@@ -46,6 +46,7 @@ public class EnemyController : MonoBehaviour
     private void Die()
     {
         animationController?.PlayDeath();
+        isDead = true;
         soundEventChannel?.RaisePlaySFX("enemy_death");
         Destroy(gameObject, 1.5f);
     }
