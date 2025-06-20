@@ -127,10 +127,24 @@ public class GameFlowManager : MonoBehaviour
             _ => false
         };
     }
-    
+
     public StageContext GetStageContext()
     {
         return currentStageContext;
     }
+    
+#if UNITY_EDITOR
+    public void EnterStageForTest(string sceneName, string stageId)
+    {
+        ISkill skill = stageId switch
+        {
+            "Stage2" => new WallWalkSkill(),
+            "Stage3" => new TimeStopSkill(),
+            _ => null
+        };
+        currentStageContext = new StageContext(stageId, skill);
 
+        SceneManager.LoadScene(sceneName);
+    }
+#endif
 }

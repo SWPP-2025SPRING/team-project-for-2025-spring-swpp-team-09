@@ -118,7 +118,6 @@ public class PlayerCombatTests
         collisionChannel.OnPlayerHit.RemoveListener(listener);
         inputReader.testing = false;
 
-        // 판단 기준
         Assert.Less(slowedDistance, restoredDistance * 0.7f,
             $"Slowed movement was not significantly less. Slowed: {slowedDistance:F2}, Restored: {restoredDistance:F2}");
 
