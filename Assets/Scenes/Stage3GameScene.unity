@@ -8032,6 +8032,80 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 680293083}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &681206838
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1044495292113336827, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: bgmName
+      value: stage3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4071264024123388602, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9194446391741048469, guid: eccfc3ef23ec7401094d6c7ce8c9731e,
+        type: 3}
+      propertyPath: m_Name
+      value: BGMStarter
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: eccfc3ef23ec7401094d6c7ce8c9731e, type: 3}
 --- !u!1001 &681215382
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11794,20 +11868,26 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422,
         type: 2}
+<<<<<<< HEAD
     - target: {fileID: 1720966745, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: soundEventChannel
       value: 
       objectReference: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422,
         type: 2}
+=======
+>>>>>>> origin/dev
     - target: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: animator
       value: 
       objectReference: {fileID: 949689097}
     - target: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+<<<<<<< HEAD
       propertyPath: landingClip
       value: 
       objectReference: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
     - target: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+=======
+>>>>>>> origin/dev
       propertyPath: soundEventChannel
       value: 
       objectReference: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422,
@@ -11897,8 +11977,28 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422,
         type: 2}
+<<<<<<< HEAD
+=======
+    - target: {fileID: 5350415849231382890, guid: 9cad301281f1ab448bafbf0183e36d2e,
+        type: 3}
+      propertyPath: movementController
+      value: 
+      objectReference: {fileID: 1024834704}
+>>>>>>> origin/dev
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+--- !u!114 &1024834704 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1720966744, guid: 9cad301281f1ab448bafbf0183e36d2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1024834703}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949689094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c1ef74d5f1eb449a9eba37ed49e52c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1026973038
 GameObject:
   m_ObjectHideFlags: 0
