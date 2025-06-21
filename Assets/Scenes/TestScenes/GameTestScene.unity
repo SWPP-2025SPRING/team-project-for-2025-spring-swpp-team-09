@@ -165,7 +165,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 52664710}
   skillIcon: {fileID: 975290292}
-  skillDescription: {fileID: 1995129877}
   pauseMenuUI: {fileID: 1490664872}
   gameOverUI: {fileID: 1398436811}
   gameClearUI: {fileID: 1426463492}
@@ -5284,7 +5283,7 @@ PrefabInstance:
     - target: {fileID: 8944336655422409503, guid: f6d148d888ffbf54b9afe9936dfaec1f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 169.79045
+      value: 167.86046
       objectReference: {fileID: 0}
     - target: {fileID: 8944336655422409503, guid: f6d148d888ffbf54b9afe9936dfaec1f,
         type: 3}
@@ -8000,7 +7999,7 @@ Transform:
   m_GameObject: {fileID: 1256269803}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -544.37, y: -0.52, z: 176.24}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -8458,7 +8457,7 @@ Transform:
   m_GameObject: {fileID: 1288400112}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -553.9379, y: -0.52, z: 176.24}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -8629,7 +8628,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1327416322}
   m_LocalRotation: {x: -0.39370427, y: -0, z: -0, w: 0.9192372}
-  m_LocalPosition: {x: -553.48236, y: 4.42, z: 169.79045}
+  m_LocalPosition: {x: -553.48236, y: 4.42, z: 167.86046}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11925,7 +11924,7 @@ PrefabInstance:
     - target: {fileID: 4064410297392498902, guid: 9cad301281f1ab448bafbf0183e36d2e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 172.79
+      value: 170.86
       objectReference: {fileID: 0}
     - target: {fileID: 4064410297392498902, guid: 9cad301281f1ab448bafbf0183e36d2e,
         type: 3}

@@ -12,12 +12,30 @@ public class StageSpecificLogicTests
     [UnitySetUp]
     public IEnumerator SetUp()
     {
-        var gameFlowGO = new GameObject("GameFlowManager");
-        gameFlowGO.AddComponent<GameFlowManager>();
-        Object.DontDestroyOnLoad(gameFlowGO);
+        if (GameFlowManager.Instance == null)
+        {
+            var gameFlowGO = new GameObject("GameFlowManager");
+            gameFlowGO.AddComponent<GameFlowManager>();
+            Object.DontDestroyOnLoad(gameFlowGO);
+        }
+
+        if (SaveManager.Instance == null)
+        {
+            var saveGO = new GameObject("SaveManager");
+            saveGO.AddComponent<SaveManager>();
+            Object.DontDestroyOnLoad(saveGO);
+        }
+
+        if (SceneController.Instance == null)
+        {
+            var sceneCtrlGO = new GameObject("SceneController");
+            sceneCtrlGO.AddComponent<SceneController>();
+            Object.DontDestroyOnLoad(sceneCtrlGO);
+        }
 
         yield return null;
     }
+
 
     [UnityTearDown]
     public IEnumerator TearDown()
@@ -63,11 +81,11 @@ public class StageSpecificLogicTests
         Vector3 startPos = player.transform.position;
 
         inputReader.MoveInput = Vector2.up;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
         inputReader.JumpPressed = true;
         inputReader.SkillPressed = true;
-        yield return new WaitForSeconds(0.01f);
-        
+        yield return new WaitForSeconds(0.1f);
+
         float climbTime = 1f;
         float elapsed = 0f;
 
@@ -98,7 +116,6 @@ public class StageSpecificLogicTests
 
         float timeBefore = Time.time;
 
-        // 시간 정지 스킬 사용
         inputReader.SkillPressed = true;
 
         yield return new WaitForSecondsRealtime(1f);

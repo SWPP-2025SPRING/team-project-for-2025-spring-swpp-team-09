@@ -55,6 +55,7 @@ public class GameFlowManager : MonoBehaviour
             "Stage3" => new TimeStopSkill(),
             _ => null
         };
+        Debug.Log($"[GameFlowManager] Retrieved stageId: {stageId}");
         currentStageContext = new StageContext(stageId, skill);
 
         bool alreadyPlayed = SaveManager.Instance.IsStagePlayed(stageId);
@@ -101,12 +102,15 @@ public class GameFlowManager : MonoBehaviour
     {
         if (currentStageContext == null) return;
 
-        Debug.Log($"[GameFlowManager] Scene loaded: {scene.name}");
-
+        string stageId = currentStageContext.StageId;
         var player = FindObjectOfType<PlayerController>();
+
         if (player != null && currentStageContext.Skill != null)
         {
-            Debug.Log("[GameFlowManager] Injecting skill into PlayerController");
+            if (stageId == "Stage1")
+            {
+                return;
+            }
             player.SetSkill(currentStageContext.Skill);
         }
     }
@@ -149,7 +153,31 @@ public class GameFlowManager : MonoBehaviour
         };
         currentStageContext = new StageContext(stageId, skill);
 
+        SceneManager.sceneLoaded += InjectSkillIfAvailableForTest;
         SceneManager.LoadScene(sceneName);
+    }
+
+    private void InjectSkillIfAvailableForTest(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= InjectSkillIfAvailableForTest;
+
+        if (currentStageContext?.Skill == null) return;
+
+        var player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            var input = player.GetComponent<PlayerInputReader>();
+            var move = player.GetComponent<MovementController>();
+            var skillCtrl = player.GetComponent<SkillController>();
+
+            skillCtrl.Initialize(
+                currentStageContext.Skill,
+                input,
+                move,
+                skillCtrl,
+                skillCtrl.NotifySkillEnded
+            );
+        }
     }
 #endif
 }
