@@ -107,9 +107,9 @@ public class DialoguePlayer : MonoBehaviour
             Debug.LogWarning("[DialoguePlayer] 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
             nextScene = "StageSelectScene";
         }
-
-        SceneController.Instance.ClearPendingSceneData();
-        SceneController.Instance.LoadScene(nextScene);
+        // SceneController.Instance.ClearPendingSceneData();
+        // SceneController.Instance.LoadScene(nextScene);
+        SceneController.Instance.LoadTutorialThenStage("TutorialScene", nextStageId);
     }
 
     public void SkipDialogue()

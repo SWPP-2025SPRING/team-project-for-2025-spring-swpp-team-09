@@ -7,6 +7,7 @@ public class SceneController : MonoBehaviour
 
     private const string DialogueKey = "PendingDialogueId";
     private const string GameSceneKey = "PendingGameScene";
+    private const string StageSceneKey = "PendingStageScene"; // Tutorial
 
     void Awake()
     {
@@ -46,5 +47,24 @@ public class SceneController : MonoBehaviour
     {
         PlayerPrefs.DeleteKey(DialogueKey);
         PlayerPrefs.DeleteKey(GameSceneKey);
+    }
+
+    // After Tutorial
+
+    public void LoadTutorialThenStage(string tutorialScene, string stageScene)
+    {
+        PlayerPrefs.SetString(TutorialKey, tutorialId);  // 튜토리얼ID 별도 저장
+        PlayerPrefs.SetString(StageSceneKey, stageScene);
+        SceneManager.LoadScene(tutorialScene);
+    }
+
+    public string GetPendingStageScene()
+    {
+        return PlayerPrefs.GetString(StageSceneKey, null);
+    }
+
+    public void ClearPendingStageScene()
+    {
+        PlayerPrefs.DeleteKey(StageSceneKey);
     }
 }
