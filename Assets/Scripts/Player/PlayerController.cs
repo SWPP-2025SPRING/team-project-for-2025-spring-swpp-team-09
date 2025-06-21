@@ -12,8 +12,6 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
 
     [SerializeField] private GameObject followCamera;
 
-    private bool timeStopped = false;
-
     void Awake()
     {
         platformSync = GetComponent<PlayerPlatformSync>();
@@ -69,19 +67,6 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
             followCamera.SetActive(!isLocked);
     }
 
-    private IEnumerator HandleTimeStop()
-    {
-        Debug.Log("TimeStop: begin");
-        timeStopped = true;
-        Time.timeScale = 0f;
-
-        yield return new WaitForSecondsRealtime(3f);
-
-        Time.timeScale = 1f;
-        timeStopped = false;
-        Debug.Log("TimeStop: end");
-        skillController.NotifySkillEnded();
-    }
     private void HandleWallWalkRequested()
     {
         movementController.StartWallWalk(inputReader);
