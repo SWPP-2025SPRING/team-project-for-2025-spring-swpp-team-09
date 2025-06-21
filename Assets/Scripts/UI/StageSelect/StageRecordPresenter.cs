@@ -5,7 +5,7 @@ public static class StageRecordPresenter
         StageRecord record = GameFlowManager.Instance.GetStageRecord(stageId);
 
         if (!record.IsPlayed)
-            return "플레이 기록 없음";
+            return "플레이 기록이 없습니다.";
 
         if (record.Rank == "F")
             return $"등급: F\n클리어 기록이 없습니다.";
