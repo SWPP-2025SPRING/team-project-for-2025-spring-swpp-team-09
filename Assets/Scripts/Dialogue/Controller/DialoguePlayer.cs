@@ -16,33 +16,11 @@ public class DialoguePlayer : MonoBehaviour
 
     void Start()
     {
-        dialogueId = SceneController.Instance.GetPendingDialogueId();
-        DialogueData data = DialogueLoader.Load(dialogueId);
+        DialogueData data = InitializeDialogueData(); 
+        
+        if (data == null) { return; }
 
-        if (data == null)
-        {
-            Debug.LogError($"[DialoguePlayer] 대화 데이터를 찾을 수 없습니다: {dialogueId}");
-            SceneController.Instance.ClearPendingSceneData();
-            SceneController.Instance.LoadScene("StageSelectScene");
-            return;
-        }
-
-        state = new DialogueState(data);
-        PlayBGMForDialogue(dialogueId);
-
-        if (!string.IsNullOrEmpty(data.backgroundPath))
-        {
-            Sprite bgSprite = Resources.Load<Sprite>(data.backgroundPath);
-            if (bgSprite != null)
-            {
-                backgroundImage.sprite = bgSprite;
-            }
-            else
-            {
-                Debug.LogWarning($"[DialoguePlayer] 배경 이미지 로드 실패: {data.backgroundPath}");
-            }
-        }
-
+        LoadBackgroundImage(data);
         PlayNext();
     }
 
@@ -62,6 +40,40 @@ public class DialoguePlayer : MonoBehaviour
             else
             {
                 PlayNext();
+            }
+        }
+    }
+
+    private DialogueData InitializeDialogueData()
+{
+    dialogueId = SceneController.Instance.GetPendingDialogueId();
+    DialogueData data = DialogueLoader.Load(dialogueId);
+
+    if (data == null)
+    {
+        Debug.LogError($"[DialoguePlayer] 대화 데이터를 찾을 수 없습니다: {dialogueId}");
+        SceneController.Instance.ClearPendingSceneData();
+        SceneController.Instance.LoadScene("StageSelectScene");
+        return null;
+    }
+
+    state = new DialogueState(data);
+    PlayBGMForDialogue(dialogueId);
+    return data;
+}
+
+    private void LoadBackgroundImage(DialogueData data)
+    {
+        if (!string.IsNullOrEmpty(data.backgroundPath))
+        {
+            Sprite bgSprite = Resources.Load<Sprite>(data.backgroundPath);
+            if (bgSprite != null)
+            {
+                backgroundImage.sprite = bgSprite;
+            }
+            else
+            {
+                Debug.LogWarning($"[DialoguePlayer] 배경 이미지 로드 실패: {data.backgroundPath}");
             }
         }
     }
@@ -113,34 +125,16 @@ public class DialoguePlayer : MonoBehaviour
 
     public void SkipDialogue()
     {
-        if (typingCoroutine != null)
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+        if (string.IsNullOrEmpty(state.NextSceneName))
         {
-            StopCoroutine(typingCoroutine);
-        }
-        
-        string nextScene = state.NextSceneName;
-        
-        if (string.IsNullOrEmpty(nextScene))
-        {
-            Debug.LogWarning("[DialoguePlayer] Skip 시 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
-            SceneController.Instance.ClearPendingSceneData();
-            SceneController.Instance.LoadScene("StageSelectScene");
+            HandleMissingNextScene();
             return;
         }
-
-        // 만약 StageEnter 대화면 튜토리얼부터 실행
-        if (nextScene.Contains("GameScene"))  
-        {
-            string stageId = nextScene.Replace("GameScene", "");
-            PlayerPrefs.SetString("PendingDialogueId", $"{stageId}_Enter");
-            SceneController.Instance.LoadTutorialThenStage("TutorialScene", $"{stageId}GameScene");
-        }
+        if (state.NextSceneName.Contains("GameScene"))
+            HandleGameSceneSkip(state.NextSceneName);
         else
-        {
-            // 일반 스킵 (예: StageClear 이후)
-            SceneController.Instance.ClearPendingSceneData();
-            SceneController.Instance.LoadScene(nextScene);
-        }
+            HandleGeneralSkip(state.NextSceneName);
     }
 
     private void PlayBGMForDialogue(string id)
@@ -162,5 +156,25 @@ public class DialoguePlayer : MonoBehaviour
         {
             Debug.LogWarning($"[DialoguePlayer] Unknown BGM for dialogue ID: {id}");
         }
+    }
+
+    private void HandleMissingNextScene()
+    {
+        Debug.LogWarning("[DialoguePlayer] Skip 시 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
+        SceneController.Instance.ClearPendingSceneData();
+        SceneController.Instance.LoadScene("StageSelectScene");
+    }
+
+    private void HandleGameSceneSkip(string nextScene)
+    {
+        string stageId = nextScene.Replace("GameScene", "");
+        PlayerPrefs.SetString("PendingDialogueId", $"{stageId}_Enter");
+        SceneController.Instance.LoadTutorialThenStage("TutorialScene", $"{stageId}GameScene");
+    }
+
+    private void HandleGeneralSkip(string nextScene)
+    {
+        SceneController.Instance.ClearPendingSceneData();
+        SceneController.Instance.LoadScene(nextScene);
     }
 }
