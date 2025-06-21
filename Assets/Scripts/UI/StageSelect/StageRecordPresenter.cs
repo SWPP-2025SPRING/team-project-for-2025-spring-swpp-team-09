@@ -13,6 +13,9 @@ public static class StageRecordPresenter
         if (!record.IsCleared || float.IsPositiveInfinity(record.BestTime))
             return $"등급: {record.Rank}\n클리어 기록이 없습니다.";
 
-        return $"등급: {record.Rank}\n최고 기록: {record.BestTime:F2}초";
+        int minutes = (int)(record.BestTime / 60f);
+        float seconds = record.BestTime % 60f;
+
+        return $"등급: {record.Rank}\n최고 기록: {minutes}분 {seconds:F1}초";
     }
 }
