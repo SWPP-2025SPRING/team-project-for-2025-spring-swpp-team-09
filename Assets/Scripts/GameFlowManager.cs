@@ -20,16 +20,16 @@ public class GameFlowManager : MonoBehaviour
 
     public void StartNewGame()
     {
-        PlayerPrefs.DeleteAll();
+        SaveManager.Instance.ResetAll();
         SceneController.Instance.LoadDialogueThenScene("Prologue", "StageSelectScene");
     }
 
     public void ContinueGame()
     {
         bool anyPlayed =
-            PlayerPrefs.HasKey("Stage1_Played") ||
-            PlayerPrefs.HasKey("Stage2_Played") ||
-            PlayerPrefs.HasKey("Stage3_Played");
+            SaveManager.Instance.IsStagePlayed("Stage1") ||
+            SaveManager.Instance.IsStagePlayed("Stage2") ||
+            SaveManager.Instance.IsStagePlayed("Stage3");
 
         if (anyPlayed)
         {
@@ -38,7 +38,6 @@ public class GameFlowManager : MonoBehaviour
         else
         {
             Debug.LogWarning("[GameFlowManager] 이어할 수 있는 기록이 없습니다.");
-            // UIManager.Instance.ShowPopup("이어할 수 있는 저장 정보가 없습니다.");
         }
     }
 
@@ -58,8 +57,7 @@ public class GameFlowManager : MonoBehaviour
         };
         currentStageContext = new StageContext(stageId, skill);
 
-        string playedKey = $"{stageId}_Played";
-        bool alreadyPlayed = PlayerPrefs.HasKey(playedKey);
+        bool alreadyPlayed = SaveManager.Instance.IsStagePlayed(stageId);
 
         if (alreadyPlayed)
         {
@@ -70,19 +68,19 @@ public class GameFlowManager : MonoBehaviour
             SceneController.Instance.LoadDialogueThenScene($"{stageId}_Enter", $"{stageId}GameScene");
         }
 
-        PlayerPrefs.SetInt(playedKey, 1);
+        SaveManager.Instance.SaveStagePlayed(stageId);
     }
 
-    public void ClearStage(string stageId)
+    public void ClearStage(string stageId, float clearTime, string clearRank)
     {
         Time.timeScale = 1f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        string key = $"{stageId}_Cleared";
-        bool alreadyCleared = PlayerPrefs.HasKey(key);
-
-        PlayerPrefs.SetInt(key, 1);
+        bool alreadyCleared = SaveManager.Instance.IsStageCleared(stageId);
+        SaveManager.Instance.SaveStageClear(stageId);
+        SaveManager.Instance.SaveBestTimeIfBetter(stageId, clearTime);
+        SaveManager.Instance.SaveClearRank(stageId, clearRank);
 
         if (alreadyCleared)
         {
@@ -94,13 +92,9 @@ public class GameFlowManager : MonoBehaviour
         }
     }
 
-    public void QuitGame()
+    public void GameOver(string stageId)
     {
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        SaveManager.Instance.SaveClearRank(stageId, "F");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -122,8 +116,8 @@ public class GameFlowManager : MonoBehaviour
         return stageId switch
         {
             "Stage1" => true,
-            "Stage2" => PlayerPrefs.HasKey("Stage1_Cleared"),
-            "Stage3" => PlayerPrefs.HasKey("Stage1_Cleared") && PlayerPrefs.HasKey("Stage2_Cleared"),
+            "Stage2" => SaveManager.Instance.IsStageCleared("Stage1"),
+            "Stage3" => SaveManager.Instance.IsStageCleared("Stage1") && SaveManager.Instance.IsStageCleared("Stage2"),
             _ => false
         };
     }
@@ -132,6 +126,17 @@ public class GameFlowManager : MonoBehaviour
     {
         return currentStageContext;
     }
+    
+    public StageRecord GetStageRecord(string stageId)
+    {
+        var isPlayed = SaveManager.Instance.IsStagePlayed(stageId);
+        var isCleared = SaveManager.Instance.IsStageCleared(stageId);
+        var rank = SaveManager.Instance.GetClearRank(stageId);
+        var bestTime = SaveManager.Instance.GetBestTime(stageId);
+
+        return new StageRecord(isPlayed, isCleared, rank, bestTime);
+    }
+
     
 #if UNITY_EDITOR
     public void EnterStageForTest(string sceneName, string stageId)
