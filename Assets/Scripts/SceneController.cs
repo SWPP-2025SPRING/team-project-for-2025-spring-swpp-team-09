@@ -53,7 +53,6 @@ public class SceneController : MonoBehaviour
 
     public void LoadTutorialThenStage(string tutorialScene, string stageScene)
     {
-        PlayerPrefs.SetString(TutorialKey, tutorialId);  // 튜토리얼ID 별도 저장
         PlayerPrefs.SetString(StageSceneKey, stageScene);
         SceneManager.LoadScene(tutorialScene);
     }

@@ -4,17 +4,26 @@ using UnityEngine.UI;
 
 public class TutorialController : MonoBehaviour
 {
-    [SerializeField] private Image tutorialImage;  // 조작 설명 이미지
+    [SerializeField] private Image tutorialImage;
     [SerializeField] private Button continueButton;
 
-    private string tutorialId;  // 튜토리얼 ID (만약 Stage마다 다르게 관리할 경우)
+    private string tutorialId;
     
     void Start()
     {
         Debug.Log("[TutorialController] Start 진입");
         
-        tutorialId = SceneController.Instance.GetPendingDialogueId();  // (필요시 대화 ID 재활용 가능)
+        tutorialId = SceneController.Instance.GetPendingDialogueId();
         Debug.Log($"[TutorialController] Loaded DialogueId: {tutorialId}");
+
+        if (!tutorialId.Contains("_Enter"))
+        {
+            Debug.LogWarning($"[TutorialController] 잘못된 진입 ID 감지: {tutorialId}, StageSelectScene으로 복귀");
+            SceneController.Instance.ClearPendingSceneData();
+            SceneController.Instance.LoadScene("StageSelectScene");
+            return;
+        }
+        
         LoadTutorialImage(tutorialId);
 
         continueButton.onClick.AddListener(OnContinue);
@@ -22,7 +31,6 @@ public class TutorialController : MonoBehaviour
 
     private void LoadTutorialImage(string id)
     {
-        // 예시: Resources/TutorialImages/Stage1Tutorial.png
         string path = $"backgrounds/{id}_tutorial";
         Sprite image = Resources.Load<Sprite>(path);
 
