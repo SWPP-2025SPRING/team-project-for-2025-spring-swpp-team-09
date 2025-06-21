@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
         Vector3 platformDelta = platformSync != null ? platformSync.ConsumePlatformDelta() : Vector3.zero;
 
         attackController.HandleAttackInput(inputReader);
-
         movementController.ProcessMovement(inputReader, out float animBlend, out float inputMag, out bool grounded, out bool jumpTrig, out bool freeFall, out bool climb, platformDelta);
 
         animationController.UpdateMovement(animBlend, inputMag);
@@ -56,10 +55,5 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     {
         if (inputReader != null)
             inputReader.inputEnabled = enabled;
-    }
-
-    private void HandleWallWalkRequested()
-    {
-        movementController.StartWallWalk(inputReader);
     }
 }
