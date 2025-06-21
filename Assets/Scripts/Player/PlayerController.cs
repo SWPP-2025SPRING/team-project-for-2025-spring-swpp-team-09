@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-// 카메라 관련 로직은 디자인 패턴대로 수정 필요 + StageGameManager
 public class PlayerController : MonoBehaviour, IPlayerControlHandler
 {
     public PlayerInputReader inputReader;
@@ -25,16 +24,11 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
         animationController.Initialize();
         skillController = GetComponent<SkillController>();
 
-        skillController.OnGlideRequested += () =>
-        {
-            movementController.ActivateGlide();
-        };
-
         skillController.OnTimeStopRequested += () =>
         {
             StartCoroutine(HandleTimeStop());
         };
-        skillController.OnWallWalkRequested += HandleWallWalkRequested; // Design Pattern 통일 필요
+        skillController.OnWallWalkRequested += HandleWallWalkRequested;
     }
 
     private void Update()
@@ -74,28 +68,6 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
             followCamera.SetActive(!isLocked);
     }
 
-    /*
-    private IEnumerator HandleTimeStop()
-    {
-        Debug.Log("time stop");
-        timeStopped = true;
-
-        foreach (var rb in FindObjectsOfType<Rigidbody>())
-        {
-            if (!rb.CompareTag("Player"))
-                rb.isKinematic = true;
-        }
-
-        yield return new WaitForSecondsRealtime(3f);
-
-        foreach (var rb in FindObjectsOfType<Rigidbody>())
-        {
-            if (!rb.CompareTag("Player"))
-                rb.isKinematic = false;
-        }
-
-        timeStopped = false;
-    }*/
     private IEnumerator HandleTimeStop()
     {
         Debug.Log("TimeStop: begin");
@@ -111,6 +83,6 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     }
     private void HandleWallWalkRequested()
     {
-        movementController.StartWallWalk(inputReader); // 다음 단계에서 구현할 메서드
+        movementController.StartWallWalk(inputReader);
     }
 }

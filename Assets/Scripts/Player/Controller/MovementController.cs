@@ -16,7 +16,7 @@ public class MovementController : MonoBehaviour
     public float jumpHeight = 1.2f;
     public float gravity = -15f;
     public float terminalVelocity = -53f;
-    public float jumpTimeout = 0.5f;
+    public float jumpTimeout = 0.1f;
     public float fallTimeout = 0.15f;
 
     [Header("Ground Check")]
@@ -29,11 +29,6 @@ public class MovementController : MonoBehaviour
     public float dashCooldown = 5f;
     private bool canDash = true;
     public SkillCooldownUI dashCooldownUI;
-
-    [Header("Glide")]
-    private float glideTimeRemaining = 0f;
-    [SerializeField] private float maxGlideTime = 3.0f;
-    private bool isGliding = false;
 
     [Header("Wall Walk")]
     public float wallWalkDuration = 2f;
@@ -106,8 +101,40 @@ public class MovementController : MonoBehaviour
         animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
         animationBlendPrev = animationBlend;
 
+        /*
+
         Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
-        if (inputDir != Vector3.zero)
+        Vector3 direction = Vector3.zero;
+        bool isBackward = move.y < 0;
+
+        if (!isBackward && inputDir != Vector3.zero)
+        {
+            targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg;
+
+            float rotation = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetRotation,
+                ref rotationVelocity,
+                rotationSmoothTime,
+                Mathf.Infinity,
+                Time.unscaledDeltaTime
+            );
+
+            if (!float.IsNaN(rotation))
+                transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+        }
+
+        Vector3 baseDirection = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
+        Vector3 strafeDirection = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.right;
+
+        direction = strafeDirection * move.x + baseDirection * (isBackward ? -Mathf.Abs(move.y) : move.y);
+        direction.Normalize();
+
+        */
+
+        Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
+        bool isBackward = move.y < 0;
+        if (!isBackward && inputDir != Vector3.zero)
         {
             targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
 
@@ -123,7 +150,20 @@ public class MovementController : MonoBehaviour
             if (!float.IsNaN(rotation))
                 transform.rotation = Quaternion.Euler(0f, rotation, 0f);
         }
-        Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
+        Vector3 forward = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
+Vector3 right = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.right;
+
+// 입력값에 따라 조합
+Vector3 direction = forward * move.y + right * move.x;
+
+// 후진이면 전후 반전 (좌우는 유지)
+if (isBackward)
+{
+    direction = forward * -Mathf.Abs(move.y) + right * move.x;
+}
+
+direction.Normalize();
+
 
         climb = isWallWalking;
         
@@ -132,7 +172,6 @@ public class MovementController : MonoBehaviour
         {
             StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill();
-            Debug.Log($"WallWalkRoutine started. Wall normal: {wallNormal}");
         }
         
         if (climb)
@@ -163,7 +202,6 @@ public class MovementController : MonoBehaviour
 
     private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
     {
-        if (isGliding) return;
         if (grounded)
         {
             fallTimeoutDelta = fallTimeout;
@@ -177,8 +215,6 @@ public class MovementController : MonoBehaviour
                 triggerJump = true;
 
                 soundEventChannel?.RaisePlaySFX("jump");
-
-                glideTimeRemaining = maxGlideTime;
             }
 
             if (jumpTimeoutDelta > 0f)
@@ -236,14 +272,6 @@ public class MovementController : MonoBehaviour
         speedMultiplier = 1f;
     }
 
-    public void ActivateGlide()
-    {
-        if (!controller.isGrounded && !isGliding)
-        {
-            StartCoroutine(GlideRoutine());
-        }
-    }
-
     public void StartWallWalk(PlayerInputReader input)
     {
         if (!isWallWalking && CanWallWalk(out Vector3 wallNormal))
@@ -251,28 +279,6 @@ public class MovementController : MonoBehaviour
             StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill();
         }
-    }
-
-    private IEnumerator GlideRoutine()
-    {
-        isGliding = true;
-
-        float duration = 3f;
-        float timer = 0f;
-
-        while (timer < duration)
-        {
-            if (controller.isGrounded) break;
-
-            Debug.Log($"[Glide] verticalVelocity before: {verticalVelocity}");
-            verticalVelocity = Mathf.Max(verticalVelocity, 3f);
-            Debug.Log($"[Glide] verticalVelocity after: {verticalVelocity}");
-
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        isGliding = false;
     }
 
     private bool CanWallWalk(out Vector3 normal)
@@ -300,7 +306,6 @@ public class MovementController : MonoBehaviour
     private IEnumerator WallWalkRoutine(Vector3 wallNormal, PlayerInputReader input)
     {
         isWallWalking = true;
-        Debug.Log("WallWalkRoutine: Started");
 
         float timer = 0f;
         float stickForce = 2f; // 벽 쪽으로 밀어붙이는 정도
@@ -322,7 +327,6 @@ public class MovementController : MonoBehaviour
         {
             if (!IsStillOnSameWall(wallNormal))
             {
-                Debug.Log("벽에서 떨어져서 벽타기 종료");
                 isWallWalking = false;
                 break;
             }

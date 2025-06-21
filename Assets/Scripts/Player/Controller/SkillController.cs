@@ -25,8 +25,6 @@ public class SkillController : MonoBehaviour
         currentSkill = skill;
         inputReader = input;
 
-        Debug.Log($"[SkillController] Initialized with skill: {skill.GetType().Name}");
-
         context = new SkillExecutionContext(
             requestGlide: () => OnGlideRequested?.Invoke(),
             requestTimeStop: () => OnTimeStopRequested?.Invoke(),
@@ -40,9 +38,7 @@ public class SkillController : MonoBehaviour
     }
 
     void Update()
-    {
-        Debug.Log($"[SkillController] Update - Time: {Time.time:F2}, LastSkillTime: {lastSkillTime:F2}, CooldownDuration: {cooldownDuration:F2}, (Time - LastSkillTime): {(Time.time - lastSkillTime):F2}, CanUse: {(Time.time >= lastSkillTime + cooldownDuration)}");
-        
+    {        
         if (ShouldUseSkill())
         {
             StartCoroutine(currentSkill.Execute(context));
@@ -60,7 +56,6 @@ public class SkillController : MonoBehaviour
     {
         lastSkillTime = Time.time;
         cooldownUI?.StartCooldown(cooldownDuration);
-        Debug.Log($"[SkillController] Skill ended, cooldown started at: {lastSkillTime:F2}");
     }
 
     public bool CanUseSkill()
