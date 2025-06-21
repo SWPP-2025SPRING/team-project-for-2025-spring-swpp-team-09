@@ -10,8 +10,6 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     public SkillController skillController;
     private PlayerPlatformSync platformSync;
 
-    [SerializeField] private GameObject followCamera;
-
     void Awake()
     {
         platformSync = GetComponent<PlayerPlatformSync>();
@@ -54,17 +52,10 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
         );
     }
 
-
     public void EnableInput(bool enabled)
     {
         if (inputReader != null)
             inputReader.inputEnabled = enabled;
-    }
-
-    public void LockCamera(bool isLocked)
-    {
-        if (followCamera != null)
-            followCamera.SetActive(!isLocked);
     }
 
     private void HandleWallWalkRequested()
