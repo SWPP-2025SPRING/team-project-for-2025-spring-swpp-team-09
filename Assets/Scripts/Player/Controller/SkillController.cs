@@ -7,6 +7,7 @@ public class SkillController : MonoBehaviour
     [SerializeField] private float cooldownDuration = 20f;
     [SerializeField] private SoundEventChannel soundEventChannel;
     private SkillExecutionContext context;
+    
     private float lastSkillTime = -Mathf.Infinity;
     private ISkill currentSkill;
     private PlayerInputReader inputReader;

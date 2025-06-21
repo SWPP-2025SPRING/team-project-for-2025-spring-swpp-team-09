@@ -101,15 +101,14 @@ public class DialoguePlayer : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        string nextScene = state.NextSceneName;
-        if (string.IsNullOrEmpty(nextScene))
-        {
-            Debug.LogWarning("[DialoguePlayer] 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
-            nextScene = "StageSelectScene";
-        }
+        string nextStageId = state.NextSceneName;
+            if (string.IsNullOrEmpty(nextStageId))
+            {
+                SceneController.Instance.LoadScene("StageSelectScene");
+                yield break;
+            }
 
-        SceneController.Instance.ClearPendingSceneData();
-        SceneController.Instance.LoadScene(nextScene);
+        SceneController.Instance.LoadTutorialThenStage("TutorialScene", nextStageId);
     }
 
     public void SkipDialogue()
@@ -118,16 +117,30 @@ public class DialoguePlayer : MonoBehaviour
         {
             StopCoroutine(typingCoroutine);
         }
-
+        
         string nextScene = state.NextSceneName;
+        
         if (string.IsNullOrEmpty(nextScene))
         {
             Debug.LogWarning("[DialoguePlayer] Skip 시 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
-            nextScene = "StageSelectScene";
+            SceneController.Instance.ClearPendingSceneData();
+            SceneController.Instance.LoadScene("StageSelectScene");
+            return;
         }
 
-        SceneController.Instance.ClearPendingSceneData();
-        SceneController.Instance.LoadScene(nextScene);
+        // 만약 StageEnter 대화면 튜토리얼부터 실행
+        if (nextScene.Contains("GameScene"))  
+        {
+            string stageId = nextScene.Replace("GameScene", "");
+            PlayerPrefs.SetString("PendingDialogueId", $"{stageId}_Enter");
+            SceneController.Instance.LoadTutorialThenStage("TutorialScene", $"{stageId}GameScene");
+        }
+        else
+        {
+            // 일반 스킵 (예: StageClear 이후)
+            SceneController.Instance.ClearPendingSceneData();
+            SceneController.Instance.LoadScene(nextScene);
+        }
     }
 
     private void PlayBGMForDialogue(string id)
