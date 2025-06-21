@@ -149,7 +149,31 @@ public class GameFlowManager : MonoBehaviour
         };
         currentStageContext = new StageContext(stageId, skill);
 
+        SceneManager.sceneLoaded += InjectSkillIfAvailableForTest;
         SceneManager.LoadScene(sceneName);
+    }
+
+    private void InjectSkillIfAvailableForTest(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= InjectSkillIfAvailableForTest;
+
+        if (currentStageContext?.Skill == null) return;
+
+        var player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            var input = player.GetComponent<PlayerInputReader>();
+            var move = player.GetComponent<MovementController>();
+            var skillCtrl = player.GetComponent<SkillController>();
+
+            skillCtrl.Initialize(
+                currentStageContext.Skill,
+                input,
+                move,
+                skillCtrl,
+                skillCtrl.NotifySkillEnded
+            );
+        }
     }
 #endif
 }
