@@ -107,6 +107,35 @@ public class MovementController : MonoBehaviour
         animationBlendPrev = animationBlend;
 
         Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
+        Vector3 direction = Vector3.zero;
+        bool isBackward = move.y < 0;
+
+        if (!isBackward && inputDir != Vector3.zero)
+        {
+            targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg;
+
+            float rotation = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetRotation,
+                ref rotationVelocity,
+                rotationSmoothTime,
+                Mathf.Infinity,
+                Time.unscaledDeltaTime
+            );
+
+            if (!float.IsNaN(rotation))
+                transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+        }
+
+        Vector3 baseDirection = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
+        Vector3 strafeDirection = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.right;
+
+        direction = strafeDirection * move.x + baseDirection * (isBackward ? -Mathf.Abs(move.y) : move.y);
+        direction.Normalize();
+
+        /*
+
+        Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
         if (inputDir != Vector3.zero)
         {
             targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
@@ -124,6 +153,8 @@ public class MovementController : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0f, rotation, 0f);
         }
         Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
+
+        */
 
         climb = isWallWalking;
         
