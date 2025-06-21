@@ -55,6 +55,7 @@ public class GameFlowManager : MonoBehaviour
             "Stage3" => new TimeStopSkill(),
             _ => null
         };
+        Debug.Log($"[GameFlowManager] Retrieved stageId: {stageId}");
         currentStageContext = new StageContext(stageId, skill);
 
         bool alreadyPlayed = SaveManager.Instance.IsStagePlayed(stageId);
@@ -101,12 +102,15 @@ public class GameFlowManager : MonoBehaviour
     {
         if (currentStageContext == null) return;
 
-        Debug.Log($"[GameFlowManager] Scene loaded: {scene.name}");
-
+        string stageId = currentStageContext.StageId;
         var player = FindObjectOfType<PlayerController>();
+
         if (player != null && currentStageContext.Skill != null)
         {
-            Debug.Log("[GameFlowManager] Injecting skill into PlayerController");
+            if (stageId == "Stage1")
+            {
+                return;
+            }
             player.SetSkill(currentStageContext.Skill);
         }
     }

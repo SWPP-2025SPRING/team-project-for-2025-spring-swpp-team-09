@@ -18,7 +18,13 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     void Start()
     {
         animationController.Initialize();
-        skillController = GetComponent<SkillController>();
+    
+        string stageId = GameFlowManager.Instance.GetStageContext()?.StageId;
+        Debug.Log($"[PlayerController] Retrieved stageId: {stageId}");
+        if (stageId != "Stage1")
+        {
+            skillController = GetComponent<SkillController>();
+        }
     }
 
     private void Update()

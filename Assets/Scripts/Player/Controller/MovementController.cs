@@ -274,6 +274,7 @@ direction.Normalize();
 
     public void StartWallWalk(PlayerInputReader input)
     {
+        Debug.Log("good");
         if (!isWallWalking && CanWallWalk(out Vector3 wallNormal))
         {
             StartCoroutine(WallWalkRoutine(wallNormal, input));
