@@ -101,15 +101,19 @@ public class DialoguePlayer : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        string nextScene = state.NextSceneName;
-        if (string.IsNullOrEmpty(nextScene))
+        // string nextScene = state.NextSceneName;
+        string nextStageId = state.NextSceneName;
+        if (string.IsNullOrEmpty(nextStageId))
         {
-            Debug.LogWarning("[DialoguePlayer] 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
-            nextScene = "StageSelectScene";
+            //Debug.LogWarning("[DialoguePlayer] 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
+            //nextScene = "StageSelectScene";
+            SceneController.Instance.LoadScene("StageSelectScene");
+            yield break;
         }
 
-        SceneController.Instance.ClearPendingSceneData();
-        SceneController.Instance.LoadScene(nextScene);
+        // SceneController.Instance.ClearPendingSceneData();
+        // SceneController.Instance.LoadScene(nextScene);
+        SceneController.Instance.LoadTutorialThenStage($"{nextStageId}TutorialScene", $"{nextStageId}GameScene");
     }
 
     public void SkipDialogue()

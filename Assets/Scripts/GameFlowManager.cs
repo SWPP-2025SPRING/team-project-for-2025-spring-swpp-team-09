@@ -65,7 +65,7 @@ public class GameFlowManager : MonoBehaviour
         }
         else
         {
-            SceneController.Instance.LoadDialogueThenScene($"{stageId}_Enter", $"{stageId}GameScene");
+            SceneController.Instance.LoadDialogueThenScene($"{stageId}_Enter", stageId);
         }
 
         SaveManager.Instance.SaveStagePlayed(stageId);
