@@ -16,7 +16,7 @@ public class MovementController : MonoBehaviour
     public float jumpHeight = 1.2f;
     public float gravity = -15f;
     public float terminalVelocity = -53f;
-    public float jumpTimeout = 0.5f;
+    public float jumpTimeout = 0.1f;
     public float fallTimeout = 0.15f;
 
     [Header("Ground Check")]
@@ -135,7 +135,6 @@ public class MovementController : MonoBehaviour
         {
             StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill();
-            Debug.Log($"WallWalkRoutine started. Wall normal: {wallNormal}");
         }
         
         if (climb)
@@ -270,7 +269,6 @@ public class MovementController : MonoBehaviour
     private IEnumerator WallWalkRoutine(Vector3 wallNormal, PlayerInputReader input)
     {
         isWallWalking = true;
-        Debug.Log("WallWalkRoutine: Started");
 
         float timer = 0f;
         float stickForce = 2f; // 벽 쪽으로 밀어붙이는 정도
@@ -292,7 +290,6 @@ public class MovementController : MonoBehaviour
         {
             if (!IsStillOnSameWall(wallNormal))
             {
-                Debug.Log("벽에서 떨어져서 벽타기 종료");
                 isWallWalking = false;
                 break;
             }
