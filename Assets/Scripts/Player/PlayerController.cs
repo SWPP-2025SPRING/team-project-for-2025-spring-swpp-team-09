@@ -25,16 +25,11 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
         animationController.Initialize();
         skillController = GetComponent<SkillController>();
 
-        skillController.OnGlideRequested += () =>
-        {
-            movementController.ActivateGlide();
-        };
-
         skillController.OnTimeStopRequested += () =>
         {
             StartCoroutine(HandleTimeStop());
         };
-        skillController.OnWallWalkRequested += HandleWallWalkRequested; // Design Pattern 통일 필요
+        skillController.OnWallWalkRequested += HandleWallWalkRequested;
     }
 
     private void Update()

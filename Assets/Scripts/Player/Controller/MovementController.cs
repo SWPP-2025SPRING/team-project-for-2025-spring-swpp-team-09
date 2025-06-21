@@ -30,11 +30,6 @@ public class MovementController : MonoBehaviour
     private bool canDash = true;
     public SkillCooldownUI dashCooldownUI;
 
-    [Header("Glide")]
-    private float glideTimeRemaining = 0f;
-    [SerializeField] private float maxGlideTime = 3.0f;
-    private bool isGliding = false;
-
     [Header("Wall Walk")]
     public float wallWalkDuration = 2f;
     public float wallWalkSpeed = 5f;
@@ -133,29 +128,6 @@ public class MovementController : MonoBehaviour
         direction = strafeDirection * move.x + baseDirection * (isBackward ? -Mathf.Abs(move.y) : move.y);
         direction.Normalize();
 
-        /*
-
-        Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
-        if (inputDir != Vector3.zero)
-        {
-            targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
-
-            float rotation = Mathf.SmoothDampAngle(
-                transform.eulerAngles.y,
-                targetRotation,
-                ref rotationVelocity,
-                rotationSmoothTime,
-                Mathf.Infinity,
-                Time.unscaledDeltaTime
-            );
-
-            if (!float.IsNaN(rotation))
-                transform.rotation = Quaternion.Euler(0f, rotation, 0f);
-        }
-        Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
-
-        */
-
         climb = isWallWalking;
         
         
@@ -194,7 +166,6 @@ public class MovementController : MonoBehaviour
 
     private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
     {
-        if (isGliding) return;
         if (grounded)
         {
             fallTimeoutDelta = fallTimeout;
@@ -208,8 +179,6 @@ public class MovementController : MonoBehaviour
                 triggerJump = true;
 
                 soundEventChannel?.RaisePlaySFX("jump");
-
-                glideTimeRemaining = maxGlideTime;
             }
 
             if (jumpTimeoutDelta > 0f)
@@ -267,14 +236,6 @@ public class MovementController : MonoBehaviour
         speedMultiplier = 1f;
     }
 
-    public void ActivateGlide()
-    {
-        if (!controller.isGrounded && !isGliding)
-        {
-            StartCoroutine(GlideRoutine());
-        }
-    }
-
     public void StartWallWalk(PlayerInputReader input)
     {
         if (!isWallWalking && CanWallWalk(out Vector3 wallNormal))
@@ -282,28 +243,6 @@ public class MovementController : MonoBehaviour
             StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill();
         }
-    }
-
-    private IEnumerator GlideRoutine()
-    {
-        isGliding = true;
-
-        float duration = 3f;
-        float timer = 0f;
-
-        while (timer < duration)
-        {
-            if (controller.isGrounded) break;
-
-            Debug.Log($"[Glide] verticalVelocity before: {verticalVelocity}");
-            verticalVelocity = Mathf.Max(verticalVelocity, 3f);
-            Debug.Log($"[Glide] verticalVelocity after: {verticalVelocity}");
-
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        isGliding = false;
     }
 
     private bool CanWallWalk(out Vector3 normal)
