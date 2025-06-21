@@ -159,8 +159,8 @@ public class StageGameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(1f);
 
         float clearTime = clearCondition.ElapsedTime;
-        string rank = clearCondition.GetClearRank();
+        string clearRank = clearCondition.GetClearRank();
 
-        GameFlowManager.Instance.ClearStage(stageId, clearTime, rank);
+        GameFlowManager.Instance.ClearStage(stageId, clearTime, clearRank);
     }
 }

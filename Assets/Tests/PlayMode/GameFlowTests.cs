@@ -28,6 +28,7 @@ public class GameFlowTests
 
         new GameObject("GameFlowManager").AddComponent<GameFlowManager>();
         new GameObject("SceneController").AddComponent<SceneController>();
+        new GameObject("SaveManager").AddComponent<SaveManager>();
 
         yield return null;
     }
@@ -119,7 +120,7 @@ public class GameFlowTests
     public IEnumerator FirstClear_ShowsCutscene()
     {
         PlayerPrefs.DeleteKey("Stage1_Cleared");
-        GameFlowManager.Instance.ClearStage("Stage1");
+        GameFlowManager.Instance.ClearStage("Stage1", 30f, "A");
         yield return new WaitForSeconds(0.1f);
 
         Assert.AreEqual("StoryScene", loadedSceneName);
@@ -130,7 +131,7 @@ public class GameFlowTests
     public IEnumerator ReClear_SkipsCutscene()
     {
         PlayerPrefs.SetInt("Stage1_Cleared", 1);
-        GameFlowManager.Instance.ClearStage("Stage1");
+        GameFlowManager.Instance.ClearStage("Stage1", 30f, "A");
         yield return new WaitForSeconds(0.1f);
 
         Assert.AreEqual("StageSelectScene", loadedSceneName);

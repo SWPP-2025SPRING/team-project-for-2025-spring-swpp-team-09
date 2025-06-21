@@ -71,17 +71,18 @@ public class GameFlowManager : MonoBehaviour
         SaveManager.Instance.SaveStagePlayed(stageId);
     }
 
-    public void ClearStage(string stageId)
+    public void ClearStage(string stageId, float clearTime, string clearRank)
     {
         Time.timeScale = 1f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
+        bool alreadyCleared = SaveManager.Instance.IsStageCleared(stageId);
         SaveManager.Instance.SaveStageClear(stageId);
         SaveManager.Instance.SaveBestTimeIfBetter(stageId, clearTime);
         SaveManager.Instance.SaveClearRank(stageId, clearRank);
 
-        if (SaveManager.Instance.IsStageCleared(stageId))
+        if (alreadyCleared)
         {
             SceneController.Instance.LoadScene("StageSelectScene");
         }
@@ -125,6 +126,17 @@ public class GameFlowManager : MonoBehaviour
     {
         return currentStageContext;
     }
+    
+    public StageRecord GetStageRecord(string stageId)
+    {
+        var isPlayed = SaveManager.Instance.IsStagePlayed(stageId);
+        var isCleared = SaveManager.Instance.IsStageCleared(stageId);
+        var rank = SaveManager.Instance.GetClearRank(stageId);
+        var bestTime = SaveManager.Instance.GetBestTime(stageId);
+
+        return new StageRecord(isPlayed, isCleared, rank, bestTime);
+    }
+
     
 #if UNITY_EDITOR
     public void EnterStageForTest(string sceneName, string stageId)
