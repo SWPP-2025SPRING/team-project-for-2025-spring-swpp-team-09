@@ -101,6 +101,8 @@ public class MovementController : MonoBehaviour
         animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
         animationBlendPrev = animationBlend;
 
+        /*
+
         Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
         Vector3 direction = Vector3.zero;
         bool isBackward = move.y < 0;
@@ -127,6 +129,41 @@ public class MovementController : MonoBehaviour
 
         direction = strafeDirection * move.x + baseDirection * (isBackward ? -Mathf.Abs(move.y) : move.y);
         direction.Normalize();
+
+        */
+
+        Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
+        bool isBackward = move.y < 0;
+        if (!isBackward && inputDir != Vector3.zero)
+        {
+            targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
+
+            float rotation = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetRotation,
+                ref rotationVelocity,
+                rotationSmoothTime,
+                Mathf.Infinity,
+                Time.unscaledDeltaTime
+            );
+
+            if (!float.IsNaN(rotation))
+                transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+        }
+        Vector3 forward = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
+Vector3 right = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.right;
+
+// 입력값에 따라 조합
+Vector3 direction = forward * move.y + right * move.x;
+
+// 후진이면 전후 반전 (좌우는 유지)
+if (isBackward)
+{
+    direction = forward * -Mathf.Abs(move.y) + right * move.x;
+}
+
+direction.Normalize();
+
 
         climb = isWallWalking;
         
