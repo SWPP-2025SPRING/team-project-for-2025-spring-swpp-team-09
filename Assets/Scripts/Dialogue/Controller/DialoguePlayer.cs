@@ -102,6 +102,13 @@ public class DialoguePlayer : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         string nextScene = state.NextSceneName;
+
+        if (dialogueId == "Stage3_Clear")
+        {
+            SceneController.Instance.LoadDialogueThenScene("Epilogue", "StageSelectScene");
+            yield break;
+        }
+
         if (string.IsNullOrEmpty(nextScene))
         {
             Debug.LogWarning("[DialoguePlayer] 다음 씬 정보가 없어 기본 씬으로 이동합니다.");
@@ -117,6 +124,12 @@ public class DialoguePlayer : MonoBehaviour
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
+        }
+
+        if (dialogueId == "Stage3_Clear")
+        {
+            SceneController.Instance.LoadDialogueThenScene("Epilogue", "StageSelectScene");
+            return;
         }
 
         string nextScene = state.NextSceneName;
@@ -151,3 +164,5 @@ public class DialoguePlayer : MonoBehaviour
         }
     }
 }
+
+
