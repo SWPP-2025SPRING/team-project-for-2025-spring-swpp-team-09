@@ -1,15 +1,24 @@
 using UnityEngine;
+using System;
 
 public class SkillExecutionContext
 {
-    public System.Action RequestGlide { get; }
-    public System.Action RequestTimeStop { get; }
-    public System.Action RequestWallWalk { get; }
+    public readonly MonoBehaviour invoker;
+    public readonly MovementController movementController;
+    public readonly PlayerInputReader inputReader;
+    public readonly Action onSkillEnded;
 
-    public SkillExecutionContext(System.Action requestGlide, System.Action requestTimeStop, System.Action requestWallWalk)
+    public SkillExecutionContext(
+        MonoBehaviour invoker,
+        MovementController movementController,
+        PlayerInputReader inputReader,
+        Action onSkillEnded
+    )
     {
-        RequestGlide = requestGlide;
-        RequestTimeStop = requestTimeStop;
-        RequestWallWalk = requestWallWalk;
+        this.invoker = invoker;
+        this.movementController = movementController;
+        this.inputReader = inputReader;
+        this.onSkillEnded = onSkillEnded;
     }
 }
+

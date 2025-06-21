@@ -23,12 +23,6 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     {
         animationController.Initialize();
         skillController = GetComponent<SkillController>();
-
-        skillController.OnTimeStopRequested += () =>
-        {
-            StartCoroutine(HandleTimeStop());
-        };
-        skillController.OnWallWalkRequested += HandleWallWalkRequested;
     }
 
     private void Update()
@@ -53,8 +47,15 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
 
     public void SetSkill(ISkill skill)
     {
-        skillController.Initialize(skill, inputReader);
+        skillController.Initialize(
+            skill,
+            inputReader,
+            movementController,
+            this,                
+            skillController.NotifySkillEnded
+        );
     }
+
 
     public void EnableInput(bool enabled)
     {
