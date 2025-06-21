@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 07c8eba6616d8b342b0a67b703afb921
+guid: 440a5555ed0a14c809c99ae9aa84db74
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -33,11 +33,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: S2Avatar
+      name: T-Pose@Mutant Dying
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 1
+      lastFrame: 86
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
