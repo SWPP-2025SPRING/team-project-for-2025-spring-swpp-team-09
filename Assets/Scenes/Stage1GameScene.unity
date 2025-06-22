@@ -53972,7 +53972,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 206586436}
-  requiredZ: 705
+  requiredZ: 50
   requiredY: 0
   checkY: 0
   TimeLimit: 120

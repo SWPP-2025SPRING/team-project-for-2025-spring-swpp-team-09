@@ -8440,8 +8440,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1208675555}
-  requiredZ: 360
-  requiredY: 80
+  requiredZ: 10
+  requiredY: 10
   checkY: 1
   TimeLimit: 120
 --- !u!1001 &675514466
