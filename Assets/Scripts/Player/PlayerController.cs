@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
         animationController.SetGrounded(grounded);
         animationController.SetFreeFall(freeFall);
         animationController.SetClimb(climb);
+        //animationController.SetAttack(attackController.IsAttackingThisFrame());
     }
 
     public void ApplySlow(float ratio, float duration)

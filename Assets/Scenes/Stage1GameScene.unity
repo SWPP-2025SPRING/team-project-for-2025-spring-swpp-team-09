@@ -676,8 +676,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058dd5564fa184ffdb76dab84b7acdbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDistance: 0.5
-  moveSpeed: 1
 --- !u!1001 &21617260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34472,8 +34470,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058dd5564fa184ffdb76dab84b7acdbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDistance: 0.5
-  moveSpeed: 1
 --- !u!1 &649155590
 GameObject:
   m_ObjectHideFlags: 0
@@ -50563,8 +50559,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058dd5564fa184ffdb76dab84b7acdbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDistance: 0.5
-  moveSpeed: 1
 --- !u!1 &941819524 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7146521406498821007, guid: 661bde7855710be4b98f3a13b4b2047f,
@@ -100824,6 +100818,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422,
         type: 2}
+    - target: {fileID: 1720966745, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+      propertyPath: animationController
+      value: 
+      objectReference: {fileID: 1896451305}
     - target: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: animator
       value: 
@@ -100975,6 +100973,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8787a568de392f740a47c79e2ffce68d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1896451305 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1896451285}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1896451286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23ccfda591389c14d8d991611f949660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1898218608 stripped
