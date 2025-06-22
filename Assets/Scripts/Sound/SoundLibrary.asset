@@ -24,7 +24,7 @@ MonoBehaviour:
     volume: 1
   - name: enemy_hit
     clip: {fileID: 8300000, guid: 2dc68b7e62c704e1bb447e82b1f35743, type: 3}
-    volume: 0.4
+    volume: 1
   - name: jump
     clip: {fileID: 8300000, guid: 1a9d565cb5f06438ca63512eda82f5db, type: 3}
     volume: 1
@@ -37,6 +37,9 @@ MonoBehaviour:
   - name: run
     clip: {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
     volume: 0.5
+  - name: time_stop
+    clip: {fileID: 8300000, guid: 8c51eb658f7b4d5499b4cf4567633940, type: 3}
+    volume: 1
   bgmList:
   - name: mainStage
     clip: {fileID: 8300000, guid: 402aa3a2b8ee845a4b9bbeee37833a16, type: 3}
@@ -49,7 +52,7 @@ MonoBehaviour:
     volume: 0.7
   - name: stage1
     clip: {fileID: 8300000, guid: 5b5a343cceae245839accfbd1a0d230c, type: 3}
-    volume: 0.4
+    volume: 0.1
   - name: stage2dialogue
     clip: {fileID: 8300000, guid: 0df914d2596704f5b89419667eba691c, type: 3}
     volume: 0.7

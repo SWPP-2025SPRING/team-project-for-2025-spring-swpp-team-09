@@ -19,6 +19,7 @@ public class AnimationController : MonoBehaviour
     private int animIdJump;
     private int animIdFreeFall;
     private int animIdClimb;
+    private int animIdAttack;
 
     private void Awake()
     {
@@ -32,6 +33,7 @@ public class AnimationController : MonoBehaviour
         animIdJump = Animator.StringToHash("Jump");
         animIdFreeFall = Animator.StringToHash("FreeFall");
         animIdClimb = Animator.StringToHash("Climb");
+        animIdAttack = Animator.StringToHash("Attack");
     }
 
     public void Initialize()
@@ -75,6 +77,17 @@ public class AnimationController : MonoBehaviour
     public void SetClimb(bool state)
     {
         animator.SetBool(animIdClimb, state);
+    }
+
+    /*
+    public void SetAttack(bool state)
+    {
+        animator.SetBool(animIdAttack, state);
+    }
+    */
+    public void TriggerAttack()
+    {
+        animator.SetTrigger(animIdAttack);
     }
 
     public void OnFootstep(AnimationEvent animationEvent)

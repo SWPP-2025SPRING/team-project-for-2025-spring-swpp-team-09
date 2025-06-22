@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     public AnimationController animationController;
     public SkillController skillController;
     private PlayerPlatformSync platformSync;
+    private StageGameManager stageGameManager;
+
 
     void Awake()
     {
@@ -18,6 +20,7 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
     void Start()
     {
         animationController.Initialize();
+        stageGameManager = FindObjectOfType<StageGameManager>();
     
         string stageId = GameFlowManager.Instance.GetStageContext()?.StageId;
         Debug.Log($"[PlayerController] Retrieved stageId: {stageId}");
@@ -29,6 +32,9 @@ public class PlayerController : MonoBehaviour, IPlayerControlHandler
 
     private void Update()
     {
+        if (stageGameManager != null && stageGameManager.IsPaused)
+            return;
+
         Vector3 platformDelta = platformSync != null ? platformSync.ConsumePlatformDelta() : Vector3.zero;
 
         attackController.HandleAttackInput(inputReader);
