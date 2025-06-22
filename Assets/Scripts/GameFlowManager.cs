@@ -24,7 +24,7 @@ public class GameFlowManager : MonoBehaviour
         SceneController.Instance.LoadDialogueThenScene("Prologue", "StageSelectScene");
     }
 
-    public void ContinueGame()
+    public bool ContinueGame()
     {
         bool anyPlayed =
             SaveManager.Instance.IsStagePlayed("Stage1") ||
@@ -34,20 +34,20 @@ public class GameFlowManager : MonoBehaviour
         if (anyPlayed)
         {
             SceneController.Instance.LoadScene("StageSelectScene");
+            return true;
         }
         else
         {
-            Debug.LogWarning("[GameFlowManager] 이어할 수 있는 기록이 없습니다.");
+            return false;
         }
     }
 
-    public void EnterStage(string stageId)
+    public bool EnterStage(string stageId)
     {
-        //if (!IsStageUnlocked(stageId))
-        //{
-        //    Debug.LogWarning($"[GameFlowManager] {stageId}은(는) 잠겨 있어 진입할 수 없습니다.");
-        //    return;
-        //}
+        if (!IsStageUnlocked(stageId))
+        {
+            return false;
+        }
 
         ISkill skill = stageId switch
         {
@@ -70,6 +70,7 @@ public class GameFlowManager : MonoBehaviour
         }
 
         SaveManager.Instance.SaveStagePlayed(stageId);
+        return true;
     }
 
     public void ClearStage(string stageId, float clearTime, string clearRank)
