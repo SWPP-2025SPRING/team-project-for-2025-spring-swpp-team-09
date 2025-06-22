@@ -1,20 +1,49 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class StageSelectUI : MonoBehaviour
 {
+    [SerializeField] private GameObject continueUnavailablePanel;
+    [SerializeField] private Button confirmButton;
+
+    private void Start()
+    {
+        if (continueUnavailablePanel != null)
+            continueUnavailablePanel.SetActive(false);
+
+        if (confirmButton != null)
+            confirmButton.onClick.AddListener(OnConfirmClicked);
+    }
+
     public void OnStage1Clicked()
     {
-        GameFlowManager.Instance.EnterStage("Stage1");
+        TryEnterStage("Stage1");
     }
 
     public void OnStage2Clicked()
     {
-        GameFlowManager.Instance.EnterStage("Stage2");
+        TryEnterStage("Stage2");
     }
 
     public void OnStage3Clicked()
     {
-        GameFlowManager.Instance.EnterStage("Stage3");
+        TryEnterStage("Stage3");
+    }
+
+    private void TryEnterStage(string stageId)
+    {
+        bool success = GameFlowManager.Instance.EnterStage(stageId);
+        if (!success && continueUnavailablePanel != null)
+        {
+            continueUnavailablePanel.SetActive(true);
+        }
+    }
+
+    public void OnConfirmClicked()
+    {
+        if (continueUnavailablePanel != null)
+        {
+            continueUnavailablePanel.SetActive(false);
+        }
     }
 }

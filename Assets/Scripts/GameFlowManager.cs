@@ -42,12 +42,11 @@ public class GameFlowManager : MonoBehaviour
         }
     }
 
-    public void EnterStage(string stageId)
+    public bool EnterStage(string stageId)
     {
         if (!IsStageUnlocked(stageId))
         {
-            Debug.LogWarning($"[GameFlowManager] {stageId}은(는) 잠겨 있어 진입할 수 없습니다.");
-            return;
+            return false;
         }
 
         ISkill skill = stageId switch
@@ -71,6 +70,7 @@ public class GameFlowManager : MonoBehaviour
         }
 
         SaveManager.Instance.SaveStagePlayed(stageId);
+        return true;
     }
 
     public void ClearStage(string stageId, float clearTime, string clearRank)
