@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1212040987050756206}
   - component: {fileID: 3978648326786464932}
   - component: {fileID: 4312147350148445090}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: locker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 3185738059817721201}
   m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: 0.5}
   m_LocalPosition: {x: -8.301693, y: -2.8613563, z: -38.97875}
-  m_LocalScale: {x: 200, y: 200, z: 200}
+  m_LocalScale: {x: 400, y: 400.00003, z: 400.00006}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
