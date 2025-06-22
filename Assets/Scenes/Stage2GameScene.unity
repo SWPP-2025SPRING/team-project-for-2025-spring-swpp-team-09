@@ -8440,7 +8440,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1208675555}
   requiredZ: 360
-  requiredY: 80
+  requiredY: 50
   checkY: 1
   TimeLimit: 120
 --- !u!1001 &675514466
@@ -10666,7 +10666,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 846498321}
-  m_LocalRotation: {x: 0.5604139, y: 0.008528511, z: 0.0018570946, w: 0.82816666}
+  m_LocalRotation: {x: 0.5604139, y: 0.008528512, z: 0.0018570946, w: 0.8281667}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
