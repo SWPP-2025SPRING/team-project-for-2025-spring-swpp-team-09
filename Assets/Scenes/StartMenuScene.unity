@@ -662,6 +662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5113bdaee02cd714c9357f5190b92ad1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soundEventChannel: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422, type: 2}
 --- !u!4 &869426387
 Transform:
   m_ObjectHideFlags: 0

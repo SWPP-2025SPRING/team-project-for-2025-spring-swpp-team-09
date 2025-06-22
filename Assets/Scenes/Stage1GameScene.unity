@@ -100658,6 +100658,10 @@ PrefabInstance:
       value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 1720966744, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+      propertyPath: skillcontroller
+      value: 
+      objectReference: {fileID: 1896451303}
+    - target: {fileID: 1720966744, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: soundEventChannel
       value: 
       objectReference: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422,
@@ -100667,6 +100671,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422,
         type: 2}
+    - target: {fileID: 1720966745, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+      propertyPath: animationController
+      value: 
+      objectReference: {fileID: 1896451288}
     - target: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: animator
       value: 
@@ -100788,6 +100796,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2c1ef74d5f1eb449a9eba37ed49e52c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1896451288 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1896451285}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1896451286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23ccfda591389c14d8d991611f949660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!95 &1896451294 stripped

@@ -79,12 +79,6 @@ public class AnimationController : MonoBehaviour
         animator.SetBool(animIdClimb, state);
     }
 
-    /*
-    public void SetAttack(bool state)
-    {
-        animator.SetBool(animIdAttack, state);
-    }
-    */
     public void TriggerAttack()
     {
         animator.SetTrigger(animIdAttack);

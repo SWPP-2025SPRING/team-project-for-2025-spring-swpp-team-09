@@ -23528,6 +23528,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422,
         type: 2}
+    - target: {fileID: 1720966745, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+      propertyPath: animationController
+      value: 
+      objectReference: {fileID: 1208675560}
     - target: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: animator
       value: 
@@ -23544,7 +23548,7 @@ PrefabInstance:
     - target: {fileID: 1720966747, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: skillController
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1208675561}
     - target: {fileID: 3687461888841831020, guid: 9cad301281f1ab448bafbf0183e36d2e,
         type: 3}
       propertyPath: m_Name
