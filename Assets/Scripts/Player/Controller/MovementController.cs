@@ -31,7 +31,7 @@ public class MovementController : MonoBehaviour
     public SkillCooldownUI dashCooldownUI;
 
     [Header("Wall Walk")]
-    public float wallWalkDuration = 2f;
+    public float wallWalkDuration = 5f;
     public float wallWalkSpeed = 5f;
     public float wallCheckDistance = 1f;
     public LayerMask wallLayer;
