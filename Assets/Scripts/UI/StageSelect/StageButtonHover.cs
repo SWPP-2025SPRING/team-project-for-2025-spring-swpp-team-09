@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.UI;
 
 public class StageButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private string stageId;
     [SerializeField] private TextMeshProUGUI displayText;
+    [SerializeField] private Image textBox;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -14,6 +16,7 @@ public class StageButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExi
             string info = StageRecordPresenter.GetStageRecordDisplay(stageId);
             displayText.text = info;
             displayText.gameObject.SetActive(true);
+            textBox.gameObject.SetActive(true);
         }
     }
 
@@ -23,6 +26,7 @@ public class StageButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             displayText.text = "";
             displayText.gameObject.SetActive(false);
+            textBox.gameObject.SetActive(false);
         }
     }
 }
