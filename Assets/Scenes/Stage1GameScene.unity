@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.4862745, g: 0.69411767, b: 0.8117647, a: 1}
   m_FogMode: 2
   m_FogDensity: 0.015
@@ -53972,7 +53972,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 206586436}
-  requiredZ: 50
+  requiredZ: 705
   requiredY: 0
   checkY: 0
   TimeLimit: 120
@@ -100094,7 +100094,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 700260867}
-  skillIcon: {fileID: 1415761048}
   pauseMenuUI: {fileID: 607327856}
   gameOverUI: {fileID: 277809277}
   gameClearUI: {fileID: 669746049}
