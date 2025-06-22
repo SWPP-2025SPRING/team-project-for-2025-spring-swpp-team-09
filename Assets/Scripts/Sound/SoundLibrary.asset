@@ -37,6 +37,9 @@ MonoBehaviour:
   - name: run
     clip: {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
     volume: 0.5
+  - name: time_stop
+    clip: {fileID: 8300000, guid: 8c51eb658f7b4d5499b4cf4567633940, type: 3}
+    volume: 1
   bgmList:
   - name: mainStage
     clip: {fileID: 8300000, guid: 402aa3a2b8ee845a4b9bbeee37833a16, type: 3}

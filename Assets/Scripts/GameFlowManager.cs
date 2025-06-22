@@ -5,6 +5,7 @@ public class GameFlowManager : MonoBehaviour
 {
     public static GameFlowManager Instance { get; private set; }
     private StageContext currentStageContext;
+    [SerializeField] private SoundEventChannel soundEventChannel;
 
     private void Awake()
     {
@@ -52,7 +53,7 @@ public class GameFlowManager : MonoBehaviour
         ISkill skill = stageId switch
         {
             "Stage2" => new WallWalkSkill(),
-            "Stage3" => new TimeStopSkill(),
+            "Stage3" => new TimeStopSkill(soundEventChannel),
             _ => null
         };
         Debug.Log($"[GameFlowManager] Retrieved stageId: {stageId}");
@@ -148,7 +149,7 @@ public class GameFlowManager : MonoBehaviour
         ISkill skill = stageId switch
         {
             "Stage2" => new WallWalkSkill(),
-            "Stage3" => new TimeStopSkill(),
+            "Stage3" => new TimeStopSkill(soundEventChannel),
             _ => null
         };
         currentStageContext = new StageContext(stageId, skill);
