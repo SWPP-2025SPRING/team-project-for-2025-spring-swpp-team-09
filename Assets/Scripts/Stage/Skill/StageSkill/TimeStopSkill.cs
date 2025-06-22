@@ -6,7 +6,12 @@ public class TimeStopSkill : ISkill
 {
     public IEnumerator Execute(SkillExecutionContext context)
     {
-        context.RequestTimeStop?.Invoke();
-        yield break;
+        Time.timeScale = 0f;
+
+        yield return new WaitForSecondsRealtime(3f);
+
+        Time.timeScale = 1f;
+        context.onSkillEnded?.Invoke();
     }
 }
+

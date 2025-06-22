@@ -100,7 +100,6 @@ public class StageGameManager : MonoBehaviour
 
             uiController.ShowGameClearUI(true);
             controlHandler?.EnableInput(false);
-            controlHandler?.LockCamera(true);
 
             string rank = clearCondition.GetClearRank();
             uiController.SetClearRank(true, rank);
@@ -119,7 +118,7 @@ public class StageGameManager : MonoBehaviour
 
         uiController.ShowGameOverUI(true);
         controlHandler?.EnableInput(false);
-        controlHandler?.LockCamera(true);
+        GameFlowManager.Instance.GameOver(stageId);
     }
 
     public void PauseGame()
@@ -156,6 +155,10 @@ public class StageGameManager : MonoBehaviour
     private IEnumerator WaitThenClearStageCoroutine()
     {
         yield return new WaitForSecondsRealtime(1f);
-        GameFlowManager.Instance.ClearStage(stageId);
+
+        float clearTime = clearCondition.ElapsedTime;
+        string clearRank = clearCondition.GetClearRank();
+
+        GameFlowManager.Instance.ClearStage(stageId, clearTime, clearRank);
     }
 }

@@ -16,7 +16,7 @@ public class MovementController : MonoBehaviour
     public float jumpHeight = 1.2f;
     public float gravity = -15f;
     public float terminalVelocity = -53f;
-    public float jumpTimeout = 0.5f;
+    public float jumpTimeout = 0.1f;
     public float fallTimeout = 0.15f;
 
     [Header("Ground Check")]
@@ -30,11 +30,6 @@ public class MovementController : MonoBehaviour
     private bool canDash = true;
     public SkillCooldownUI dashCooldownUI;
 
-    [Header("Glide")]
-    private float glideTimeRemaining = 0f;
-    [SerializeField] private float maxGlideTime = 3.0f;
-    private bool isGliding = false;
-
     [Header("Wall Walk")]
     public float wallWalkDuration = 2f;
     public float wallWalkSpeed = 5f;
@@ -42,6 +37,8 @@ public class MovementController : MonoBehaviour
     public LayerMask wallLayer;
     private bool isWallWalking = false;
     private Vector3 wallNormal;
+    private const float WallRightEpsilon = 0.01f;
+    private const float WallAlignmentAngleThreshold = 15f;
 
     [Header("Camera")]
     public GameObject cameraTarget;
@@ -71,79 +68,28 @@ public class MovementController : MonoBehaviour
 
     public void ProcessMovement(PlayerInputReader input, out float animationBlend, out float inputMagnitude, out bool isGrounded, out bool triggerJump, out bool freeFall, out bool climb, Vector3 platformDelta)
     {
-        if (platformDelta.magnitude > 0.001f)
-        {
-            controller.Move(platformDelta);
-        }
-
-        GroundedCheck();
-        bool justLanded = !wasGrounded && grounded;
-        wasGrounded = grounded;
-
-        if (justLanded)
-        {
-            hasDoubleJumped = false;
-        }
-
+        ApplyPlatformDelta(platformDelta);
+        UpdateGroundedState();
         isGrounded = grounded;
 
         Vector2 move = input.MoveInput;
         inputMagnitude = move.magnitude;
 
-        float targetSpeed = input.SprintHeld ? sprintSpeed : moveSpeed;
-        targetSpeed *= speedMultiplier;
-        if (move == Vector2.zero) targetSpeed = 0f;
+        float targetSpeed = GetTargetSpeed(input, inputMagnitude);
+        UpdateAnimationBlend(targetSpeed, out animationBlend);
 
-        float currentHorizontalSpeed = new Vector3(controller.velocity.x, 0f, controller.velocity.z).magnitude;
-        float speedOffset = 0.1f;
-
-        if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
-            currentSpeed = targetSpeed * inputMagnitude;
-        else
-            currentSpeed = targetSpeed;
-
-        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.unscaledDeltaTime * speedChangeRate);
-        animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
-        animationBlendPrev = animationBlend;
-
-        Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
-        if (inputDir != Vector3.zero)
-        {
-            targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
-
-            float rotation = Mathf.SmoothDampAngle(
-                transform.eulerAngles.y,
-                targetRotation,
-                ref rotationVelocity,
-                rotationSmoothTime,
-                Mathf.Infinity,
-                Time.unscaledDeltaTime
-            );
-
-            if (!float.IsNaN(rotation))
-                transform.rotation = Quaternion.Euler(0f, rotation, 0f);
-        }
-        Vector3 direction = Quaternion.Euler(0f, targetRotation, 0f) * Vector3.forward;
+        Vector3 direction = CalculateMoveDirection(move, input, targetSpeed);
 
         climb = isWallWalking;
-        
-        
-        if (input.SkillPressed && CanWallWalk(out wallNormal) && skillcontroller.CanUseSkill())
+        if (TryStartWallWalk(input))
         {
-            StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill();
-            Debug.Log($"WallWalkRoutine started. Wall normal: {wallNormal}");
         }
-        
-        if (climb)
+
+        if (isWallWalking)
         {
-            // 벽 기준 방향 재설정
-            Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;
-            Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;
-
-            direction = (wallForward * move.x + wallUp * move.y) / 3;
-
-            transform.rotation = Quaternion.LookRotation(-wallNormal);
+            direction = GetWallWalkDirection(input, direction);
+            LockToWallOrientation();
         }
 
         triggerJump = false;
@@ -161,9 +107,102 @@ public class MovementController : MonoBehaviour
         freeFall = !grounded && verticalVelocity < 0f;
     }
 
+    private void ApplyPlatformDelta(Vector3 platformDelta)
+    {
+        if (platformDelta.magnitude > 0.001f)
+        {
+            controller.Move(platformDelta);
+        }
+    }
+
+    private void UpdateGroundedState()
+    {
+        GroundedCheck();
+        bool justLanded = !wasGrounded && grounded;
+        wasGrounded = grounded;
+        if (justLanded)
+            hasDoubleJumped = false;
+    }
+
+    private float GetTargetSpeed(PlayerInputReader input, float inputMagnitude)
+    {
+        float baseSpeed = input.SprintHeld ? sprintSpeed : moveSpeed;
+        float targetSpeed = baseSpeed * speedMultiplier;
+        if (input.MoveInput == Vector2.zero)
+            targetSpeed = 0f;
+
+        float currentHorizontalSpeed = new Vector3(controller.velocity.x, 0f, controller.velocity.z).magnitude;
+        float speedOffset = 0.1f;
+
+        if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
+            currentSpeed = targetSpeed * inputMagnitude;
+        else
+            currentSpeed = targetSpeed;
+
+        return targetSpeed;
+    }
+
+    private void UpdateAnimationBlend(float targetSpeed, out float animationBlend)
+    {
+        animationBlend = Mathf.Lerp(animationBlendPrev, targetSpeed, Time.unscaledDeltaTime * speedChangeRate);
+        animationBlend = animationBlend < 0.01f ? 0f : animationBlend;
+        animationBlendPrev = animationBlend;
+    }
+
+    private Vector3 CalculateMoveDirection(Vector2 move, PlayerInputReader input, float targetSpeed)
+    {
+        Vector3 inputDir = new Vector3(move.x, 0f, move.y).normalized;
+        bool isBackward = move.y < 0;
+
+        if (!isBackward && inputDir != Vector3.zero)
+        {
+            targetRotation = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTarget.transform.eulerAngles.y;
+            float rotation = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y, targetRotation,
+                ref rotationVelocity,
+                rotationSmoothTime,
+                Mathf.Infinity,
+                Time.unscaledDeltaTime
+            );
+
+            if (!float.IsNaN(rotation))
+                transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+        }
+
+        Vector3 forward = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.forward;
+        Vector3 right = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Vector3.right;
+
+        Vector3 direction = forward * move.y + right * move.x;
+        if (isBackward)
+            direction = forward * -Mathf.Abs(move.y) + right * move.x;
+
+        return direction.normalized;
+    }
+
+    private bool TryStartWallWalk(PlayerInputReader input)
+    {
+        if (input.SkillPressed && CanWallWalk(out wallNormal) && skillcontroller.CanUseSkill())
+        {
+            StartCoroutine(WallWalkRoutine(wallNormal, input));
+            return true;
+        }
+        return false;
+    }
+
+    private Vector3 GetWallWalkDirection(PlayerInputReader input, Vector3 baseDirection)
+    {
+        Vector3 wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;
+        Vector3 wallUp = Vector3.Cross(wallForward, wallNormal).normalized;
+        return (wallForward * input.MoveInput.x + wallUp * input.MoveInput.y).normalized / 3f;
+    }
+
+    private void LockToWallOrientation()
+    {
+        transform.rotation = Quaternion.LookRotation(-wallNormal);
+    }
+
     private void JumpAndGravity(PlayerInputReader input, ref bool triggerJump)
     {
-        if (isGliding) return;
         if (grounded)
         {
             fallTimeoutDelta = fallTimeout;
@@ -177,8 +216,6 @@ public class MovementController : MonoBehaviour
                 triggerJump = true;
 
                 soundEventChannel?.RaisePlaySFX("jump");
-
-                glideTimeRemaining = maxGlideTime;
             }
 
             if (jumpTimeoutDelta > 0f)
@@ -236,43 +273,14 @@ public class MovementController : MonoBehaviour
         speedMultiplier = 1f;
     }
 
-    public void ActivateGlide()
-    {
-        if (!controller.isGrounded && !isGliding)
-        {
-            StartCoroutine(GlideRoutine());
-        }
-    }
-
     public void StartWallWalk(PlayerInputReader input)
     {
+        Debug.Log("good");
         if (!isWallWalking && CanWallWalk(out Vector3 wallNormal))
         {
             StartCoroutine(WallWalkRoutine(wallNormal, input));
             input.ConsumeSkill();
         }
-    }
-
-    private IEnumerator GlideRoutine()
-    {
-        isGliding = true;
-
-        float duration = 3f;
-        float timer = 0f;
-
-        while (timer < duration)
-        {
-            if (controller.isGrounded) break;
-
-            Debug.Log($"[Glide] verticalVelocity before: {verticalVelocity}");
-            verticalVelocity = Mathf.Max(verticalVelocity, 3f);
-            Debug.Log($"[Glide] verticalVelocity after: {verticalVelocity}");
-
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        isGliding = false;
     }
 
     private bool CanWallWalk(out Vector3 normal)
@@ -300,7 +308,6 @@ public class MovementController : MonoBehaviour
     private IEnumerator WallWalkRoutine(Vector3 wallNormal, PlayerInputReader input)
     {
         isWallWalking = true;
-        Debug.Log("WallWalkRoutine: Started");
 
         float timer = 0f;
         float stickForce = 2f; // 벽 쪽으로 밀어붙이는 정도
@@ -308,7 +315,7 @@ public class MovementController : MonoBehaviour
 
         // 1. 안전한 wallRight 설정
         Vector3 wallRight = Vector3.Cross(Vector3.up, wallNormal);
-        if (wallRight.magnitude < 0.01f)
+        if (wallRight.magnitude < WallRightEpsilon)
             wallRight = Vector3.Cross(Vector3.forward, wallNormal);
         wallRight.Normalize();
 
@@ -322,7 +329,6 @@ public class MovementController : MonoBehaviour
         {
             if (!IsStillOnSameWall(wallNormal))
             {
-                Debug.Log("벽에서 떨어져서 벽타기 종료");
                 isWallWalking = false;
                 break;
             }
@@ -355,7 +361,7 @@ public class MovementController : MonoBehaviour
         if (CanWallWalk(out Vector3 currentNormal))
         {
             float angle = Vector3.Angle(originalWallNormal, currentNormal);
-            return angle < 15f; // 충분히 같은 방향이면 유지
+            return angle < WallAlignmentAngleThreshold; // 충분히 같은 방향이면 유지
         }
         return false;
     }
