@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7028184968336147989}
   - component: {fileID: 5074949523470185183}
   - component: {fileID: 5885151474750123609}
+  - component: {fileID: 3735450097276395259}
   m_Layer: 0
   m_Name: movingplatform
   m_TagString: Untagged
@@ -97,3 +98,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.023582585, y: 0.023582581, z: 0.0065767686}
   m_Center: {x: 0, y: 0, z: -0.0000618199}
+--- !u!114 &3735450097276395259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6732085139772658442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c58ee915d5c658a43a2d36dfa8d65104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveDirection: 2
+  moveDistance: 2
+  moveSpeed: 4
+  enableRotation: 0
+  spinSpeed: 0
