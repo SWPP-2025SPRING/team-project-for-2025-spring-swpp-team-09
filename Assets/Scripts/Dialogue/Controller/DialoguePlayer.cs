@@ -114,6 +114,11 @@ public class DialoguePlayer : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         string nextStageId = state.NextSceneName;
+            if (dialogueId == "Stage3_Clear")
+            {
+                SceneController.Instance.LoadDialogueThenScene("Epilogue", "StageSelectScene");
+                yield break;
+            }
             if (string.IsNullOrEmpty(nextStageId))
             {
                 SceneController.Instance.LoadScene("StageSelectScene");
@@ -126,6 +131,15 @@ public class DialoguePlayer : MonoBehaviour
     public void SkipDialogue()
     {
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+
+        string nextScene = state.NextSceneName;
+
+        if (dialogueId == "Stage3_Clear")
+        {
+            SceneController.Instance.LoadDialogueThenScene("Epilogue", "StageSelectScene");
+            return;
+        }
+
         if (string.IsNullOrEmpty(state.NextSceneName))
         {
             HandleMissingNextScene();
@@ -145,6 +159,7 @@ public class DialoguePlayer : MonoBehaviour
             "Stage1_Enter" or "Stage1_Clear" => "stage1dialogue",
             "Stage2_Enter" or "Stage2_Clear" => "stage2dialogue",
             "Stage3_Enter" or "Stage3_Clear" => "stage3dialogue",
+            "Epilogue" => "mainStage",
             _ => null
         };
 
