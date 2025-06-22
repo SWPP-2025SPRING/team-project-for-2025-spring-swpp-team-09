@@ -19,6 +19,7 @@ public class StageGameManager : MonoBehaviour
     private bool isSkillAvailable = true;
     private bool isGameOver = false;
     private bool isGameClear = false;
+    public bool IsPaused => isPaused;
 
     // 테스트를 위한 임시 변수
     private PlayerInputReader inputReader;
