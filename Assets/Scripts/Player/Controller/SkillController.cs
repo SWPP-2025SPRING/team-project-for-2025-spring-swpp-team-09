@@ -4,65 +4,64 @@ using UnityEngine;
 
 public class SkillController : MonoBehaviour
 {
-    [SerializeField] private SoundEventChannel soundEventChannel;
     [SerializeField] private float cooldownDuration = 20f;
-    private float lastSkillTime = -Mathf.Infinity;
-
-    private ISkill currentSkill;
+    [SerializeField] private SoundEventChannel soundEventChannel;
     private SkillExecutionContext context;
+    
+    private float lastSkillTime = -Mathf.Infinity;
+    private ISkill currentSkill;
     private PlayerInputReader inputReader;
+
     public MovementController movementController;
     public SkillCooldownUI cooldownUI;
-    public event Action OnGlideRequested;
-    public event Action OnTimeStopRequested;
-    public event Action OnWallWalkRequested;
 
-    public void Initialize(ISkill skill, PlayerInputReader input)
+    public void Initialize(
+        ISkill skill,
+        PlayerInputReader input,
+        MovementController movement,
+        MonoBehaviour invoker,
+        Action onSkillEnded)
     {
         currentSkill = skill;
         inputReader = input;
+        movementController = movement;
 
-        Debug.Log($"[SkillController] Initialized with skill: {skill.GetType().Name}");
-
-        context = new SkillExecutionContext(
-            requestGlide: () => OnGlideRequested?.Invoke(),
-            requestTimeStop: () => OnTimeStopRequested?.Invoke(),
-            requestWallWalk: () => OnWallWalkRequested?.Invoke()
-        );
-
-        OnWallWalkRequested += () =>
-        {
-            movementController.StartWallWalk(inputReader);
-        };
+        context = new SkillExecutionContext(invoker, movement, input, onSkillEnded);
     }
+
 
     void Update()
     {
-        Debug.Log($"[SkillController] Update - Time: {Time.time:F2}, LastSkillTime: {lastSkillTime:F2}, CooldownDuration: {cooldownDuration:F2}, (Time - LastSkillTime): {(Time.time - lastSkillTime):F2}, CanUse: {(Time.time >= lastSkillTime + cooldownDuration)}");
-        
         if (ShouldUseSkill())
         {
+            var context = new SkillExecutionContext(
+                this, // invoker
+                movementController,
+                inputReader,
+                NotifySkillEnded
+            );
+
             StartCoroutine(currentSkill.Execute(context));
             inputReader.ConsumeSkill();
         }
     }
 
     private bool ShouldUseSkill()
-    {   
-        if (inputReader == null) return false;
-        return inputReader.SkillPressed && (Time.time >= lastSkillTime + cooldownDuration);
+    {
+        return inputReader != null &&
+               inputReader.SkillPressed &&
+               Time.time >= lastSkillTime + cooldownDuration;
     }
 
     public void NotifySkillEnded()
     {
         lastSkillTime = Time.time;
         cooldownUI?.StartCooldown(cooldownDuration);
-        Debug.Log($"[SkillController] Skill ended, cooldown started at: {lastSkillTime:F2}");
     }
 
     public bool CanUseSkill()
     {
-        return (Time.time >= lastSkillTime + cooldownDuration);
+        return Time.time >= lastSkillTime + cooldownDuration;
     }
-
 }
+

@@ -6,7 +6,9 @@ public class WallWalkSkill : ISkill
 {
     public IEnumerator Execute(SkillExecutionContext context)
     {
-        context.RequestWallWalk?.Invoke();
+        context.movementController.StartWallWalk(context.inputReader);
+        context.onSkillEnded?.Invoke();
         yield break;
     }
 }
+
