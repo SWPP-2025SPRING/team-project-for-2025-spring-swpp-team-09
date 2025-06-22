@@ -742,8 +742,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uD50C\uB808\uC774\uC5B4"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: bb8db085fe013974ca23318251063987, type: 2}
-  m_sharedMaterial: {fileID: 460556880270046649, guid: bb8db085fe013974ca23318251063987,
+  m_fontAsset: {fileID: 11400000, guid: d36a291bd79b61944aa6833092070606, type: 2}
+  m_sharedMaterial: {fileID: -8767767845804528278, guid: d36a291bd79b61944aa6833092070606,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
