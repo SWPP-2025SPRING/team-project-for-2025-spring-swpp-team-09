@@ -12545,6 +12545,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 949689097}
     - target: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
+      propertyPath: landingClip
+      value: 
+      objectReference: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+    - target: {fileID: 1720966746, guid: 9cad301281f1ab448bafbf0183e36d2e, type: 3}
       propertyPath: soundEventChannel
       value: 
       objectReference: {fileID: 11400000, guid: c82b2446f57cf4bb2aa56482cb811422,
