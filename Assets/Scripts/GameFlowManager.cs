@@ -24,7 +24,7 @@ public class GameFlowManager : MonoBehaviour
         SceneController.Instance.LoadDialogueThenScene("Prologue", "StageSelectScene");
     }
 
-    public void ContinueGame()
+    public bool ContinueGame()
     {
         bool anyPlayed =
             SaveManager.Instance.IsStagePlayed("Stage1") ||
@@ -34,10 +34,11 @@ public class GameFlowManager : MonoBehaviour
         if (anyPlayed)
         {
             SceneController.Instance.LoadScene("StageSelectScene");
+            return true;
         }
         else
         {
-            Debug.LogWarning("[GameFlowManager] 이어할 수 있는 기록이 없습니다.");
+            return false;
         }
     }
 
