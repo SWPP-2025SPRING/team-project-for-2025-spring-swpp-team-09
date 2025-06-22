@@ -787,7 +787,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 400}
+  m_AnchoredPosition: {x: 71, y: 400}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &52664710
@@ -810,7 +810,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: Timer
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 22a39c24113e1194ea1c9e30bf1fb91d, type: 2}
   m_sharedMaterial: {fileID: 1628957543136358473, guid: 22a39c24113e1194ea1c9e30bf1fb91d,
@@ -8440,8 +8440,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1208675555}
-  requiredZ: 10
-  requiredY: 10
+  requiredZ: 360
+  requiredY: 80
   checkY: 1
   TimeLimit: 120
 --- !u!1001 &675514466

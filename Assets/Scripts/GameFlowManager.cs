@@ -45,10 +45,12 @@ public class GameFlowManager : MonoBehaviour
 
     public bool EnterStage(string stageId)
     {
+        /*
         if (!IsStageUnlocked(stageId))
         {
             return false;
         }
+        */
 
         ISkill skill = stageId switch
         {

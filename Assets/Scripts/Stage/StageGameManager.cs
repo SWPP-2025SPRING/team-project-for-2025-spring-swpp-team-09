@@ -62,7 +62,6 @@ public class StageGameManager : MonoBehaviour
     void Update()
     {
         UpdateTimerUI();
-        UpdateSkillUI();
         CheckGameClear();
 
         if (inputReader != null && inputReader.PausePressed)
@@ -83,11 +82,6 @@ public class StageGameManager : MonoBehaviour
         {
             GameOver();
         }
-    }
-
-    private void UpdateSkillUI()
-    {
-        uiController.SetSkillAvailability(isSkillAvailable);
     }
 
     private void CheckGameClear()

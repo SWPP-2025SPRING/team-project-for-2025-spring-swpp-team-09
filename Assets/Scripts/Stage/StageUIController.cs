@@ -6,7 +6,6 @@ public class StageUIController : MonoBehaviour
 {
     [Header("UI Elements")]
     public TMP_Text timerText;
-    public Image skillIcon;
     public GameObject pauseMenuUI;
     public GameObject gameOverUI;
     public GameObject gameClearUI;
@@ -17,11 +16,6 @@ public class StageUIController : MonoBehaviour
     public void SetSkill(ISkill skill)
     {
         currentSkill = skill;
-    }
-
-    public void SetSkillAvailability(bool available)
-    {
-        skillIcon.color = available ? Color.white : Color.gray;
     }
 
     public void UpdateTimer(float seconds)
