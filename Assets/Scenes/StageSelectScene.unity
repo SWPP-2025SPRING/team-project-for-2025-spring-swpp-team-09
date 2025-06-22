@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 59842524}
   - component: {fileID: 59842526}
   - component: {fileID: 59842525}
+  - component: {fileID: 59842527}
   m_Layer: 0
   m_Name: Stage1TextBox
   m_TagString: Untagged
@@ -198,6 +199,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 59842523}
   m_CullTransparentMesh: 1
+--- !u!225 &59842527
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59842523}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &288949355
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,6 +539,7 @@ GameObject:
   - component: {fileID: 446670551}
   - component: {fileID: 446670553}
   - component: {fileID: 446670552}
+  - component: {fileID: 446670554}
   m_Layer: 5
   m_Name: Stage2TextBox
   m_TagString: Untagged
@@ -591,6 +605,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 446670550}
   m_CullTransparentMesh: 1
+--- !u!225 &446670554
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 446670550}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1001 &485963343
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1837,6 +1863,7 @@ GameObject:
   - component: {fileID: 1666064701}
   - component: {fileID: 1666064703}
   - component: {fileID: 1666064702}
+  - component: {fileID: 1666064704}
   m_Layer: 5
   m_Name: Stage3TextBox
   m_TagString: Untagged
@@ -1861,7 +1888,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 442, y: -17}
+  m_AnchoredPosition: {x: 454, y: -39}
   m_SizeDelta: {x: 1000, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1666064702
@@ -1902,6 +1929,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1666064700}
   m_CullTransparentMesh: 1
+--- !u!225 &1666064704
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666064700}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &1718560987
 GameObject:
   m_ObjectHideFlags: 0
@@ -2047,6 +2086,7 @@ GameObject:
   - component: {fileID: 2091315329}
   - component: {fileID: 2091315331}
   - component: {fileID: 2091315330}
+  - component: {fileID: 2091315332}
   m_Layer: 0
   m_Name: StageRecordText
   m_TagString: Untagged
@@ -2172,6 +2212,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2091315328}
   m_CullTransparentMesh: 1
+--- !u!225 &2091315332
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091315328}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &2146267958
 GameObject:
   m_ObjectHideFlags: 0
