@@ -32,13 +32,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EndingScene.unity
     guid: bed6a8dcaa5e34dc7a95e82ab3b02ad5
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestScenes/PlayerControlTestScene.unity
     guid: 4ee383c01dd66094d9d814f1942ec9cf
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestScenes/PlayerCombatTestScene.unity
     guid: 52702bfc19aa02946a1fef085f4fb4a4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TestScenes/GameTestScene.unity
     guid: fda2a43bb5acf194689a8b048fa256db
   - enabled: 0
