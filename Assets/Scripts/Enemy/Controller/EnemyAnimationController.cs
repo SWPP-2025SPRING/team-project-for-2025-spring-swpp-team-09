@@ -4,13 +4,13 @@ public class EnemyAnimationController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
 
-    public void PlayIdle()
+    public void SetSpeed (float speed)
     {
-        animator.Play("Idle");
+        animator.SetFloat("Speed", speed);
     }
 
     public void PlayDeath()
     {
-        animator.Play("Death");
+        animator.SetTrigger("Death");
     }
 }

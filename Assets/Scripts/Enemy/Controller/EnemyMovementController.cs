@@ -3,8 +3,8 @@ using UnityEngine;
 public class EnemyMovementController : MonoBehaviour
 {
     [Header("Movement")]
-    public float patrolSpeed = 15f;
-    public float patrolDistance = 4f;
+    public float patrolSpeed = 4f;
+    public float patrolDistance = 8f;
     public LayerMask groundLayers;
 
     private Vector3 startPosition;
@@ -13,28 +13,40 @@ public class EnemyMovementController : MonoBehaviour
     private void Start()
     {
         startPosition = transform.position;
+        direction = transform.forward;
     }
 
     public void Patrol()
     {
         if (!IsGroundAhead())
         {
-            direction = -direction;
+            ReverseDirection();
             return;
         }
 
-        transform.Translate(direction.normalized * patrolSpeed * Time.deltaTime, Space.World);
+        transform.position += transform.forward * patrolSpeed * Time.deltaTime;
 
         float distFromStart = Vector3.ProjectOnPlane(transform.position - startPosition, Vector3.up).magnitude;
         if (distFromStart >= patrolDistance)
         {
-            direction = -direction;
+            ReverseDirection();
         }
     }
 
     private bool IsGroundAhead()
     {
-        Vector3 origin = transform.position + direction.normalized * 0.5f + Vector3.up * 0.5f;
+        Vector3 origin = transform.position + transform.forward * 0.5f + Vector3.up * 0.5f;
         return Physics.Raycast(origin, Vector3.down, 2f, groundLayers);
+    }
+
+    private void ReverseDirection()
+    {
+        transform.Rotate(0,180f,0);
+        direction = transform.forward;
+    }
+
+    public float GetCurrentSpeed()
+    {
+        return patrolSpeed;
     }
 }

@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2972588dd93b14c4396792015be7feae, type: 3}
+  m_Name: SoundLibrary
+  m_EditorClassIdentifier: 
+  sfxList:
+  - name: button_click
+    clip: {fileID: 8300000, guid: 1cad7d13a48b24643adf7185da04a007, type: 3}
+    volume: 1
+  - name: dash
+    clip: {fileID: 8300000, guid: ce790e70a703346ce86bc8a7761b1137, type: 3}
+    volume: 1
+  - name: enemy_death
+    clip: {fileID: 8300000, guid: 1864a6b29e999481a995631741dcb7ea, type: 3}
+    volume: 1
+  - name: enemy_hit
+    clip: {fileID: 8300000, guid: 2dc68b7e62c704e1bb447e82b1f35743, type: 3}
+    volume: 1
+  - name: jump
+    clip: {fileID: 8300000, guid: 1a9d565cb5f06438ca63512eda82f5db, type: 3}
+    volume: 1
+  - name: land
+    clip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+    volume: 1
+  - name: punch
+    clip: {fileID: 8300000, guid: 1cb9fc92890174be591daed22ca6bb93, type: 3}
+    volume: 1
+  - name: run
+    clip: {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
+    volume: 0.5
+  - name: time_stop
+    clip: {fileID: 8300000, guid: 8c51eb658f7b4d5499b4cf4567633940, type: 3}
+    volume: 1
+  bgmList:
+  - name: mainStage
+    clip: {fileID: 8300000, guid: 402aa3a2b8ee845a4b9bbeee37833a16, type: 3}
+    volume: 0.7
+  - name: prologue
+    clip: {fileID: 8300000, guid: afecfbdc608c14a289192f4288523a91, type: 3}
+    volume: 0.7
+  - name: stage1dialogue
+    clip: {fileID: 8300000, guid: cf4538de80ffe4dda8f8bf79c9465339, type: 3}
+    volume: 0.7
+  - name: stage1
+    clip: {fileID: 8300000, guid: 5b5a343cceae245839accfbd1a0d230c, type: 3}
+    volume: 0.1
+  - name: stage2dialogue
+    clip: {fileID: 8300000, guid: 0df914d2596704f5b89419667eba691c, type: 3}
+    volume: 0.7
+  - name: stage2
+    clip: {fileID: 8300000, guid: ecc6cb7b01428465493b51bd85f8f513, type: 3}
+    volume: 0.4
+  - name: stage3dialogue
+    clip: {fileID: 8300000, guid: 99c231e69dde542d9b8776488aef1aab, type: 3}
+    volume: 0.7
+  - name: stage3
+    clip: {fileID: 8300000, guid: c291d6b142eba4317832ebef90aee63f, type: 3}
+    volume: 0.4

@@ -1,21 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using TMPro;
-using Cinemachine;
 
 public class StageGameManager : MonoBehaviour
 {
     [Header("UI")]
-    public TMP_Text timerText;
-    public Image skill1Icon;
-    public TMP_Text skill1Description;
-    public GameObject pauseMenuUI;
-    public GameObject gameOverUI;
-    public GameObject gameClearUI;
+    [SerializeField] private StageUIController uiController;
 
     [Header("Core")]
     [SerializeField] private string stageId = "Stage1";
@@ -24,47 +16,72 @@ public class StageGameManager : MonoBehaviour
 
     private IPlayerControlHandler controlHandler;
     private bool isPaused = false;
-    private bool isSkill1Available = true;
+    private bool isSkillAvailable = true;
     private bool isGameOver = false;
     private bool isGameClear = false;
+    public bool IsPaused => isPaused;
+
+    // 테스트를 위한 임시 변수
+    private PlayerInputReader inputReader;
 
     void Start()
     {
+        if (player == null)
+        {
+            player = GameObject.FindWithTag("Player");
+        }
         controlHandler = player.GetComponent<IPlayerControlHandler>();
-        gameOverUI.SetActive(false);
-        gameClearUI.SetActive(false);
+        if (controlHandler == null)
+        {
+            Debug.Log("no control handler");
+        }
+        else
+        {
+            Debug.Log("control handler");
+        }
+
+        uiController.ShowPauseUI(false);
+        uiController.ShowGameOverUI(false);
+        uiController.ShowGameClearUI(false);
+        uiController.SetClearRank(false, null);
+
+        var context = GameFlowManager.Instance?.GetStageContext();
+        if (context != null)
+        {
+            uiController.SetSkill(context.Skill);
+        }
+
+        // 테스트를 위한 임시 변수
+        var player1 = FindObjectOfType<PlayerController>();
+        if (player1 != null)
+        {
+            inputReader = player1.inputReader;
+        }
     }
 
     void Update()
     {
         UpdateTimerUI();
-        UpdateSkillUI();
         CheckGameClear();
 
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (inputReader != null && inputReader.PausePressed)
         {
             if (isPaused) ResumeGame();
             else PauseGame();
+
+            inputReader.ConsumePause();
         }
     }
 
     private void UpdateTimerUI()
     {
         float remaining = clearCondition.RemainingTime;
-        int minutes = Mathf.FloorToInt(remaining / 60);
-        int seconds = Mathf.FloorToInt(remaining % 60);
-        timerText.text = $"Timer: {minutes:00}:{seconds:00}";
+        uiController.UpdateTimer(remaining);
 
         if (clearCondition.TimeOver && !isGameOver && !isGameClear)
         {
             GameOver();
         }
-    }
-
-    private void UpdateSkillUI()
-    {
-        skill1Icon.color = isSkill1Available ? Color.white : Color.gray;
-        skill1Description.text = "[Skill] Press E, Allows to walk on water";
     }
 
     private void CheckGameClear()
@@ -74,21 +91,17 @@ public class StageGameManager : MonoBehaviour
         if (clearCondition.IsCleared)
         {
             isGameClear = true;
-            UpdateGameClearUI();
+            Time.timeScale = 0f;
 
-            GameFlowManager.Instance.ClearStage(stageId);
+            uiController.ShowGameClearUI(true);
+            controlHandler?.EnableInput(false);
+
+            string rank = clearCondition.GetClearRank();
+            uiController.SetClearRank(true, rank);
+
+            Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
+            StartCoroutine(WaitThenClearStageCoroutine());
         }
-    }
-
-    public void UpdateGameClearUI()
-    {
-        Time.timeScale = 0f;
-        gameClearUI.SetActive(true);
-
-        controlHandler?.EnableInput(false);
-        controlHandler?.LockCamera(true);
-
-        Debug.Log($"클리어 등급: {clearCondition.GetClearRank()}");
     }
 
     public void GameOver()
@@ -97,16 +110,19 @@ public class StageGameManager : MonoBehaviour
 
         isGameOver = true;
         Time.timeScale = 0f;
-        gameOverUI.SetActive(true);
 
+        uiController.ShowGameOverUI(true);
         controlHandler?.EnableInput(false);
-        controlHandler?.LockCamera(true);
+        GameFlowManager.Instance.GameOver(stageId);
     }
 
     public void PauseGame()
     {
+        if (isGameOver || isGameClear) return;
+
         Time.timeScale = 0f;
-        pauseMenuUI.SetActive(true);
+
+        uiController.ShowPauseUI(true);
         isPaused = true;
         controlHandler?.EnableInput(false);
     }
@@ -114,7 +130,7 @@ public class StageGameManager : MonoBehaviour
     public void ResumeGame()
     {
         Time.timeScale = 1f;
-        pauseMenuUI.SetActive(false);
+        uiController.ShowPauseUI(false);
         isPaused = false;
         controlHandler?.EnableInput(true);
     }
@@ -122,15 +138,22 @@ public class StageGameManager : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameFlowManager.Instance.EnterStage(stageId);
     }
 
     public void QuitGame()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        Time.timeScale = 1f;
+        GameFlowManager.Instance.ContinueGame();
+    }
+
+    private IEnumerator WaitThenClearStageCoroutine()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+
+        float clearTime = clearCondition.ElapsedTime;
+        string clearRank = clearCondition.GetClearRank();
+
+        GameFlowManager.Instance.ClearStage(stageId, clearTime, clearRank);
     }
 }

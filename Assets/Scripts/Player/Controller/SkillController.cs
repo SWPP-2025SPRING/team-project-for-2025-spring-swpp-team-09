@@ -4,36 +4,43 @@ using UnityEngine;
 
 public class SkillController : MonoBehaviour
 {
-    [SerializeField] private float cooldownDuration = 5f;
-    private float lastSkillTime = -Mathf.Infinity;
-
-    private ISkill currentSkill;
+    [SerializeField] private float cooldownDuration = 20f;
+    [SerializeField] private SoundEventChannel soundEventChannel;
     private SkillExecutionContext context;
+    
+    private float lastSkillTime = -Mathf.Infinity;
+    private ISkill currentSkill;
     private PlayerInputReader inputReader;
 
-    public event Action OnGlideRequested;
-    public event Action OnTimeStopRequested;
-    public event Action OnWallWalkRequested;
+    public MovementController movementController;
+    public SkillCooldownUI cooldownUI;
 
-    public void Initialize(ISkill skill, PlayerInputReader input)
+    public void Initialize(
+        ISkill skill,
+        PlayerInputReader input,
+        MovementController movement,
+        MonoBehaviour invoker,
+        Action onSkillEnded)
     {
         currentSkill = skill;
         inputReader = input;
+        movementController = movement;
 
-        Debug.Log($"[SkillController] Initialized with skill: {skill.GetType().Name}");
-
-        context = new SkillExecutionContext(
-            requestGlide: () => OnGlideRequested?.Invoke(),
-            requestTimeStop: () => OnTimeStopRequested?.Invoke(),
-            requestWallWalk: () => OnWallWalkRequested?.Invoke()
-        );
+        context = new SkillExecutionContext(invoker, movement, input, onSkillEnded);
     }
+
 
     void Update()
     {
         if (ShouldUseSkill())
         {
-            lastSkillTime = Time.time;
+            var context = new SkillExecutionContext(
+                this, // invoker
+                movementController,
+                inputReader,
+                NotifySkillEnded
+            );
+
             StartCoroutine(currentSkill.Execute(context));
             inputReader.ConsumeSkill();
         }
@@ -41,7 +48,20 @@ public class SkillController : MonoBehaviour
 
     private bool ShouldUseSkill()
     {
-        if (inputReader == null) return false;
-        return inputReader.SkillPressed && (Time.time >= lastSkillTime + cooldownDuration);
+        return inputReader != null &&
+               inputReader.SkillPressed &&
+               Time.time >= lastSkillTime + cooldownDuration;
+    }
+
+    public void NotifySkillEnded()
+    {
+        lastSkillTime = Time.time;
+        cooldownUI?.StartCooldown(cooldownDuration);
+    }
+
+    public bool CanUseSkill()
+    {
+        return Time.time >= lastSkillTime + cooldownDuration;
     }
 }
+
