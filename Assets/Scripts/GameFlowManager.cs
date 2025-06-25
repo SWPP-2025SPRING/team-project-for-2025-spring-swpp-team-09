@@ -115,6 +115,23 @@ public class GameFlowManager : MonoBehaviour
             }
             player.SetSkill(currentStageContext.Skill);
         }
+
+        RemovePreviousSceneLights(scene.name);
+    }
+
+    private void RemovePreviousSceneLights(string currentSceneName)
+    {
+        foreach (var light in GameObject.FindObjectsOfType<Light>())
+        {
+            if (light.type == LightType.Directional)
+            {
+                if (light.gameObject.scene.name != currentSceneName)
+                {
+                    Debug.Log($"[GameFlowManager] Removing leftover light from {light.gameObject.scene.name}");
+                    Destroy(light.gameObject);
+                }
+            }
+        }
     }
 
     private bool IsStageUnlocked(string stageId)
