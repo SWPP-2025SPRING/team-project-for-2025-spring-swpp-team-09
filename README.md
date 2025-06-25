@@ -8,7 +8,7 @@
 
 ### 조작 방법
 
-![STAGE1 튜토리얼 예시](attachment:b90b2ba9-4279-4023-83c1-87be5536b5e6:S1_Tutorial.png)
+![S1_Tutorial](https://github.com/user-attachments/assets/5372b690-e1c8-40d0-99b3-19a573d90e13)
 
 STAGE1 튜토리얼 예시
 
